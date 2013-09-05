@@ -32,7 +32,7 @@ If present, format the capacitance as an ASCII number and prints the message C =
 #include <util/delay.h> // needed for lcd_lib
 #include "lcd_lib.h"
 
-#include "uart.h"
+//#include "uart.h"
 
 //---------------Capacitance Measurements---------------
 //capacitance measurement bits
@@ -144,11 +144,12 @@ void init_cap_discharge_wait_timer(){
 	// 16 MHz				2 MHz
 	// -------  = 2 MHz;  ------------------   = CAP_DISCHARGE period
 	//    8                2 * CAP_DISCHARGE
-	TCCR1B = T0B_CS1;
+	TCCR1B = T0B_CS01;
 	TCCR1A = (1 << WGM01);
 }
 
 // LCD setup
+
 void init_lcd(void){
 	LCDinit();	//initialize the display
 	LCDcursorOFF();
@@ -157,7 +158,7 @@ void init_lcd(void){
 	CopyStringtoLCD(LCD_initialize, 0, 0);
 }
 
-//**********************************************************
+
 // writes contents of lcd_buffer to LCD every 200 mSec
 // 
 void refresh_lcd(void){
@@ -166,19 +167,20 @@ void refresh_lcd(void){
   LCDGotoXY(7, 0);
   	// display the count 
   LCDstring(lcd_buffer, strlen(lcd_buffer));	
-      	
+  //CopyStringtoLCD(LCD_line, 8, 1);   	
   // now move a char left and right
   LCDGotoXY(anipos,1);	   //second line
   LCDsendChar(' '); 
       	
-  if (anipos>=7) dir=-1;   // check boundaries
-  if (anipos<=0 ) dir=1;
+  if (anipos>=15) dir=-1;   // check boundaries
+  if (anipos<=8 ) dir=1;
   anipos=anipos+dir;
   LCDGotoXY(anipos,1);	   //second line
   LCDsendChar('o');
 }
 
 void initialize(void){
+	anipos = 8;
 	led_time_count = 0;
 	init_timer0A();
 
@@ -186,10 +188,11 @@ void initialize(void){
 	DDRD = 0;
 
 	//Enable LED Port
-	DDRD |= ONBOARD_LED; //turn the LED to an output
-	PORTD = 0; //turn off LED 
+	DDRD = ONBOARD_LED; //turn the LED to an output
+	PORTD = 0xFF; //turn off LED 
 
 	init_lcd();
+	LCDclr();
 
 
 	sei();
@@ -197,17 +200,23 @@ void initialize(void){
 
 int main(void){
 	initialize();
-	if( led_time_count == 0){
-		led_time_count = LED_BLINK_PERIOD / 2;
-		toggle_led();
-	}
-	if( lcd_time_count == 0){
-		lcd_time_count = LCD_REFRESH_RATE;
-		refresh_lcd();
+	CopyStringtoLCD(LCD_number, 0, 0);//start at char=0 line=0
+	CopyStringtoLCD(LCD_line, 0, 1);//start at char=0 line=1	
+	
+	while(1){
+		if( led_time_count == 0){
+			led_time_count = LED_BLINK_PERIOD / 2;
+			toggle_led();
+		}
+		if( lcd_time_count == 0){
+			lcd_time_count = LCD_REFRESH_RATE;
+			refresh_lcd();
+		}
+
+		if(cap_discharged){
+			//begin cap measurements
+		}
 	}
 
-	if(cap_discharged){
-		//begin cap measurements
-	}
 }
 
