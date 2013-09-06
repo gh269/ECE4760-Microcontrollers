@@ -44,20 +44,29 @@ If present, format the capacitance as an ASCII number and prints the message C =
 //Discharge Period [ units: us ]
 #define CAP_DISCHARGE_PERIOD 45
 
+//timer register variabls
 #define INPUT_CAPTURE_EDGE_SELECT (1 << ICES1)
+#define INTERRUPT_ON_CAPTURE (1 << ICIE1)
+//analog comp register variables
+#define ANALOG_COMPARATOR_INPUT_CAPTURE_ENABLE (1 << ACIC)
+#define ANALOG_COMPARATOR_BANDGAP_SELECT (1 << ACBG )
 
-//LED Bits
-#define ONBOARD_LED 0x04; //LED is on D.2
+
+//---------------LED Bits---------------------
+#define ONBOARD_LED 0x04 //LED is on D.2
 // period of LED blinking  [ units : ms ]
 #define LED_BLINK_PERIOD 1000
 
+#define TRUE 1
+#define FALSE 0
 
-//Timer TCCR0B Bits
+//---------------Timer TCCR0B Bits-------------
 #define T0B_CS02 4
 #define T0B_CS01 2
 #define T0B_CS00 1
+#define CLEAR_ON_MATCH (1 << WGM01)
 
-//LCD variables
+//---------------LCD variables------------------
 #define LCD_REFRESH_RATE 200
 
 const int8_t LCD_initialize[] PROGMEM = "LCD Initialized\0";
@@ -97,7 +106,7 @@ void init_cap_measurements(void){
 	DDRB |= COMPARATOR_INPUT;
 	PORTB &= ~COMPARATOR_INPUT;
 	//Indicate that the cap is not yet discharged
-	cap_discharged = 0;
+	cap_discharged = FALSE;
 
 	begin_cap_measurement = 0;
 	//use Timer1.A to perform this delay and signal when we can continue measurements
@@ -116,7 +125,7 @@ ISR (TIMER0_COMPA_vect){
 }
 //Once this triggers even once, we know that we have waited long enough for a cap discharge
 ISR (TIMER1_COMPA_vect){
-	cap_discharged = 1;
+	cap_discharged = TRUE;
 }
 
 //
@@ -138,7 +147,8 @@ void init_timer0A(void){
 	//   64					OCR0A=249
 	TCCR0B = T0B_CS01 + T0B_CS00;
 	//turn on clear-on-match - timer A ISR will clear TCNT0 on match
-	TCCR0A = (1 << WGM01);
+	TCCR0A = 0;
+	TCCR0A |= CLEAR_ON_MATCH;
 }
 
 //Uses Timer1.A to wait 
@@ -152,13 +162,30 @@ void init_cap_discharge_wait_timer(){
 	// -------  = 2 MHz;  ------------------   = CAP_DISCHARGE period
 	//    8                2 * CAP_DISCHARGE
 	TCCR1B = T0B_CS01;
-	TCCR1A = (1 << WGM01);
+	//turn on clear on match
+	TCCR1A = 0;
+	TCCR1A |= CLEAR_ON_MATCH;
 }
 
 //configures Analog Comparator and Timer1
-//A 
+//set it to full speed 
+//clear TCNT1
 void init_cap_measurement_analog_timer(){
+	TCCR1B = 0;
+	//full speed [ 16 MHz], capture on positive edge
+	TCCR1B |= INPUT_CAPTURE_EDGE_SELECT + T0B_CS00;
+	//turn on timer 1 interrupt-on-capture
+	TIMSK1 = 0;
+	TIMSK1 |= INTERRUPT_ON_CAPTURE;
 
+	//set analog comp to connect to timer capture input
+	//with positive input reference voltage
+	ACSR = 0;
+	ACSR |= ANALOG_COMPARATOR_INPUT_CAPTURE_ENABLE;
+	ACSR &= ~ANALOG_COMPARATOR_BANDGAP_SELECT;
+	//set all ports to input
+	DDRB = 0;
+	DDRB &= ~(COMPARATOR_INPUT + COMPARATOR_REFERENCE);
 }
 
 // LCD setup
@@ -230,7 +257,9 @@ int main(void){
 			//switch Timer1A mode
 
 			//mark that we can start cap measurement
-
+			begin_cap_measurement = TRUE;
+			//initalize timer for cap measurement
+			init_cap_measurement_analog_timer();
 		}
 
 		if( begin_cap_measurement){
