@@ -60,6 +60,9 @@ If present, format the capacitance as an ASCII number and prints the message C =
 //LCD variables
 #define LCD_REFRESH_RATE 200
 
+// Each count should 62.5 ns at a clock of 16Mhz
+#define t1_clk_period 62.5
+
 const int8_t LCD_initialize[] PROGMEM = "LCD Initialized\0";
 const int8_t LCD_line[] PROGMEM = "line 1\0";
 const int8_t LCD_number[] PROGMEM = "Number=\0";
@@ -68,6 +71,7 @@ uint16_t count;			// a number to display on the LCD
 uint8_t anipos, dir;	// move a character around  
 
 volatile char cap_discharged;
+volatile char cap_charged;
 
 //time counter for LED blinking
 volatile unsigned int led_time_count;
@@ -80,6 +84,10 @@ volatile unsigned int lcd_time_count;
 volatile unsigned int validate_cap_discharge_time_count;
 
 volatile unsigned int begin_cap_measurement;
+
+// timer 1 capture variable for computing charging time	
+volatile unsigned int charge_time; 
+
 /*
 
 	Set PortB3 to an input.
@@ -98,6 +106,7 @@ void init_cap_measurements(void){
 	PORTB &= ~COMPARATOR_INPUT;
 	//Indicate that the cap is not yet discharged
 	cap_discharged = 0;
+	cap_charged = 0;
 
 	begin_cap_measurement = 0;
 	//use Timer1.A to perform this delay and signal when we can continue measurements
@@ -117,6 +126,15 @@ ISR (TIMER0_COMPA_vect){
 //Once this triggers even once, we know that we have waited long enough for a cap discharge
 ISR (TIMER1_COMPA_vect){
 	cap_discharged = 1;
+}
+
+// timer 1 capture ISR to measure charging time. 
+// and the counter should have been initialized at zero. 
+ISR (TIMER1_CAPT_vect){
+    // read timer1 input capture register
+    charge_time = ICR1 * t1_clk_period;
+    // set the captured flag to true
+    cap_charged = 1;
 }
 
 //
@@ -233,7 +251,9 @@ int main(void){
 
 		}
 
-		if( begin_cap_measurement){
+		if(begin_cap_measurement && cap_charged){
+			// Calculate the capacitance 
+
 
 		}
 	}
