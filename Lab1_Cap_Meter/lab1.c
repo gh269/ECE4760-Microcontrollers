@@ -40,8 +40,11 @@ If present, format the capacitance as an ASCII number and prints the message C =
 #define COMPARATOR_REFERENCE 0x08
 //Capacitor input voltage ( + ) input - port B2
 #define COMPARATOR_INPUT 0x04
+
 //Discharge Period [ units: us ]
-#define CAP_DISCHARGE_PERIOD 90
+#define CAP_DISCHARGE_PERIOD 45
+
+#define INPUT_CAPTURE_EDGE_SELECT (1 << ICES1)
 
 //LED Bits
 #define ONBOARD_LED 0x04; //LED is on D.2
@@ -75,6 +78,8 @@ volatile unsigned int lcd_time_count;
 //this counter performs the 100 - 10,000 cycle wait to ensure that the capacitor 
 //starts discharged.
 volatile unsigned int validate_cap_discharge_time_count;
+
+volatile unsigned int begin_cap_measurement;
 /*
 
 	Set PortB3 to an input.
@@ -93,6 +98,8 @@ void init_cap_measurements(void){
 	PORTB &= ~COMPARATOR_INPUT;
 	//Indicate that the cap is not yet discharged
 	cap_discharged = 0;
+
+	begin_cap_measurement = 0;
 	//use Timer1.A to perform this delay and signal when we can continue measurements
 	init_cap_discharge_wait_timer();
 }
@@ -148,8 +155,13 @@ void init_cap_discharge_wait_timer(){
 	TCCR1A = (1 << WGM01);
 }
 
-// LCD setup
+//configures Analog Comparator and Timer1
+//A 
+void init_cap_measurement_analog_timer(){
 
+}
+
+// LCD setup
 void init_lcd(void){
 	LCDinit();	//initialize the display
 	LCDcursorOFF();
@@ -213,8 +225,16 @@ int main(void){
 			refresh_lcd();
 		}
 
-		if(cap_discharged){
+		if(cap_discharged && !begin_cap_measurement){
 			//begin cap measurements
+			//switch Timer1A mode
+
+			//mark that we can start cap measurement
+
+		}
+
+		if( begin_cap_measurement){
+
 		}
 	}
 
