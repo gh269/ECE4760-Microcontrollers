@@ -65,6 +65,8 @@ If present, format the capacitance as an ASCII number and prints the message C =
 #define T0B_CS01 2
 #define T0B_CS00 1
 #define CLEAR_ON_MATCH (1 << WGM01)
+#define OUTPUT_COMPARE_A0_MATCH_INTERRUPT_ENABLE (1 << OCIE0A)
+#define OUTPUT_COMPARE_A1_MATCH_INTERRUPT_ENABLE (1 << OCIE1A)
 
 //---------------LCD variables------------------
 #define LCD_REFRESH_RATE 200
@@ -139,7 +141,7 @@ void toggle_led(void){
 // on TCNT0 = OCR0A
 void init_timer0A(void){
 	// Output capture/compare on OCR0A IE
-	TIMSK0 = (1 << OCIE0A);
+	TIMSK0 = OUTPUT_COMPARE_A0_MATCH_INTERRUPT_ENABLE;
 	OCR0A = 249;
 	//T0BCS01 + T0BCS00 sets clk divider 64
 	// 16 MHz 				250 KHz
@@ -155,7 +157,7 @@ void init_timer0A(void){
 //sets Timer1.A into a 1 MHz frequency 
 void init_cap_discharge_wait_timer(){
 	// Output capture/compare on OCR1A IE
-	TIMSK1 = (1 << OCIE1A);
+	TIMSK1 = OUTPUT_COMPARE_A1_MATCH_INTERRUPT_ENABLE;
 	OCR1A = 2 * CAP_DISCHARGE_PERIOD;
 	//CS1 sets prescaler to div by 8 - clock 
 	// 16 MHz				2 MHz
