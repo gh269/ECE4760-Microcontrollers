@@ -1,8 +1,8 @@
 /*
 Tasks to complete:
 
-The LCD should be updated every 200 mSec or so.
-An LED should blink about 1/second.
+The LCD should be updated every 200 mSec or so. (DONE)
+An LED should blink about 1/second. (DONE)
 The capacitance should be measured as quickly as possible as described above.
 
 	Your program will have to (in time order):
@@ -43,6 +43,11 @@ If present, format the capacitance as an ASCII number and prints the message C =
 
 //Discharge Period [ units: us ]
 #define CAP_DISCHARGE_PERIOD 45
+// Each of each count (16Mhz) [ units: ns]
+#define T1_CLK_PERIOD 62.5
+// The r2 resistor value [ units: Ohms]
+#define RESISTOR 10000
+
 
 //R2 value [units ohms]
 #define R2 10000
@@ -53,7 +58,6 @@ If present, format the capacitance as an ASCII number and prints the message C =
 //analog comp register variables
 #define ANALOG_COMPARATOR_INPUT_CAPTURE_ENABLE (1 << ACIC)
 #define ANALOG_COMPARATOR_BANDGAP_SELECT (1 << ACBG )
-
 
 //---------------LED Bits---------------------
 #define ONBOARD_LED 0x04 //LED is on D.2
@@ -74,18 +78,15 @@ If present, format the capacitance as an ASCII number and prints the message C =
 //---------------LCD variables------------------
 #define LCD_REFRESH_RATE 200
 
-// Each count should 62.5 ns at a clock of 16Mhz
-#define t1_clk_period 62.5
-
 const int8_t LCD_initialize[] PROGMEM = "LCD Initialized\0";
-const int8_t LCD_line[] PROGMEM = "line 1\0";
-const int8_t LCD_number[] PROGMEM = "Number=\0";
+//const int8_t LCD_line[] PROGMEM = "line 1\0";
+const int8_t LCD_number[] PROGMEM = "Capacitance=\0";
 int8_t lcd_buffer[17];	// LCD display buffer
 uint16_t count;			// a number to display on the LCD  
 uint8_t anipos, dir;	// move a character around  
 
-volatile char cap_discharged;
-volatile char cap_charged;
+volatile char cap_discharged = FALSE;
+volatile char cap_charged = FALSE;
 
 //time counter for LED blinking
 volatile unsigned int led_time_count;
@@ -97,10 +98,15 @@ volatile unsigned int lcd_time_count;
 //starts discharged.
 volatile unsigned int validate_cap_discharge_time_count;
 
-volatile unsigned int begin_cap_measurement;
+volatile unsigned int begin_cap_measurement = FALSE;
 
 // timer 1 capture variable for computing charging time	
-volatile unsigned int charge_time; 
+volatile unsigned double charge_time; 
+// precomputed log(.5) needed for capacitance calculation
+const unsigned double ln_half = 0.6931471805599453;
+
+// variable to store capacitance for print out
+volatile unsigned double capacitance;
 
 /*
 
@@ -165,8 +171,8 @@ ISR (TIMER1_COMPA_vect){
 */
 ISR (TIMER1_CAPT_vect){
     // read timer1 input capture register
-    charge_time = ICR1 * t1_clk_period;
-    // set the captured flag to true
+    charge_time = ICR1 * T1_CLK_PERIOD;
+    // set the charged flag to true
     cap_charged = TRUE;
 }
 
@@ -244,7 +250,12 @@ void init_lcd(void){
 // 
 void refresh_lcd(void){
   // increment time counter and format string 
-  sprintf(lcd_buffer,"%-i",count++);	                 
+  if (capacitance >= .1 && capacitance <= 10) {
+  	sprintf(lcd_buffer,"%-d",capacitance);	 
+  }
+  else {
+  	sprintf(lcd_buffer,"N/A");
+  }                
   LCDGotoXY(7, 0);
   	// display the count 
   LCDstring(lcd_buffer, strlen(lcd_buffer));	
@@ -307,6 +318,14 @@ int main(void){
 		if(begin_cap_measurement && cap_charged){
 			// Calculate the capacitance 
 			
+			// Rever the flags
+			begin_cap_measurement = FALSE;
+			cap_charged = FALSE;
+			// Calculate the capacitance with the time elapsed. 
+			// V(t) = Vo(1 - exp(-t/(R2*C))) becomes
+			// C = -t / (R2 * ln(.5)) to find out when V(t) = .5 * Vo (R3 = R4)
+			// (Due to ln(.5) being negative, the negative on the t is canceled out)
+			capacitance = charge_time / (resistor * ln_half);
 
 		}
 	}
