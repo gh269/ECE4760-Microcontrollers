@@ -44,7 +44,10 @@ If present, format the capacitance as an ASCII number and prints the message C =
 //Discharge Period [ units: us ]
 #define CAP_DISCHARGE_PERIOD 45
 
-//timer register variabls
+//R2 value [units ohms]
+#define R2 10000
+
+//----------timer register variables----------------------
 #define INPUT_CAPTURE_EDGE_SELECT (1 << ICES1)
 #define INTERRUPT_ON_CAPTURE (1 << ICIE1)
 //analog comp register variables
@@ -142,6 +145,24 @@ ISR (TIMER1_COMPA_vect){
 
 // timer 1 capture ISR to measure charging time. 
 // and the counter should have been initialized at zero. 
+// when this Interrupt triggers, the voltage of the cap 
+// is at VCC/2 
+/*
+	Charging Equation:
+
+	Vcap = Vcc ( 1 - e ^ (-t /tau ))
+	0.5 = 1 - e ^ (-t / tau)
+	e^(-t / tau ) = 0.5
+	- (t / tau ) = ln(0.5)
+			   t
+	tau = ---------- = R2 * C
+		   ln(0.5) 
+			
+			  t
+	C = ------------
+		R2 * ln(0.5)
+
+*/
 ISR (TIMER1_CAPT_vect){
     // read timer1 input capture register
     charge_time = ICR1 * t1_clk_period;
@@ -285,7 +306,7 @@ int main(void){
 
 		if(begin_cap_measurement && cap_charged){
 			// Calculate the capacitance 
-
+			
 
 		}
 	}
