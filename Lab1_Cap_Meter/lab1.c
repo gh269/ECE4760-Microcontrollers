@@ -17,9 +17,6 @@ The capacitance should be measured as quickly as possible as described above.
 The range of capacitances to be measured is 1 nf to 100 nf.
 The program should detect whether a capacitance is present or not and display an appropriate message if no capacitor is present.
 If present, format the capacitance as an ASCII number and prints the message C = xxx nf to the LCD
-*
-*
-*
 */
 #define F_CPU 16000000UL                
 #include <inttypes.h>
@@ -32,8 +29,6 @@ If present, format the capacitance as an ASCII number and prints the message C =
 #include <util/delay.h> // needed for lcd_lib
 #include "lcd_lib.h"
 
-//#include "uart.h"
-
 //---------------Capacitance Measurements---------------
 //capacitance measurement bits
 //Analog Comparator negative ( - ) input - reference Port B3
@@ -45,12 +40,8 @@ If present, format the capacitance as an ASCII number and prints the message C =
 #define CAP_DISCHARGE_PERIOD 45
 // Each of each count (16Mhz) [ units: ns]
 #define T1_CLK_PERIOD 62.5
-// The r2 resistor value [ units: Ohms]
+// The R2 resistor value [ units: Ohms]
 #define RESISTOR 10000
-
-
-//R2 value [units ohms]
-#define R2 10000
 
 //----------timer register variables----------------------
 #define INPUT_CAPTURE_EDGE_SELECT (1 << ICES1)
@@ -79,14 +70,15 @@ If present, format the capacitance as an ASCII number and prints the message C =
 #define LCD_REFRESH_RATE 200
 
 const int8_t LCD_initialize[] PROGMEM = "LCD Initialized\0";
-//const int8_t LCD_line[] PROGMEM = "line 1\0";
 const int8_t LCD_number[] PROGMEM = "Capacitance=\0";
 int8_t lcd_buffer[17];	// LCD display buffer
 uint16_t count;			// a number to display on the LCD  
 uint8_t anipos, dir;	// move a character around  
 
-volatile char cap_discharged = FALSE;
-volatile char cap_charged = FALSE;
+// Flags for the finite state machine transitions
+volatile unsigned int begin_cap_measurement = FALSE;
+volatile unsigned int cap_discharged = FALSE;
+volatile unsigned int cap_charged = FALSE;
 
 //time counter for LED blinking
 volatile unsigned int led_time_count;
@@ -96,20 +88,53 @@ volatile unsigned int lcd_time_count;
 //time counter to Validate Cap Discharge
 //this counter performs the 100 - 10,000 cycle wait to ensure that the capacitor 
 //starts discharged.
-volatile unsigned int validate_cap_discharge_time_count;
-
-volatile unsigned int begin_cap_measurement = FALSE;
+//volatile unsigned int validate_cap_discharge_time_count;
 
 // timer 1 capture variable for computing charging time	
-volatile unsigned double charge_time; 
-// precomputed log(.5) needed for capacitance calculation
-const unsigned double ln_half = 0.6931471805599453;
-
+volatile double charge_time; 
 // variable to store capacitance for print out
-volatile unsigned double capacitance;
+volatile double capacitance;
+// precomputed log(.5) needed for capacitance calculation
+const double ln_half = 0.6931471805599453;
+
+//configures Analog Comparator and Timer1
+//set it to full speed 
+//clear TCNT1
+void init_cap_measurement_analog_timer(){
+	TCCR1B = 0;
+	//full speed [ 16 MHz], capture on positive edge
+	TCCR1B |= INPUT_CAPTURE_EDGE_SELECT + T0B_CS00;
+	//turn on timer 1 interrupt-on-capture
+	TIMSK1 = 0;
+	TIMSK1 |= INTERRUPT_ON_CAPTURE;
+
+	//set analog comp to connect to timer capture input
+	//with positive input reference voltage
+	ACSR = 0;
+	ACSR |= ANALOG_COMPARATOR_INPUT_CAPTURE_ENABLE;
+	ACSR &= ~ANALOG_COMPARATOR_BANDGAP_SELECT;
+	//set all ports to input
+	DDRB = 0;
+	DDRB &= ~(COMPARATOR_INPUT + COMPARATOR_REFERENCE);
+}
+
+//Uses Timer1.A to wait 
+//sets Timer1.A into a 1 MHz frequency 
+void init_cap_discharge_wait_timer(){
+	// Output capture/compare on OCR1A IE
+	TIMSK1 = OUTPUT_COMPARE_A1_MATCH_INTERRUPT_ENABLE;
+	OCR1A = 2 * CAP_DISCHARGE_PERIOD;
+	//CS1 sets prescaler to div by 8 - clock 
+	// 16 MHz				2 MHz
+	// -------  = 2 MHz;  ------------------   = CAP_DISCHARGE period
+	//    8                2 * CAP_DISCHARGE
+	TCCR1B = T0B_CS01;
+	//turn on clear on match
+	TCCR1A = 0;
+	TCCR1A |= CLEAR_ON_MATCH;
+}
 
 /*
-
 	Set PortB3 to an input.
 	Drive PortB2 to zero by making it an output and wait long enough to discharge the capacitor through 100 ohms. Clearly, to dischage to zero volts with 1% accuracy, R2>100*(100ohms).
 	Convert PortB2 to an input and start a timer. The capacitor will start to charge toward Vcc.
@@ -124,12 +149,6 @@ void init_cap_measurements(void){
 	//Drive B2 to 0 by making it an output and waiting long enough to discharge the cap
 	DDRB |= COMPARATOR_INPUT;
 	PORTB &= ~COMPARATOR_INPUT;
-	//Indicate that the cap is not yet discharged
-	cap_discharged = FALSE;
-	//Indicate that the cap has been charged
-	cap_charged = FALSE;
-
-	begin_cap_measurement = 0;
 	//use Timer1.A to perform this delay and signal when we can continue measurements
 	init_cap_discharge_wait_timer();
 }
@@ -199,43 +218,6 @@ void init_timer0A(void){
 	TCCR0A |= CLEAR_ON_MATCH;
 }
 
-//Uses Timer1.A to wait 
-//sets Timer1.A into a 1 MHz frequency 
-void init_cap_discharge_wait_timer(){
-	// Output capture/compare on OCR1A IE
-	TIMSK1 = OUTPUT_COMPARE_A1_MATCH_INTERRUPT_ENABLE;
-	OCR1A = 2 * CAP_DISCHARGE_PERIOD;
-	//CS1 sets prescaler to div by 8 - clock 
-	// 16 MHz				2 MHz
-	// -------  = 2 MHz;  ------------------   = CAP_DISCHARGE period
-	//    8                2 * CAP_DISCHARGE
-	TCCR1B = T0B_CS01;
-	//turn on clear on match
-	TCCR1A = 0;
-	TCCR1A |= CLEAR_ON_MATCH;
-}
-
-//configures Analog Comparator and Timer1
-//set it to full speed 
-//clear TCNT1
-void init_cap_measurement_analog_timer(){
-	TCCR1B = 0;
-	//full speed [ 16 MHz], capture on positive edge
-	TCCR1B |= INPUT_CAPTURE_EDGE_SELECT + T0B_CS00;
-	//turn on timer 1 interrupt-on-capture
-	TIMSK1 = 0;
-	TIMSK1 |= INTERRUPT_ON_CAPTURE;
-
-	//set analog comp to connect to timer capture input
-	//with positive input reference voltage
-	ACSR = 0;
-	ACSR |= ANALOG_COMPARATOR_INPUT_CAPTURE_ENABLE;
-	ACSR &= ~ANALOG_COMPARATOR_BANDGAP_SELECT;
-	//set all ports to input
-	DDRB = 0;
-	DDRB &= ~(COMPARATOR_INPUT + COMPARATOR_REFERENCE);
-}
-
 // LCD setup
 void init_lcd(void){
 	LCDinit();	//initialize the display
@@ -250,16 +232,15 @@ void init_lcd(void){
 // 
 void refresh_lcd(void){
   // increment time counter and format string 
-  if (capacitance >= .1 && capacitance <= 10) {
+  if (capacitance >= .1 && capacitance <= 100) {
   	sprintf(lcd_buffer,"%-d",capacitance);	 
   }
   else {
   	sprintf(lcd_buffer,"N/A");
   }                
-  LCDGotoXY(7, 0);
+  LCDGotoXY(13, 0);
   	// display the count 
   LCDstring(lcd_buffer, strlen(lcd_buffer));	
-  //CopyStringtoLCD(LCD_line, 8, 1);   	
   // now move a char left and right
   LCDGotoXY(anipos,1);	   //second line
   LCDsendChar(' '); 
@@ -293,7 +274,6 @@ void initialize(void){
 int main(void){
 	initialize();
 	CopyStringtoLCD(LCD_number, 0, 0);//start at char=0 line=0
-	CopyStringtoLCD(LCD_line, 0, 1);//start at char=0 line=1	
 	
 	while(1){
 		if( led_time_count == 0){
@@ -304,11 +284,13 @@ int main(void){
 			lcd_time_count = LCD_REFRESH_RATE;
 			refresh_lcd();
 		}
-
+		/*
 		if(cap_discharged && !begin_cap_measurement){
 			//begin cap measurements
 			//switch Timer1A mode
 
+			//reset the cap_discharged flag
+			cap_discharged = FALSE;
 			//mark that we can start cap measurement
 			begin_cap_measurement = TRUE;
 			//initalize timer for cap measurement
@@ -328,7 +310,7 @@ int main(void){
 			capacitance = charge_time / (resistor * ln_half);
 
 		}
+		*/
 	}
-
 }
 
