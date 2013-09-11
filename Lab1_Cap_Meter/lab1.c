@@ -29,6 +29,11 @@ If present, format the capacitance as an ASCII number and prints the message C =
 #include <util/delay.h> // needed for lcd_lib
 #include "lcd_lib.h"
 
+#include "uart.h"
+
+FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
+
+
 //---------------Capacitance Measurements---------------
 //capacitance measurement bits
 //Analog Comparator negative ( - ) input - reference Port B3
@@ -106,7 +111,7 @@ void init_cap_measurement_analog_timer(){
 	TCCR1B |= INPUT_CAPTURE_EDGE_SELECT + T0B_CS00;
 	//turn on timer 1 interrupt-on-capture
 	TIMSK1 = 0;
-	TIMSK1 |= INTERRUPT_ON_CAPTURE + INTERRUPT_OVERFLOW;
+	TIMSK1 |= INTERRUPT_ON_CAPTURE ;
 
 	//set analog comp to connect to timer capture input
 	//with positive input reference voltage
@@ -117,12 +122,7 @@ void init_cap_measurement_analog_timer(){
 	DDRB = 0;
 	DDRB &= ~(COMPARATOR_INPUT + COMPARATOR_REFERENCE);
 }
-//Overflow ISR
-ISR(TIMER1_OVF_vect)
-{
-	//increment overflow counter
-	overflow = TRUE;
-}
+
 //Uses Timer1.A to wait 
 //sets Timer1.A into a 1 MHz frequency 
 void init_cap_discharge_wait_timer(){
@@ -287,6 +287,10 @@ void initialize(void){
 	init_lcd();
 	LCDclr();
 
+	uart_init();
+	stdout = stdin = stderr = &uart_str;
+	fprintf(stdout,"Starting timers...\n\r");
+
 
 	sei();
 }
@@ -306,9 +310,12 @@ int main(void){
 		}
 		if (!cap_discharged && !begin_cap_measurement && !cap_charged) {
 			charge_cycles = 0;
+			cli();
 			init_cap_measurements();
+			sei();
 		}
 		if(cap_discharged && !begin_cap_measurement){
+			cli();
 			//begin cap measurements
 			//switch Timer1A mode
 			//DDRB &= ~COMPARATOR_INPUT;
@@ -316,14 +323,9 @@ int main(void){
 			begin_cap_measurement = TRUE;
 			//initalize timer for cap measurement
 			init_cap_measurement_analog_timer();
+			sei();
 		}
-		if(overflow){
-			sprintf(lcd_buffer, "OVERFLOW\0");
-			LCDGotoXY(0,0);
-  			LCDstring(lcd_buffer, strlen(lcd_buffer));	
 
-
-		}
 		if(begin_cap_measurement && cap_charged){
 			// Revert the flags
 			cap_discharged = FALSE;
@@ -335,7 +337,8 @@ int main(void){
 			// (Due to ln(.5) being negative, the negative on the t is canceled out)
 			//charge_time = charge_cycles * T1_CLK_PERIOD;
 			//capacitance = charge_time / (RESISTOR * ln_half);
-			
+			capacitance = charge_cycles;
+
 			//capacitance = charge_cycles / (RESISTOR * ln_half);
 			//capacitance = capacitance / T1_CLK_PERIOD;
 		}
