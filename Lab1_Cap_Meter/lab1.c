@@ -37,7 +37,7 @@ If present, format the capacitance as an ASCII number and prints the message C =
 #define COMPARATOR_INPUT 0x04
 
 //Discharge Period [ units: us ]
-#define CAP_DISCHARGE_PERIOD 45
+#define CAP_DISCHARGE_PERIOD 90
 // Each of each count (16Mhz) [ units: ns]
 #define T1_CLK_PERIOD 62.5
 // The R2 resistor value [ units: Ohms]
@@ -189,10 +189,10 @@ ISR (TIMER1_COMPA_vect){
 
 */
 ISR (TIMER1_CAPT_vect){
-    // read timer1 input capture register
-    charge_time = ICR1 * T1_CLK_PERIOD;
     // set the charged flag to true
     cap_charged = TRUE;
+    // read timer1 input capture register
+    charge_time = ICR1 * T1_CLK_PERIOD;
 }
 
 //
@@ -272,6 +272,9 @@ void initialize(void){
 	DDRD = ONBOARD_LED; //turn the LED to an output
 	PORTD = 0xFF; //turn off LED 
 
+	cap_discharged = FALSE;
+	begin_cap_measurement = FALSE;
+
 	init_lcd();
 	LCDclr();
 
@@ -292,6 +295,7 @@ int main(void){
 			lcd_time_count = LCD_REFRESH_RATE;
 			refresh_lcd();
 		}
+		init_cap_measurements();
 		if(cap_discharged && !begin_cap_measurement){
 			//begin cap measurements
 			//switch Timer1A mode
@@ -304,14 +308,15 @@ int main(void){
 
 		if(begin_cap_measurement && cap_charged){
 			// Revert the flags
-			cap_discharged = FALSE;
-			begin_cap_measurement = FALSE;
-			cap_charged = FALSE;
+			//cap_discharged = FALSE;
+			//begin_cap_measurement = FALSE;
+			//cap_charged = FALSE;
 			// Calculate the capacitance with the time elapsed. 
 			// V(t) = Vo(1 - exp(-t/(R2*C))) becomes
 			// C = -t / (R2 * ln(.5)) to find out when V(t) = .5 * Vo (R3 = R4)
 			// (Due to ln(.5) being negative, the negative on the t is canceled out)
 			capacitance = charge_time / (RESISTOR * ln_half);
+			capacitance = 3.3;
 		}
 	}
 }
