@@ -106,7 +106,7 @@ void init_cap_measurement_analog_timer(){
 	TCCR1B |= INPUT_CAPTURE_EDGE_SELECT + T0B_CS00;
 	//turn on timer 1 interrupt-on-capture
 	TIMSK1 = 0;
-	TIMSK1 |= INTERRUPT_ON_CAPTURE + INTERRUPT_OVERFLOW;
+	TIMSK1 |= INTERRUPT_ON_CAPTURE; //+ INTERRUPT_OVERFLOW;
 
 	//set analog comp to connect to timer capture input
 	//with positive input reference voltage
@@ -117,12 +117,16 @@ void init_cap_measurement_analog_timer(){
 	DDRB = 0;
 	DDRB &= ~(COMPARATOR_INPUT + COMPARATOR_REFERENCE);
 }
+
+/*
 //Overflow ISR
 ISR(TIMER1_OVF_vect)
 {
 	//increment overflow counter
 	overflow = TRUE;
 }
+*/
+
 //Uses Timer1.A to wait 
 //sets Timer1.A into a 1 MHz frequency 
 void init_cap_discharge_wait_timer(){
@@ -201,7 +205,7 @@ ISR (TIMER1_COMPA_vect){
 ISR (TIMER1_CAPT_vect){
 	// read timer1 input capture register
     charge_cycles = ICR1;
-	ICR1 = 0;
+	//ICR1 = 0;
     // set the charged flag to true
     cap_charged = TRUE;
 }
@@ -317,13 +321,14 @@ int main(void){
 			//initalize timer for cap measurement
 			init_cap_measurement_analog_timer();
 		}
+		/*
 		if(overflow){
 			sprintf(lcd_buffer, "OVERFLOW\0");
 			LCDGotoXY(0,0);
-  			LCDstring(lcd_buffer, strlen(lcd_buffer));	
-
-
+  			LCDstring(lcd_buffer, strlen(lcd_buffer));
+			overflow = FALSE;
 		}
+		*/
 		if(begin_cap_measurement && cap_charged){
 			// Revert the flags
 			cap_discharged = FALSE;
