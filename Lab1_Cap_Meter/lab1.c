@@ -37,7 +37,7 @@ If present, format the capacitance as an ASCII number and prints the message C =
 #define COMPARATOR_INPUT 0x04
 
 //Discharge Period [ units: us ]
-#define CAP_DISCHARGE_PERIOD 90
+#define CAP_DISCHARGE_PERIOD 45
 // Each of each count (16Mhz) [ units: ns]
 #define T1_CLK_PERIOD 62.5
 // The R2 resistor value [ units: Ohms]
@@ -90,7 +90,8 @@ volatile unsigned int lcd_time_count;
 //starts discharged.
 //volatile unsigned int validate_cap_discharge_time_count;
 
-// timer 1 capture variable for computing charging time	
+// timer 1 capture variables for computing charging time
+volatile int charge_cycles;	
 volatile double charge_time; 
 // variable to store capacitance for print out
 volatile double capacitance;
@@ -101,6 +102,8 @@ const double ln_half = 0.6931471805599453;
 //set it to full speed 
 //clear TCNT1
 void init_cap_measurement_analog_timer(){
+	//turn off interrupts
+	cli();
 	TCCR1B = 0;
 	//full speed [ 16 MHz], capture on positive edge
 	TCCR1B |= INPUT_CAPTURE_EDGE_SELECT + T0B_CS00;
@@ -116,6 +119,8 @@ void init_cap_measurement_analog_timer(){
 	//set all ports to input
 	DDRB = 0;
 	DDRB &= ~(COMPARATOR_INPUT + COMPARATOR_REFERENCE);
+	//turn on interrupts
+	sei();
 }
 
 //Uses Timer1.A to wait 
@@ -189,11 +194,11 @@ ISR (TIMER1_COMPA_vect){
 
 */
 ISR (TIMER1_CAPT_vect){
-	capacitance = 3.3;
+	capacitance = 5.3;
+	// read timer1 input capture register
+    charge_cycles = ICR1;
     // set the charged flag to true
     cap_charged = TRUE;
-    // read timer1 input capture register
-    charge_time = ICR1 * T1_CLK_PERIOD;
 }
 
 //
@@ -273,6 +278,7 @@ void initialize(void){
 	DDRD = ONBOARD_LED; //turn the LED to an output
 	PORTD = 0xFF; //turn off LED 
 
+	capacitance = 0;
 	cap_discharged = FALSE;
 	begin_cap_measurement = FALSE;
 	cap_charged = FALSE;
@@ -301,14 +307,14 @@ int main(void){
 		if(cap_discharged && !begin_cap_measurement){
 			//begin cap measurements
 			//switch Timer1A mode
-			DDRB &= ~COMPARATOR_INPUT;
+			//DDRB &= ~COMPARATOR_INPUT;
 			//mark that we can start cap measurement
 			begin_cap_measurement = TRUE;
 			//initalize timer for cap measurement
 			init_cap_measurement_analog_timer();
 		}
-
 		if(begin_cap_measurement && cap_charged){
+			//capacitance = 3.3;
 			// Revert the flags
 			//cap_discharged = FALSE;
 			//begin_cap_measurement = FALSE;
@@ -317,8 +323,8 @@ int main(void){
 			// V(t) = Vo(1 - exp(-t/(R2*C))) becomes
 			// C = -t / (R2 * ln(.5)) to find out when V(t) = .5 * Vo (R3 = R4)
 			// (Due to ln(.5) being negative, the negative on the t is canceled out)
+			//charge_time = charge_cycles * T1_CLK_PERIOD;
 			//capacitance = charge_time / (RESISTOR * ln_half);
-			//capacitance = 5.3;
 		}
 	}
 }
