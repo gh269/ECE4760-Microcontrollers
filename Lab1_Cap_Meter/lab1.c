@@ -95,6 +95,8 @@ volatile double capacitance;
 // precomputed log(.5) needed for capacitance calculation
 const double ln_half = 0.6931471805599453;
 
+volatile int overflow = FALSE;
+
 //configures Analog Comparator and Timer1
 //set it to full speed 
 //clear TCNT1
@@ -198,7 +200,8 @@ ISR (TIMER1_COMPA_vect){
 */
 ISR (TIMER1_CAPT_vect){
 	// read timer1 input capture register
-    charge_cycles = ICR1 - charge_cycles;
+    charge_cycles = ICR1;
+	ICR1 = 0;
     // set the charged flag to true
     cap_charged = TRUE;
 }
@@ -315,7 +318,7 @@ int main(void){
 			init_cap_measurement_analog_timer();
 		}
 		if(overflow){
-			sprintf(lcd_buffer, "OVERFLOW");
+			sprintf(lcd_buffer, "OVERFLOW\0");
 			LCDGotoXY(0,0);
   			LCDstring(lcd_buffer, strlen(lcd_buffer));	
 
