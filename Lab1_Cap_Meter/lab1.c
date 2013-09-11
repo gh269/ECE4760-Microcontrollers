@@ -76,19 +76,14 @@ uint16_t count;			// a number to display on the LCD
 uint8_t anipos, dir;	// move a character around  
 
 // Flags for the finite state machine transitions
-volatile unsigned int begin_cap_measurement = FALSE;
-volatile unsigned int cap_discharged = FALSE;
-volatile unsigned int cap_charged = FALSE;
+volatile unsigned int begin_cap_measurement;
+volatile unsigned int cap_discharged;
+volatile unsigned int cap_charged;
 
 //time counter for LED blinking
 volatile unsigned int led_time_count;
 //time counter for LCD refresh
 volatile unsigned int lcd_time_count;
-
-//time counter to Validate Cap Discharge
-//this counter performs the 100 - 10,000 cycle wait to ensure that the capacitor 
-//starts discharged.
-//volatile unsigned int validate_cap_discharge_time_count;
 
 // timer 1 capture variables for computing charging time
 volatile int charge_cycles;	
@@ -194,7 +189,6 @@ ISR (TIMER1_COMPA_vect){
 
 */
 ISR (TIMER1_CAPT_vect){
-	capacitance = 5.3;
 	// read timer1 input capture register
     charge_cycles = ICR1;
     // set the charged flag to true
@@ -238,23 +232,16 @@ void init_lcd(void){
 // 
 void refresh_lcd(void){
   // increment time counter and format string 
-  //if (capacitance >= .1 && capacitance <= 100) {
-  sprintf(lcd_buffer,"%-.5f",capacitance);	 
-  //}
-  //else {
-  //	sprintf(lcd_buffer,"N/A");
-  //}               
+  if (capacitance >= .1 && capacitance <= 100) {
+  	//sprintf(lcd_buffer,"%-.5f",capacitance);
+	sprintf(lcd_buffer,"%-i", charge_cycles);	 
+  }
+  else {
+  	sprintf(lcd_buffer,"N/A");
+  }               
   LCDGotoXY(0, 1);
   	// display the capacitance 
   LCDstring(lcd_buffer, strlen(lcd_buffer));	
-  /*
-  if (capacitance >= .09 && capacitance <= 101) {
-  	sprintf(lcd_buffer, "%-f", capacitance);	 
-  }
-  else {
-  	sprintf(lcd_buffer, "N/A");
-  } 
-  */         
   // now move a char left and right
   LCDGotoXY(anipos,1);	   //second line
   LCDsendChar(' '); 
@@ -279,6 +266,8 @@ void initialize(void){
 	PORTD = 0xFF; //turn off LED 
 
 	capacitance = 0;
+	charge_cycles = 0;
+	charge_time = 0;
 	cap_discharged = FALSE;
 	begin_cap_measurement = FALSE;
 	cap_charged = FALSE;
@@ -303,7 +292,9 @@ int main(void){
 			lcd_time_count = LCD_REFRESH_RATE;
 			refresh_lcd();
 		}
-		init_cap_measurements();
+		if (!cap_discharged && !begin_cap_measurement && !cap_charged) {
+			init_cap_measurements();
+		}
 		if(cap_discharged && !begin_cap_measurement){
 			//begin cap measurements
 			//switch Timer1A mode
@@ -316,15 +307,15 @@ int main(void){
 		if(begin_cap_measurement && cap_charged){
 			//capacitance = 3.3;
 			// Revert the flags
-			//cap_discharged = FALSE;
-			//begin_cap_measurement = FALSE;
-			//cap_charged = FALSE;
+			cap_discharged = FALSE;
+			begin_cap_measurement = FALSE;
+			cap_charged = FALSE;
 			// Calculate the capacitance with the time elapsed. 
 			// V(t) = Vo(1 - exp(-t/(R2*C))) becomes
 			// C = -t / (R2 * ln(.5)) to find out when V(t) = .5 * Vo (R3 = R4)
 			// (Due to ln(.5) being negative, the negative on the t is canceled out)
-			//charge_time = charge_cycles * T1_CLK_PERIOD;
-			//capacitance = charge_time / (RESISTOR * ln_half);
+			charge_time = charge_cycles * T1_CLK_PERIOD;
+			capacitance = charge_time / (RESISTOR * ln_half);
 		}
 	}
 }

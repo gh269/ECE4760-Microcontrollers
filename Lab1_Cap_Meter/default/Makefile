@@ -40,7 +40,7 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 LIBS = -lm -lprintf_flt 
 
 ## Objects that must be built in order to link
-OBJECTS = lcd_lib.o lab1_redo.o 
+OBJECTS = lcd_lib.o lab1.o 
 
 ## Objects explicitly added by the user
 LINKONLYOBJECTS = 
@@ -52,7 +52,7 @@ all: $(TARGET) Lab1.hex Lab1.eep Lab1.lss size
 lcd_lib.o: ../lcd_lib.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
-lab1_redo.o: ../lab1_redo.c
+lab1.o: ../lab1.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 ##Link
