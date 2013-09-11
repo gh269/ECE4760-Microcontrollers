@@ -1,54 +1,62 @@
-#define F_CPU 16000000UL
-
-#include <inttypes.h>
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <stdio.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include <util/delay.h> // needed for lcd_lib
-#include "lcd_lib.h"
-
-
 /*
+Tasks to complete:
+
+The LCD should be updated every 200 mSec or so. (DONE)
+An LED should blink about 1/second. (DONE)
+The capacitance should be measured as quickly as possible as described above.
+
 	Your program will have to (in time order):
 
 	Set PortB3 to an input.
 	Drive PortB2 to zero by making it an output and wait long enough to discharge the capacitor through 100 ohms. Clearly, to dischage to zero volts with 1% accuracy, R2>100*(100ohms).
 	Convert PortB2 to an input and start a timer. The capacitor will start to charge toward Vcc.
-	Detect when the voltage at PortB2 is greater than than the voltage at PortB3. That is, you will have to record
-	when the comparator changes state. You could do this by polling the ACO bit of the ACSR and stopping the clock when ACO changes state, but a much better way to do it is to use the timer1 input capture function set up to be triggered by the comparator. Using input capture gives better timing accuracy and more dynamic range.
+	Detect when the voltage at PortB2 is greater than than the voltage at PortB3. That is, you will have to record when the comparator changes state. You could do this by polling the ACO bit of the ACSR and stopping the clock when ACO changes state, but a much better way to do it is to use the timer1 input capture function set up to be triggered by the comparator. Using input capture gives better timing accuracy and more dynamic range.
 	Repeat
+
+
+The range of capacitances to be measured is 1 nf to 100 nf.
+The program should detect whether a capacitance is present or not and display an appropriate message if no capacitor is present.
+If present, format the capacitance as an ASCII number and prints the message C = xxx nf to the LCD
 */
+#define F_CPU 16000000UL                
+#include <inttypes.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <avr/pgmspace.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <util/delay.h> // needed for lcd_lib
+#include "lcd_lib.h"
 
-#define TRUE 1
-#define FALSE 0
-
-
-//-----------CAPACITANCE MEASUREMENT BITS
-
-// 0000 1000 - B3
+//---------------Capacitance Measurements---------------
+//capacitance measurement bits
+//Analog Comparator negative ( - ) input - reference Port B3
 #define COMPARATOR_REFERENCE 0x08
-//B2 0000 0100
+//Capacitor input voltage ( + ) input - port B2
 #define COMPARATOR_INPUT 0x04
 
 //Discharge Period [ units: us ]
-#define CAP_DISCHARGE_PERIOD 90
-
+#define CAP_DISCHARGE_PERIOD 45
 // Each of each count (16Mhz) [ units: ns]
 #define T1_CLK_PERIOD 62.5
-
 // The R2 resistor value [ units: Ohms]
-//brown-black-orange-gold
 #define RESISTOR 10000
 
-//--------------LED 1 HZ Blinking--------
-//1 Hz LED Blinking
-#define ONBOARD_LED 0x04
-// units: ms
+//----------timer register variables----------------------
+#define INPUT_CAPTURE_EDGE_SELECT (1 << ICES1)
+#define INTERRUPT_ON_CAPTURE (1 << ICIE1)
+//analog comp register variables
+#define ANALOG_COMPARATOR_INPUT_CAPTURE_ENABLE (1 << ACIC)
+#define ANALOG_COMPARATOR_BANDGAP_SELECT (1 << ACBG )
+
+//---------------LED Bits---------------------
+#define ONBOARD_LED 0x04 //LED is on D.2
+// period of LED blinking  [ units : ms ]
 #define LED_BLINK_PERIOD 1000
+
+#define TRUE 1
+#define FALSE 0
 
 //---------------Timer TCCR0B Bits-------------
 #define T0B_CS02 4
@@ -59,7 +67,6 @@
 #define OUTPUT_COMPARE_A1_MATCH_INTERRUPT_ENABLE (1 << OCIE1A)
 
 //---------------LCD variables------------------
-//units : ms
 #define LCD_REFRESH_RATE 200
 
 const uint8_t LCD_initialize[] PROGMEM = "LCD Initialized\0";
@@ -67,7 +74,6 @@ const uint8_t LCD_number[] PROGMEM = "Capacitance=\0";
 uint8_t lcd_buffer[17];	// LCD display buffer
 uint16_t count;			// a number to display on the LCD  
 uint8_t anipos, dir;	// move a character around  
-
 
 // Flags for the finite state machine transitions
 volatile unsigned int begin_cap_measurement = FALSE;
@@ -84,7 +90,8 @@ volatile unsigned int lcd_time_count;
 //starts discharged.
 //volatile unsigned int validate_cap_discharge_time_count;
 
-// timer 1 capture variable for computing charging time	
+// timer 1 capture variables for computing charging time
+volatile int charge_cycles;	
 volatile double charge_time; 
 // variable to store capacitance for print out
 volatile double capacitance;
@@ -116,6 +123,15 @@ ISR (TIMER0_COMPA_vect){
 
 }
 
+// LCD setup
+void init_lcd(void){
+	LCDinit();	//initialize the display
+	LCDcursorOFF();
+	LCDclr();				//clear the display
+	LCDGotoXY(0,0);
+	CopyStringtoLCD(LCD_number, 0, 0);
+}
+
 void initialize(void){
 	anipos = 8;
 	led_time_count = 0;
@@ -124,7 +140,7 @@ void initialize(void){
 	DDRB = 0;
 	DDRD = 0;
 
-	DDR = ONBOARD_LED;
+	DDRD = ONBOARD_LED;
 	PORTD = 0xFF;
 
 	cap_discharged = FALSE;
@@ -135,15 +151,6 @@ void initialize(void){
 	LCDclr();
 	sei();
 }
-// LCD setup
-void init_lcd(void){
-	LCDinit();	//initialize the display
-	LCDcursorOFF();
-	LCDclr();				//clear the display
-	LCDGotoXY(0,0);
-	CopyStringtoLCD(LCD_number, 0, 0);
-}
-
 
 // writes contents of lcd_buffer to LCD every 200 mSec
 // 
@@ -180,6 +187,8 @@ int main(void){
 	initialize();
 	CopyStringtoLCD(LCD_number, 0, 0);//start at char=0 line=0
 	
+	capacitance = 7.3;
+
 	while(1){
 		if( led_time_count == 0){
 			led_time_count = LED_BLINK_PERIOD / 2;
