@@ -69,9 +69,9 @@ If present, format the capacitance as an ASCII number and prints the message C =
 //---------------LCD variables------------------
 #define LCD_REFRESH_RATE 200
 
-const int8_t LCD_initialize[] PROGMEM = "LCD Initialized\0";
-const int8_t LCD_number[] PROGMEM = "Capacitance=\0";
-int8_t lcd_buffer[17];	// LCD display buffer
+const uint8_t LCD_initialize[] PROGMEM = "LCD Initialized\0";
+const uint8_t LCD_number[] PROGMEM = "Capacitance=\0";
+uint8_t lcd_buffer[17];	// LCD display buffer
 uint16_t count;			// a number to display on the LCD  
 uint8_t anipos, dir;	// move a character around  
 
@@ -224,7 +224,7 @@ void init_lcd(void){
 	LCDcursorOFF();
 	LCDclr();				//clear the display
 	LCDGotoXY(0,0);
-	CopyStringtoLCD(LCD_initialize, 0, 0);
+	CopyStringtoLCD(LCD_number, 0, 0);
 }
 
 
@@ -232,15 +232,23 @@ void init_lcd(void){
 // 
 void refresh_lcd(void){
   // increment time counter and format string 
-  if (capacitance >= .1 && capacitance <= 100) {
-  	sprintf(lcd_buffer,"%-d",capacitance);	 
+  //if (capacitance >= .1 && capacitance <= 100) {
+  sprintf(lcd_buffer,"%-.5f",capacitance);	 
+  //}
+  //else {
+  //	sprintf(lcd_buffer,"N/A");
+  //}               
+  LCDGotoXY(0, 1);
+  	// display the capacitance 
+  LCDstring(lcd_buffer, strlen(lcd_buffer));	
+  /*
+  if (capacitance >= .09 && capacitance <= 101) {
+  	sprintf(lcd_buffer, "%-f", capacitance);	 
   }
   else {
-  	sprintf(lcd_buffer,"N/A");
-  }                
-  LCDGotoXY(13, 0);
-  	// display the count 
-  LCDstring(lcd_buffer, strlen(lcd_buffer));	
+  	sprintf(lcd_buffer, "N/A");
+  } 
+  */         
   // now move a char left and right
   LCDGotoXY(anipos,1);	   //second line
   LCDsendChar(' '); 
@@ -284,13 +292,10 @@ int main(void){
 			lcd_time_count = LCD_REFRESH_RATE;
 			refresh_lcd();
 		}
-		/*
 		if(cap_discharged && !begin_cap_measurement){
 			//begin cap measurements
 			//switch Timer1A mode
 
-			//reset the cap_discharged flag
-			cap_discharged = FALSE;
 			//mark that we can start cap measurement
 			begin_cap_measurement = TRUE;
 			//initalize timer for cap measurement
@@ -298,19 +303,16 @@ int main(void){
 		}
 
 		if(begin_cap_measurement && cap_charged){
-			// Calculate the capacitance 
-			
-			// Rever the flags
+			// Revert the flags
+			cap_discharged = FALSE;
 			begin_cap_measurement = FALSE;
 			cap_charged = FALSE;
 			// Calculate the capacitance with the time elapsed. 
 			// V(t) = Vo(1 - exp(-t/(R2*C))) becomes
 			// C = -t / (R2 * ln(.5)) to find out when V(t) = .5 * Vo (R3 = R4)
 			// (Due to ln(.5) being negative, the negative on the t is canceled out)
-			capacitance = charge_time / (resistor * ln_half);
-
+			capacitance = charge_time / (RESISTOR * ln_half);
 		}
-		*/
 	}
 }
 

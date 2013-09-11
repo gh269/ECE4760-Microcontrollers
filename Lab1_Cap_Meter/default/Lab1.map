@@ -1,0 +1,756 @@
+Archive member included because of file (symbol)
+
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3.o)
+                              lab1.o (__divsf3)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3x.o)
+                              d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3.o) (__divsf3x)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(floatsisf.o)
+                              lab1.o (__floatunsisf)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_inf.o)
+                              d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3x.o) (__fp_inf)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_nan.o)
+                              d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3x.o) (__fp_nan)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_pscA.o)
+                              d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3x.o) (__fp_pscA)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_pscB.o)
+                              d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3x.o) (__fp_pscB)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_round.o)
+                              d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3.o) (__fp_round)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_split3.o)
+                              d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3x.o) (__fp_split3)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_zero.o)
+                              d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3x.o) (__fp_szero)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(mulsf3.o)
+                              lab1.o (__mulsf3)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(mulsf3x.o)
+                              d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(mulsf3.o) (__mulsf3x)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o)
+                              (vfprintf)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_udivmodhi4.o)
+                              lcd_lib.o (__udivmodhi4)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_divmodhi4.o)
+                              lcd_lib.o (__divmodhi4)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_exit.o)
+                              d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51/crtm1284p.o (exit)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_copy_data.o)
+                              lab1.o (__do_copy_data)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_clear_bss.o)
+                              lab1.o (__do_clear_bss)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(ftoa_engine.o)
+                              d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o) (__ftoa_engine)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(strnlen_P.o)
+                              d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o) (strnlen_P)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(strnlen.o)
+                              d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o) (strnlen)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(fputc.o)
+                              d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o) (fputc)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(sprintf.o)
+                              lab1.o (sprintf)
+d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(ultoa_invert.o)
+                              d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o) (__ultoa_invert)
+
+Allocating common symbols
+Common symbol       size              file
+
+lcd_time_count      0x2               lab1.o
+lcd_buffer          0x11              lab1.o
+anipos              0x1               lab1.o
+charge_time         0x4               lab1.o
+capacitance         0x4               lab1.o
+dir                 0x1               lab1.o
+count               0x2               lab1.o
+led_time_count      0x2               lab1.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+text             0x00000000         0x00020000         xr
+data             0x00800100         0x0000ff00         rw !x
+eeprom           0x00810000         0x00010000         rw !x
+fuse             0x00820000         0x00000400         rw !x
+lock             0x00830000         0x00000400         rw !x
+signature        0x00840000         0x00000400         rw !x
+user_signatures  0x00850000         0x00000400         rw !x
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+Address of section .data set to 0x800100
+LOAD d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51/crtm1284p.o
+LOAD lab1.o
+LOAD lcd_lib.o
+LOAD d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a
+LOAD d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a
+LOAD d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a
+LOAD d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a
+LOAD d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a
+
+.hash
+ *(.hash)
+
+.dynsym
+ *(.dynsym)
+
+.dynstr
+ *(.dynstr)
+
+.gnu.version
+ *(.gnu.version)
+
+.gnu.version_d
+ *(.gnu.version_d)
+
+.gnu.version_r
+ *(.gnu.version_r)
+
+.rel.init
+ *(.rel.init)
+
+.rela.init
+ *(.rela.init)
+
+.rel.text
+ *(.rel.text)
+ *(.rel.text.*)
+ *(.rel.gnu.linkonce.t*)
+
+.rela.text
+ *(.rela.text)
+ *(.rela.text.*)
+ *(.rela.gnu.linkonce.t*)
+
+.rel.fini
+ *(.rel.fini)
+
+.rela.fini
+ *(.rela.fini)
+
+.rel.rodata
+ *(.rel.rodata)
+ *(.rel.rodata.*)
+ *(.rel.gnu.linkonce.r*)
+
+.rela.rodata
+ *(.rela.rodata)
+ *(.rela.rodata.*)
+ *(.rela.gnu.linkonce.r*)
+
+.rel.data
+ *(.rel.data)
+ *(.rel.data.*)
+ *(.rel.gnu.linkonce.d*)
+
+.rela.data
+ *(.rela.data)
+ *(.rela.data.*)
+ *(.rela.gnu.linkonce.d*)
+
+.rel.ctors
+ *(.rel.ctors)
+
+.rela.ctors
+ *(.rela.ctors)
+
+.rel.dtors
+ *(.rel.dtors)
+
+.rela.dtors
+ *(.rela.dtors)
+
+.rel.got
+ *(.rel.got)
+
+.rela.got
+ *(.rela.got)
+
+.rel.bss
+ *(.rel.bss)
+
+.rela.bss
+ *(.rela.bss)
+
+.rel.plt
+ *(.rel.plt)
+
+.rela.plt
+ *(.rela.plt)
+
+.text           0x00000000     0x1664
+ *(.vectors)
+ .vectors       0x00000000       0x8c d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51/crtm1284p.o
+                0x00000000                __vector_default
+                0x00000000                __vectors
+ *(.vectors)
+ *(.progmem.gcc*)
+ *(.progmem*)
+ .progmem.data  0x0000008c       0x1f lab1.o
+                0x0000008c                LCD_number
+                0x0000009a                LCD_initialize
+ .progmem.data  0x000000ab       0x40 lcd_lib.o
+                0x000000ab                LcdCustomChar
+ .progmem.data  0x000000eb        0x8 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o)
+ .progmem.data  0x000000f3       0xfa d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(ftoa_engine.o)
+                0x000001ee                . = ALIGN (0x2)
+ *fill*         0x000001ed        0x1 
+                0x000001ee                __trampolines_start = .
+ *(.trampolines)
+ .trampolines   0x000001ee        0x0 linker stubs
+ *(.trampolines*)
+                0x000001ee                __trampolines_end = .
+ *(.jumptables)
+ *(.jumptables*)
+ *(.lowtext)
+ *(.lowtext*)
+                0x000001ee                __ctors_start = .
+ *(.ctors)
+                0x000001ee                __ctors_end = .
+                0x000001ee                __dtors_start = .
+ *(.dtors)
+                0x000001ee                __dtors_end = .
+ SORT(*)(.ctors)
+ SORT(*)(.dtors)
+ *(.init0)
+ .init0         0x000001ee        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51/crtm1284p.o
+                0x000001ee                __init
+ *(.init0)
+ *(.init1)
+ *(.init1)
+ *(.init2)
+ .init2         0x000001ee        0xc d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51/crtm1284p.o
+ *(.init2)
+ *(.init3)
+ *(.init3)
+ *(.init4)
+ .init4         0x000001fa       0x1a d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_copy_data.o)
+                0x000001fa                __do_copy_data
+ .init4         0x00000214       0x10 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_clear_bss.o)
+                0x00000214                __do_clear_bss
+ *(.init4)
+ *(.init5)
+ *(.init5)
+ *(.init6)
+ *(.init6)
+ *(.init7)
+ *(.init7)
+ *(.init8)
+ *(.init8)
+ *(.init9)
+ .init9         0x00000224        0x8 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51/crtm1284p.o
+ *(.init9)
+ *(.text)
+ .text          0x0000022c        0x4 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51/crtm1284p.o
+                0x0000022c                __vector_22
+                0x0000022c                __vector_28
+                0x0000022c                __vector_1
+                0x0000022c                __vector_32
+                0x0000022c                __vector_34
+                0x0000022c                __vector_24
+                0x0000022c                __bad_interrupt
+                0x0000022c                __vector_6
+                0x0000022c                __vector_31
+                0x0000022c                __vector_3
+                0x0000022c                __vector_23
+                0x0000022c                __vector_30
+                0x0000022c                __vector_25
+                0x0000022c                __vector_11
+                0x0000022c                __vector_17
+                0x0000022c                __vector_19
+                0x0000022c                __vector_7
+                0x0000022c                __vector_27
+                0x0000022c                __vector_5
+                0x0000022c                __vector_33
+                0x0000022c                __vector_4
+                0x0000022c                __vector_9
+                0x0000022c                __vector_2
+                0x0000022c                __vector_21
+                0x0000022c                __vector_15
+                0x0000022c                __vector_29
+                0x0000022c                __vector_8
+                0x0000022c                __vector_26
+                0x0000022c                __vector_14
+                0x0000022c                __vector_10
+                0x0000022c                __vector_18
+                0x0000022c                __vector_20
+ .text          0x00000230      0x276 lab1.o
+                0x00000230                init_cap_measurement_analog_timer
+                0x00000260                init_cap_discharge_wait_timer
+                0x00000284                init_cap_measurements
+                0x00000290                __vector_16
+                0x000002e8                __vector_13
+                0x00000310                __vector_12
+                0x00000398                toggle_led
+                0x000003a2                init_timer0A
+                0x000003ba                init_lcd
+                0x000003da                refresh_lcd
+                0x0000047c                initialize
+ .text          0x000004a6      0x340 lcd_lib.o
+                0x000004a6                LCDsendChar
+                0x000004f8                LCDsendCommand
+                0x00000542                LCDclr
+                0x00000548                LCDhome
+                0x0000054e                LCDstring
+                0x0000058c                LCDGotoXY
+                0x000005a8                CopyStringtoLCD
+                0x000005d6                LCDdefinechar
+                0x00000622                LCDinit
+                0x000006ce                LCDshiftLeft
+                0x000006ea                LCDshiftRight
+                0x00000706                LCDcursorOn
+                0x0000070c                LCDcursorOnBlink
+                0x00000712                LCDcursorOFF
+                0x00000718                LCDblank
+                0x0000071e                LCDvisible
+                0x00000724                LCDcursorLeft
+                0x00000740                LCDcursorRight
+                0x0000075c                LCDprogressBar
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3x.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(floatsisf.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_inf.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_nan.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_pscA.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_pscB.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_round.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_split3.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_zero.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(mulsf3.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(mulsf3x.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_udivmodhi4.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_divmodhi4.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_exit.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_copy_data.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_clear_bss.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(ftoa_engine.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(strnlen_P.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(strnlen.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(fputc.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(sprintf.o)
+ .text          0x000007e6        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(ultoa_invert.o)
+                0x000007e6                . = ALIGN (0x2)
+ *(.text.*)
+ .text.startup  0x000007e6       0xd4 lab1.o
+                0x000007e6                main
+ .text.avr-libc.fplib
+                0x000008ba        0x4 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3.o)
+                0x000008ba                __divsf3
+ .text.avr-libc.fplib
+                0x000008be       0xcc d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3x.o)
+                0x000008d4                __divsf3x
+                0x000008d8                __divsf3_pse
+ .text.avr-libc.fplib
+                0x0000098a       0x7a d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(floatsisf.o)
+                0x0000098a                __floatunsisf
+                0x0000098e                __floatsisf
+ .text.avr-libc.fplib
+                0x00000a04        0xc d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_inf.o)
+                0x00000a04                __fp_inf
+ .text.avr-libc.fplib
+                0x00000a10        0x6 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_nan.o)
+                0x00000a10                __fp_nan
+ .text.avr-libc.fplib
+                0x00000a16        0xe d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_pscA.o)
+                0x00000a16                __fp_pscA
+ .text.avr-libc.fplib
+                0x00000a24        0xe d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_pscB.o)
+                0x00000a24                __fp_pscB
+ .text.avr-libc.fplib
+                0x00000a32       0x22 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_round.o)
+                0x00000a32                __fp_round
+ .text.avr-libc.fplib
+                0x00000a54       0x44 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_split3.o)
+                0x00000a54                __fp_split3
+                0x00000a64                __fp_splitA
+ .text.avr-libc.fplib
+                0x00000a98        0xe d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_zero.o)
+                0x00000a98                __fp_zero
+                0x00000a9a                __fp_szero
+ .text.avr-libc.fplib
+                0x00000aa6        0x4 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(mulsf3.o)
+                0x00000aa6                __mulsf3
+ .text.avr-libc.fplib
+                0x00000aaa       0xc2 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(mulsf3x.o)
+                0x00000abe                __mulsf3x
+                0x00000ac2                __mulsf3_pse
+ .text.avr-libc
+                0x00000b6c      0x756 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o)
+                0x00000b6c                vfprintf
+ .text.libgcc.mul
+                0x000012c2        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_udivmodhi4.o)
+ .text.libgcc.div
+                0x000012c2       0x28 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_udivmodhi4.o)
+                0x000012c2                __udivmodhi4
+ .text.libgcc   0x000012ea        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_udivmodhi4.o)
+ .text.libgcc.prologue
+                0x000012ea        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_udivmodhi4.o)
+ .text.libgcc.builtins
+                0x000012ea        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_udivmodhi4.o)
+ .text.libgcc.fmul
+                0x000012ea        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_udivmodhi4.o)
+ .text.libgcc.mul
+                0x000012ea        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_divmodhi4.o)
+ .text.libgcc.div
+                0x000012ea       0x28 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_divmodhi4.o)
+                0x000012ea                _div
+                0x000012ea                __divmodhi4
+ .text.libgcc   0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_divmodhi4.o)
+ .text.libgcc.prologue
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_divmodhi4.o)
+ .text.libgcc.builtins
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_divmodhi4.o)
+ .text.libgcc.fmul
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_divmodhi4.o)
+ .text.libgcc.mul
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_exit.o)
+ .text.libgcc.div
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_exit.o)
+ .text.libgcc   0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_exit.o)
+ .text.libgcc.prologue
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_exit.o)
+ .text.libgcc.builtins
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_exit.o)
+ .text.libgcc.fmul
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_exit.o)
+ .text.libgcc.mul
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_copy_data.o)
+ .text.libgcc.div
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_copy_data.o)
+ .text.libgcc   0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_copy_data.o)
+ .text.libgcc.prologue
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_copy_data.o)
+ .text.libgcc.builtins
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_copy_data.o)
+ .text.libgcc.fmul
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_copy_data.o)
+ .text.libgcc.mul
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_clear_bss.o)
+ .text.libgcc.div
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_clear_bss.o)
+ .text.libgcc   0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_clear_bss.o)
+ .text.libgcc.prologue
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_clear_bss.o)
+ .text.libgcc.builtins
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_clear_bss.o)
+ .text.libgcc.fmul
+                0x00001312        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_clear_bss.o)
+ .text.avr-libc
+                0x00001312      0x1b0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(ftoa_engine.o)
+                0x00001312                __ftoa_engine
+ .text.avr-libc
+                0x000014c2       0x16 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(strnlen_P.o)
+                0x000014c2                strnlen_P
+ .text.avr-libc
+                0x000014d8       0x16 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(strnlen.o)
+                0x000014d8                strnlen
+ .text.avr-libc
+                0x000014ee       0x58 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(fputc.o)
+                0x000014ee                fputc
+ .text.avr-libc
+                0x00001546       0x5e d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(sprintf.o)
+                0x00001546                sprintf
+ .text.avr-libc
+                0x000015a4       0xbc d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(ultoa_invert.o)
+                0x000015a4                __ultoa_invert
+                0x00001660                . = ALIGN (0x2)
+ *(.fini9)
+ .fini9         0x00001660        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_exit.o)
+                0x00001660                _exit
+                0x00001660                exit
+ *(.fini9)
+ *(.fini8)
+ *(.fini8)
+ *(.fini7)
+ *(.fini7)
+ *(.fini6)
+ *(.fini6)
+ *(.fini5)
+ *(.fini5)
+ *(.fini4)
+ *(.fini4)
+ *(.fini3)
+ *(.fini3)
+ *(.fini2)
+ *(.fini2)
+ *(.fini1)
+ *(.fini1)
+ *(.fini0)
+ .fini0         0x00001660        0x4 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_exit.o)
+ *(.fini0)
+                0x00001664                _etext = .
+
+.data           0x00800100        0xa load address 0x00001664
+                0x00800100                PROVIDE (__data_start, .)
+ *(.data)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51/crtm1284p.o
+ .data          0x00800100        0x0 lab1.o
+ .data          0x00800100        0x0 lcd_lib.o
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3x.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(floatsisf.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_inf.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_nan.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_pscA.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_pscB.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_round.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_split3.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_zero.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(mulsf3.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(mulsf3x.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_udivmodhi4.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_divmodhi4.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_exit.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_copy_data.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_clear_bss.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(ftoa_engine.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(strnlen_P.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(strnlen.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(fputc.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(sprintf.o)
+ .data          0x00800100        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(ultoa_invert.o)
+ *(.data*)
+ *(.rodata)
+ .rodata        0x00800100        0x4 lab1.o
+                0x00800100                ln_half
+ *(.rodata*)
+ .rodata.str1.1
+                0x00800104        0x6 lab1.o
+ *(.gnu.linkonce.d*)
+                0x0080010a                . = ALIGN (0x2)
+                0x0080010a                _edata = .
+                0x0080010a                PROVIDE (__data_end, .)
+
+.bss            0x0080010a       0x27
+                0x0080010a                PROVIDE (__bss_start, .)
+ *(.bss)
+ .bss           0x0080010a        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51/crtm1284p.o
+ .bss           0x0080010a        0x6 lab1.o
+                0x0080010a                cap_charged
+                0x0080010c                cap_discharged
+                0x0080010e                begin_cap_measurement
+ .bss           0x00800110        0x0 lcd_lib.o
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3x.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(floatsisf.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_inf.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_nan.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_pscA.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_pscB.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_round.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_split3.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_zero.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(mulsf3.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(mulsf3x.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_udivmodhi4.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_divmodhi4.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_exit.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_copy_data.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_clear_bss.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(ftoa_engine.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(strnlen_P.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(strnlen.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(fputc.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(sprintf.o)
+ .bss           0x00800110        0x0 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(ultoa_invert.o)
+ *(.bss*)
+ *(COMMON)
+ COMMON         0x00800110       0x21 lab1.o
+                0x00800110                lcd_time_count
+                0x00800112                lcd_buffer
+                0x00800123                anipos
+                0x00800124                charge_time
+                0x00800128                capacitance
+                0x0080012c                dir
+                0x0080012d                count
+                0x0080012f                led_time_count
+                0x00800131                PROVIDE (__bss_end, .)
+                0x00001664                __data_load_start = LOADADDR (.data)
+                0x0000166e                __data_load_end = (__data_load_start + SIZEOF (.data))
+
+.noinit         0x00800131        0x0
+                0x00800131                PROVIDE (__noinit_start, .)
+ *(.noinit*)
+                0x00800131                PROVIDE (__noinit_end, .)
+                0x00800131                _end = .
+                0x00800131                PROVIDE (__heap_start, .)
+
+.eeprom         0x00810000        0x0
+ *(.eeprom*)
+                0x00810000                __eeprom_end = .
+
+.fuse
+ *(.fuse)
+ *(.lfuse)
+ *(.hfuse)
+ *(.efuse)
+
+.lock
+ *(.lock*)
+
+.signature
+ *(.signature*)
+
+.user_signatures
+ *(.user_signatures*)
+
+.stab           0x00000000     0x297c
+ *(.stab)
+ .stab          0x00000000      0x6cc d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51/crtm1284p.o
+ .stab          0x000006cc       0x48 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3.o)
+                                 0x54 (size before relaxing)
+ .stab          0x00000714      0x510 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(divsf3x.o)
+                                0x51c (size before relaxing)
+ .stab          0x00000c24      0x318 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(floatsisf.o)
+                                0x324 (size before relaxing)
+ .stab          0x00000f3c       0x78 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_inf.o)
+                                 0x84 (size before relaxing)
+ .stab          0x00000fb4       0x54 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_nan.o)
+                                 0x60 (size before relaxing)
+ .stab          0x00001008       0x84 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_pscA.o)
+                                 0x90 (size before relaxing)
+ .stab          0x0000108c       0x84 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_pscB.o)
+                                 0x90 (size before relaxing)
+ .stab          0x00001110       0xfc d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_round.o)
+                                0x108 (size before relaxing)
+ .stab          0x0000120c      0x1d4 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_split3.o)
+                                0x1e0 (size before relaxing)
+ .stab          0x000013e0       0x90 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(fp_zero.o)
+                                 0x9c (size before relaxing)
+ .stab          0x00001470       0x48 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(mulsf3.o)
+                                 0x54 (size before relaxing)
+ .stab          0x000014b8      0x4d4 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a(mulsf3x.o)
+                                0x4e0 (size before relaxing)
+ .stab          0x0000198c      0xa38 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(ftoa_engine.o)
+                                0xa44 (size before relaxing)
+ .stab          0x000023c4       0x9c d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(strnlen_P.o)
+                                 0xa8 (size before relaxing)
+ .stab          0x00002460       0x9c d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(strnlen.o)
+                                 0xa8 (size before relaxing)
+ .stab          0x000024fc      0x480 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(ultoa_invert.o)
+                                0x48c (size before relaxing)
+
+.stabstr        0x00000000      0x7e8
+ *(.stabstr)
+ .stabstr       0x00000000      0x7e8 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51/crtm1284p.o
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment        0x00000000       0x2f
+ *(.comment)
+ .comment       0x00000000       0x2f lab1.o
+                                 0x30 (size before relaxing)
+ .comment       0x00000000       0x30 lcd_lib.o
+ .comment       0x00000000       0x30 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o)
+ .comment       0x00000000       0x30 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(fputc.o)
+ .comment       0x00000000       0x30 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(sprintf.o)
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges  0x00000000       0xa8
+ *(.debug_aranges)
+ .debug_aranges
+                0x00000000       0x28 lab1.o
+ .debug_aranges
+                0x00000028       0x20 lcd_lib.o
+ .debug_aranges
+                0x00000048       0x20 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o)
+ .debug_aranges
+                0x00000068       0x20 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(fputc.o)
+ .debug_aranges
+                0x00000088       0x20 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(sprintf.o)
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info     0x00000000     0x1a95
+ *(.debug_info)
+ .debug_info    0x00000000      0x4f0 lab1.o
+ .debug_info    0x000004f0      0xa5c lcd_lib.o
+ .debug_info    0x00000f4c      0x7d1 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o)
+ .debug_info    0x0000171d      0x174 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(fputc.o)
+ .debug_info    0x00001891      0x204 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(sprintf.o)
+ *(.gnu.linkonce.wi.*)
+
+.debug_abbrev   0x00000000      0x815
+ *(.debug_abbrev)
+ .debug_abbrev  0x00000000      0x1e2 lab1.o
+ .debug_abbrev  0x000001e2      0x244 lcd_lib.o
+ .debug_abbrev  0x00000426      0x1d4 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o)
+ .debug_abbrev  0x000005fa       0xf1 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(fputc.o)
+ .debug_abbrev  0x000006eb      0x12a d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(sprintf.o)
+
+.debug_line     0x00000000      0xb8e
+ *(.debug_line)
+ .debug_line    0x00000000      0x151 lab1.o
+ .debug_line    0x00000151      0x2a4 lcd_lib.o
+ .debug_line    0x000003f5      0x501 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o)
+ .debug_line    0x000008f6      0x104 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(fputc.o)
+ .debug_line    0x000009fa      0x194 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(sprintf.o)
+
+.debug_frame    0x00000000      0x46c
+ *(.debug_frame)
+ .debug_frame   0x00000000      0x16c lab1.o
+ .debug_frame   0x0000016c      0x204 lcd_lib.o
+ .debug_frame   0x00000370       0x84 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o)
+ .debug_frame   0x000003f4       0x38 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(fputc.o)
+ .debug_frame   0x0000042c       0x40 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(sprintf.o)
+
+.debug_str      0x00000000      0x5a5
+ *(.debug_str)
+ .debug_str     0x00000000      0x24f lab1.o
+                                0x299 (size before relaxing)
+ .debug_str     0x0000024f      0x15b lcd_lib.o
+                                0x293 (size before relaxing)
+ .debug_str     0x000003aa      0x135 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o)
+                                0x1e8 (size before relaxing)
+ .debug_str     0x000004df       0x62 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(fputc.o)
+                                0x10d (size before relaxing)
+ .debug_str     0x00000541       0x64 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(sprintf.o)
+                                0x13c (size before relaxing)
+
+.debug_loc      0x00000000     0x1496
+ *(.debug_loc)
+ .debug_loc     0x00000000      0x201 lab1.o
+ .debug_loc     0x00000201      0x7ec lcd_lib.o
+ .debug_loc     0x000009ed      0x955 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o)
+ .debug_loc     0x00001342       0xf3 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(fputc.o)
+ .debug_loc     0x00001435       0x61 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(sprintf.o)
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_pubtypes
+ *(.debug_pubtypes)
+
+.debug_ranges   0x00000000       0x60
+ *(.debug_ranges)
+ .debug_ranges  0x00000000       0x18 lab1.o
+ .debug_ranges  0x00000018       0x28 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libprintf_flt.a(vfprintf_flt.o)
+ .debug_ranges  0x00000040       0x10 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(fputc.o)
+ .debug_ranges  0x00000050       0x10 d:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libc.a(sprintf.o)
+
+.debug_macro
+ *(.debug_macro)
+OUTPUT(Lab1.elf elf32-avr)
+LOAD linker stubs
