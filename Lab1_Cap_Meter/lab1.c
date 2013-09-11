@@ -103,6 +103,7 @@ const double constant = .009016844;
 //set it to full speed 
 //clear TCNT1
 void init_cap_measurement_analog_timer(){
+	TCCR1A = 0;
 	TCCR1B = 0;
 	//full speed [ 16 MHz], capture on positive edge
 	TCCR1B |= INPUT_CAPTURE_EDGE_SELECT + T0B_CS00;
@@ -236,13 +237,13 @@ void init_lcd(void){
 // 
 void refresh_lcd(void){
   // increment time counter and format string 
-  //if (charge_cycles > 100) {
-    //sprintf(lcd_buffer,"%-.4f",capacitance);
-    sprintf(lcd_buffer,"%-u", charge_cycles);	 
-  //}
-  //else {
-  //	sprintf(lcd_buffer,"N/A     ");
-  //}               
+  if ((charge_cycles - 125) > 100) {
+   	sprintf(lcd_buffer,"%-.4f",capacitance);
+    //sprintf(lcd_buffer,"%-u", charge_cycles);	 
+  }
+  else {
+  	sprintf(lcd_buffer,"N/A     ");
+  }               
   LCDGotoXY(0, 1);
   	// display the capacitance 
   LCDstring(lcd_buffer, strlen(lcd_buffer));	
@@ -306,13 +307,13 @@ int main(void){
 			sei();
 		}
 		if(cap_discharged && !begin_cap_measurement){
-			cli();
+			//cli();
 			//begin cap measurements
 			//mark that we can start cap measurement
 			begin_cap_measurement = TRUE;
 			//initalize timer for cap measurement
 			init_cap_measurement_analog_timer();
-			sei();
+			//sei();
 		}
 		if(begin_cap_measurement && cap_charged){
 			cli();
