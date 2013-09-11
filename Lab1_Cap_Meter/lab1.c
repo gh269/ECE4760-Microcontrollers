@@ -49,7 +49,7 @@ If present, format the capacitance as an ASCII number and prints the message C =
 //analog comp register variables
 #define ANALOG_COMPARATOR_INPUT_CAPTURE_ENABLE (1 << ACIC)
 #define ANALOG_COMPARATOR_BANDGAP_SELECT (1 << ACBG )
-
+#define INTERRUPT_OVERFLOW (1<<TOIE1)
 //---------------LED Bits---------------------
 #define ONBOARD_LED 0x04 //LED is on D.2
 // period of LED blinking  [ units : ms ]
@@ -102,7 +102,7 @@ void init_cap_measurement_analog_timer(){
 	TCCR1B |= INPUT_CAPTURE_EDGE_SELECT + T0B_CS00;
 	//turn on timer 1 interrupt-on-capture
 	TIMSK1 = 0;
-	TIMSK1 |= INTERRUPT_ON_CAPTURE;
+	TIMSK1 |= INTERRUPT_ON_CAPTURE + INTERRUPT_OVERFLOW;
 
 	//set analog comp to connect to timer capture input
 	//with positive input reference voltage
@@ -168,7 +168,10 @@ ISR (TIMER0_COMPA_vect){
 ISR (TIMER1_COMPA_vect){
 	cap_discharged = TRUE;
 }
-
+ISR(TIMER1_OVF_vect){
+	//increment overflow counter
+	charge_cycles = 99;
+}
 // timer 1 capture ISR to measure charging time. 
 // and the counter should have been initialized at zero. 
 // when this Interrupt triggers, the voltage of the cap 
