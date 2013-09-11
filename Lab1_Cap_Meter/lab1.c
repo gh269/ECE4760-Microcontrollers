@@ -139,9 +139,9 @@ void init_cap_discharge_wait_timer(){
 */
 void init_cap_measurements(void){
 	//Reset all measurements
-	capacitance = 0;
-	charge_cycles = 0;
-	charge_time = 0;
+	//capacitance = 0;
+	//charge_cycles = 0;
+	//charge_time = 0;
 
 	DDRB = 0;
 	//set B3 to an input
@@ -194,8 +194,7 @@ ISR(TIMER1_OVF_vect){
 */
 ISR (TIMER1_CAPT_vect){
 	// read timer1 input capture register
-    charge_cycles = ICR1;
-	ICR1 = 0;
+    charge_cycles = ICR1 - charge_cycles;
     // set the charged flag to true
     cap_charged = TRUE;
 }
@@ -239,8 +238,8 @@ void refresh_lcd(void){
   // increment time counter and format string 
   //if (capacitance >= .1 && capacitance <= 100) {
   //if (charge_cycles > 200) {
-  sprintf(lcd_buffer,"%-.5f",capacitance);
-	//sprintf(lcd_buffer,"%-i", charge_cycles);	 
+  //sprintf(lcd_buffer,"%-.5f",capacitance);
+  sprintf(lcd_buffer,"%-i", charge_cycles);	 
   //}
   //else {
   //	sprintf(lcd_buffer,"N/A");
@@ -324,8 +323,6 @@ int main(void){
 			
 			//capacitance = charge_cycles / (RESISTOR * ln_half);
 			//capacitance = capacitance / T1_CLK_PERIOD;
-
-			capacitance = charge_cycles;
 		}
 	}
 }
