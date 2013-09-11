@@ -189,6 +189,7 @@ ISR (TIMER1_COMPA_vect){
 
 */
 ISR (TIMER1_CAPT_vect){
+	capacitance = 3.3;
     // set the charged flag to true
     cap_charged = TRUE;
     // read timer1 input capture register
@@ -274,6 +275,7 @@ void initialize(void){
 
 	cap_discharged = FALSE;
 	begin_cap_measurement = FALSE;
+	cap_charged = FALSE;
 
 	init_lcd();
 	LCDclr();
@@ -299,7 +301,7 @@ int main(void){
 		if(cap_discharged && !begin_cap_measurement){
 			//begin cap measurements
 			//switch Timer1A mode
-
+			DDRB &= ~COMPARATOR_INPUT;
 			//mark that we can start cap measurement
 			begin_cap_measurement = TRUE;
 			//initalize timer for cap measurement
@@ -315,8 +317,8 @@ int main(void){
 			// V(t) = Vo(1 - exp(-t/(R2*C))) becomes
 			// C = -t / (R2 * ln(.5)) to find out when V(t) = .5 * Vo (R3 = R4)
 			// (Due to ln(.5) being negative, the negative on the t is canceled out)
-			capacitance = charge_time / (RESISTOR * ln_half);
-			capacitance = 3.3;
+			//capacitance = charge_time / (RESISTOR * ln_half);
+			//capacitance = 5.3;
 		}
 	}
 }
