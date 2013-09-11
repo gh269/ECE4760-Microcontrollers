@@ -97,8 +97,6 @@ const double ln_half = 0.6931471805599453;
 //set it to full speed 
 //clear TCNT1
 void init_cap_measurement_analog_timer(){
-	//turn off interrupts
-	cli();
 	TCCR1B = 0;
 	//full speed [ 16 MHz], capture on positive edge
 	TCCR1B |= INPUT_CAPTURE_EDGE_SELECT + T0B_CS00;
@@ -114,8 +112,6 @@ void init_cap_measurement_analog_timer(){
 	//set all ports to input
 	DDRB = 0;
 	DDRB &= ~(COMPARATOR_INPUT + COMPARATOR_REFERENCE);
-	//turn on interrupts
-	sei();
 }
 
 //Uses Timer1.A to wait 
@@ -142,6 +138,11 @@ void init_cap_discharge_wait_timer(){
 	Repeat
 */
 void init_cap_measurements(void){
+	//Reset all measurements
+	capacitance = 0;
+	charge_cycles = 0;
+	charge_time = 0;
+
 	DDRB = 0;
 	//set B3 to an input
 	//make the reference an input to the Analog Comparator
@@ -191,6 +192,7 @@ ISR (TIMER1_COMPA_vect){
 ISR (TIMER1_CAPT_vect){
 	// read timer1 input capture register
     charge_cycles = ICR1;
+	ICR1 = 0;
     // set the charged flag to true
     cap_charged = TRUE;
 }
@@ -232,13 +234,14 @@ void init_lcd(void){
 // 
 void refresh_lcd(void){
   // increment time counter and format string 
-  if (capacitance >= .1 && capacitance <= 100) {
-  	//sprintf(lcd_buffer,"%-.5f",capacitance);
-	sprintf(lcd_buffer,"%-i", charge_cycles);	 
-  }
-  else {
-  	sprintf(lcd_buffer,"N/A");
-  }               
+  //if (capacitance >= .1 && capacitance <= 100) {
+  //if (charge_cycles > 200) {
+  sprintf(lcd_buffer,"%-.5f",capacitance);
+	//sprintf(lcd_buffer,"%-i", charge_cycles);	 
+  //}
+  //else {
+  //	sprintf(lcd_buffer,"N/A");
+  //}               
   LCDGotoXY(0, 1);
   	// display the capacitance 
   LCDstring(lcd_buffer, strlen(lcd_buffer));	
@@ -305,7 +308,6 @@ int main(void){
 			init_cap_measurement_analog_timer();
 		}
 		if(begin_cap_measurement && cap_charged){
-			//capacitance = 3.3;
 			// Revert the flags
 			cap_discharged = FALSE;
 			begin_cap_measurement = FALSE;
@@ -314,8 +316,13 @@ int main(void){
 			// V(t) = Vo(1 - exp(-t/(R2*C))) becomes
 			// C = -t / (R2 * ln(.5)) to find out when V(t) = .5 * Vo (R3 = R4)
 			// (Due to ln(.5) being negative, the negative on the t is canceled out)
-			charge_time = charge_cycles * T1_CLK_PERIOD;
-			capacitance = charge_time / (RESISTOR * ln_half);
+			//charge_time = charge_cycles * T1_CLK_PERIOD;
+			//capacitance = charge_time / (RESISTOR * ln_half);
+			
+			//capacitance = charge_cycles / (RESISTOR * ln_half);
+			//capacitance = capacitance / T1_CLK_PERIOD;
+
+			capacitance = charge_cycles;
 		}
 	}
 }
