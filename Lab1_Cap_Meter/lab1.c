@@ -45,8 +45,6 @@ If present, format the capacitance as an ASCII number and prints the message C =
 #define CAP_DISCHARGE_PERIOD 45
 // Each of each count (16Mhz) [ units: ns]
 #define T1_CLK_PERIOD 62.5
-// The R2 resistor value [ units: Ohms]
-#define RESISTOR 10000
 
 //----------timer register variables----------------------
 #define INPUT_CAPTURE_EDGE_SELECT (1 << ICES1)
@@ -78,8 +76,7 @@ If present, format the capacitance as an ASCII number and prints the message C =
 
 const uint8_t LCD_initialize[] PROGMEM = "LCD Initialized\0";
 const uint8_t LCD_number[] PROGMEM = "Capacitance=\0";
-uint8_t lcd_buffer[17];	// LCD display buffer
-//uint16_t count;			// a number to display on the LCD  
+uint8_t lcd_buffer[17];	// LCD display buffer 
 uint8_t anipos, dir;	// move a character around  
 
 // Flags for the finite state machine transitions
@@ -97,7 +94,7 @@ volatile unsigned int charge_cycles;
 // variable to store capacitance for print out
 volatile double capacitance;
 // precomputed log(.5) needed for capacitance calculation
-const double constant = .009016844;
+const double constant = .0090895605;
 
 //configures Analog Comparator and Timer1
 //set it to full speed 
@@ -237,9 +234,9 @@ void init_lcd(void){
 // 
 void refresh_lcd(void){
   // increment time counter and format string 
-  if ((charge_cycles - 125) > 100) {
-   	sprintf(lcd_buffer,"%-.4f",capacitance);
-    //sprintf(lcd_buffer,"%-u", charge_cycles);	 
+  if ((charge_cycles - 126) > 85) {
+   	//sprintf(lcd_buffer,"%-.4f",capacitance);
+    sprintf(lcd_buffer,"%-u", charge_cycles);	 
   }
   else {
   	sprintf(lcd_buffer,"N/A     ");
@@ -249,14 +246,19 @@ void refresh_lcd(void){
   LCDstring(lcd_buffer, strlen(lcd_buffer));	
   // now move a char left and right
   
+  
+  
   LCDGotoXY(anipos,1);	   //second line
+  LCDsendChar(' ');
+  LCDGotoXY(anipos+1,1);
   LCDsendChar(' '); 
-      	
-  if (anipos>=15) dir=-1;   // check boundaries
+  if (anipos>=14) dir=-1;   // check boundaries
   if (anipos<=8 ) dir=1;
   anipos=anipos+dir;
   LCDGotoXY(anipos,1);	   //second line
-  LCDsendChar('o');
+  LCDsendChar('n');
+  LCDGotoXY(anipos+1,1);
+  LCDsendChar('F');  
 }
 
 void initialize(void){
@@ -331,7 +333,7 @@ int main(void){
 			// C = -t / (R2 * ln(.5)) to find out when V(t) = .5 * Vo (R3 = R4)
 			// (Due to ln(.5) being negative, the negative on the t is canceled out)
 			// constant = time_per_cycle / (R2 * ln(.5)
-			capacitance = (charge_cycles - 125) * constant;
+			capacitance = (charge_cycles - 126) * constant;
 			//sei();
 		}
 	}
