@@ -46,6 +46,8 @@ If present, format the capacitance as an ASCII number and prints the message C =
 //----------timer register variables----------------------
 #define INPUT_CAPTURE_EDGE_SELECT (1 << ICES1)
 #define INTERRUPT_ON_CAPTURE (1 << ICIE1)
+#define INTERRUPT_ON_OVERFLOW (1 << TOIE1)
+
 //analog comp register variables
 #define ANALOG_COMPARATOR_INPUT_CAPTURE_ENABLE (1 << ACIC)
 #define ANALOG_COMPARATOR_BANDGAP_SELECT (1 << ACBG )
@@ -113,7 +115,12 @@ void init_cap_measurement_analog_timer(){
 	DDRB = 0;
 	DDRB &= ~(COMPARATOR_INPUT + COMPARATOR_REFERENCE);
 }
-
+//Overflow ISR
+ISR(TIMER1_OVF_vect)
+{
+	//increment overflow counter
+	overflow = TRUE;
+}
 //Uses Timer1.A to wait 
 //sets Timer1.A into a 1 MHz frequency 
 void init_cap_discharge_wait_timer(){
@@ -168,10 +175,7 @@ ISR (TIMER0_COMPA_vect){
 ISR (TIMER1_COMPA_vect){
 	cap_discharged = TRUE;
 }
-ISR(TIMER1_OVF_vect){
-	//increment overflow counter
-	charge_cycles = 99;
-}
+
 // timer 1 capture ISR to measure charging time. 
 // and the counter should have been initialized at zero. 
 // when this Interrupt triggers, the voltage of the cap 
@@ -298,6 +302,7 @@ int main(void){
 			refresh_lcd();
 		}
 		if (!cap_discharged && !begin_cap_measurement && !cap_charged) {
+			charge_cycles = 0;
 			init_cap_measurements();
 		}
 		if(cap_discharged && !begin_cap_measurement){
@@ -308,6 +313,13 @@ int main(void){
 			begin_cap_measurement = TRUE;
 			//initalize timer for cap measurement
 			init_cap_measurement_analog_timer();
+		}
+		if(overflow){
+			sprintf(lcd_buffer, "OVERFLOW");
+			LCDGotoXY(0,0);
+  			LCDstring(lcd_buffer, strlen(lcd_buffer));	
+
+
 		}
 		if(begin_cap_measurement && cap_charged){
 			// Revert the flags
