@@ -31,7 +31,7 @@ If present, format the capacitance as an ASCII number and prints the message C =
 
 #include "uart.h"
 
-FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
+//FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
 
 
 //---------------Capacitance Measurements---------------
@@ -79,7 +79,7 @@ FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
 const uint8_t LCD_initialize[] PROGMEM = "LCD Initialized\0";
 const uint8_t LCD_number[] PROGMEM = "Capacitance=\0";
 uint8_t lcd_buffer[17];	// LCD display buffer
-uint16_t count;			// a number to display on the LCD  
+//uint16_t count;			// a number to display on the LCD  
 uint8_t anipos, dir;	// move a character around  
 
 // Flags for the finite state machine transitions
@@ -93,7 +93,7 @@ volatile unsigned int led_time_count;
 volatile unsigned int lcd_time_count;
 
 // timer 1 capture variables for computing charging time
-volatile double charge_cycles;
+volatile unsigned int charge_cycles;
 // variable to store capacitance for print out
 volatile double capacitance;
 // precomputed log(.5) needed for capacitance calculation
@@ -192,7 +192,8 @@ ISR (TIMER1_COMPA_vect){
 */
 ISR (TIMER1_CAPT_vect){
 	// read timer1 input capture register
-    charge_cycles = ICR1;
+    //ICR1 = 65000;
+	charge_cycles = ICR1;
 	ICR1 = 0;
     // set the charged flag to true
     cap_charged = TRUE;
@@ -235,17 +236,18 @@ void init_lcd(void){
 // 
 void refresh_lcd(void){
   // increment time counter and format string 
-  if (charge_cycles - 125 > 100) {
-  //sprintf(lcd_buffer,"%-.4f",capacitance);
-  sprintf(lcd_buffer,"%-.4f", charge_cycles);	 
-  }
-  else {
-  	sprintf(lcd_buffer,"N/A     ");
-  }               
+  //if (charge_cycles > 100) {
+    //sprintf(lcd_buffer,"%-.4f",capacitance);
+    sprintf(lcd_buffer,"%-u", charge_cycles);	 
+  //}
+  //else {
+  //	sprintf(lcd_buffer,"N/A     ");
+  //}               
   LCDGotoXY(0, 1);
   	// display the capacitance 
   LCDstring(lcd_buffer, strlen(lcd_buffer));	
   // now move a char left and right
+  
   LCDGotoXY(anipos,1);	   //second line
   LCDsendChar(' '); 
       	
@@ -277,9 +279,9 @@ void initialize(void){
 	init_lcd();
 	LCDclr();
 
-	uart_init();
-	stdout = stdin = stderr = &uart_str;
-	fprintf(stdout,"Starting timers...\n\r");
+	//uart_init();
+	//stdout = stdin = stderr = &uart_str;
+	//fprintf(stdout,"Starting timers...\n\r");
 
 
 	sei();
@@ -306,8 +308,6 @@ int main(void){
 		if(cap_discharged && !begin_cap_measurement){
 			cli();
 			//begin cap measurements
-			//switch Timer1A mode
-			//DDRB &= ~COMPARATOR_INPUT;
 			//mark that we can start cap measurement
 			begin_cap_measurement = TRUE;
 			//initalize timer for cap measurement
@@ -330,8 +330,8 @@ int main(void){
 			// C = -t / (R2 * ln(.5)) to find out when V(t) = .5 * Vo (R3 = R4)
 			// (Due to ln(.5) being negative, the negative on the t is canceled out)
 			// constant = time_per_cycle / (R2 * ln(.5)
-			capacitance = (charge_cycles - 124) * constant;
-			sei();
+			capacitance = (charge_cycles - 125) * constant;
+			//sei();
 		}
 	}
 }
