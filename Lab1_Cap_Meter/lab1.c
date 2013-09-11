@@ -93,8 +93,7 @@ volatile unsigned int led_time_count;
 volatile unsigned int lcd_time_count;
 
 // timer 1 capture variables for computing charging time
-volatile unsigned int charge_cycles;	
-volatile double charge_time; 
+volatile double charge_cycles;
 // variable to store capacitance for print out
 volatile double capacitance;
 // precomputed log(.5) needed for capacitance calculation
@@ -145,11 +144,6 @@ void init_cap_discharge_wait_timer(){
 	Repeat
 */
 void init_cap_measurements(void){
-	//Reset all measurements
-	//capacitance = 0;
-	//charge_cycles = 0;
-	//charge_time = 0;
-
 	DDRB = 0;
 	//set B3 to an input
 	//make the reference an input to the Analog Comparator
@@ -241,14 +235,13 @@ void init_lcd(void){
 // 
 void refresh_lcd(void){
   // increment time counter and format string 
-  //if (capacitance >= .1 && capacitance <= 100) {
-  //if (charge_cycles > 200) {
-  sprintf(lcd_buffer,"%-.4f",capacitance);
-  //sprintf(lcd_buffer,"%-u", charge_cycles);	 
-  //}
-  //else {
-  //	sprintf(lcd_buffer,"N/A");
-  //}               
+  if (charge_cycles - 125 > 100) {
+  //sprintf(lcd_buffer,"%-.4f",capacitance);
+  sprintf(lcd_buffer,"%-.4f", charge_cycles);	 
+  }
+  else {
+  	sprintf(lcd_buffer,"N/A     ");
+  }               
   LCDGotoXY(0, 1);
   	// display the capacitance 
   LCDstring(lcd_buffer, strlen(lcd_buffer));	
@@ -277,7 +270,6 @@ void initialize(void){
 
 	capacitance = 0;
 	charge_cycles = 0;
-	charge_time = 0;
 	cap_discharged = FALSE;
 	begin_cap_measurement = FALSE;
 	cap_charged = FALSE;
@@ -337,8 +329,7 @@ int main(void){
 			// V(t) = Vo(1 - exp(-t/(R2*C))) becomes
 			// C = -t / (R2 * ln(.5)) to find out when V(t) = .5 * Vo (R3 = R4)
 			// (Due to ln(.5) being negative, the negative on the t is canceled out)
-			//charge_time = (charge_cycles - 126) * T1_CLK_PERIOD;
-			//capacitance = charge_cycles;
+			// constant = time_per_cycle / (R2 * ln(.5)
 			capacitance = (charge_cycles - 124) * constant;
 			sei();
 		}
