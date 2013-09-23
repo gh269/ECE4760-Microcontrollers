@@ -131,7 +131,7 @@ void init_cap_discharge_wait_timer(){
 	TCCR1B = T0B_CS01;
 	//turn on clear on match
 	TCCR1A = 0;
-	TCCR1A |= CLEAR_ON_MATCH;
+	//TCCR1A |= CLEAR_ON_MATCH;
 }
 
 /*
@@ -235,8 +235,8 @@ void init_lcd(void){
 void refresh_lcd(void){
   // increment time counter and format string 
   if ((charge_cycles - 126) > 85) {
-   	//sprintf(lcd_buffer,"%-.4f",capacitance);
-    sprintf(lcd_buffer,"%-u", charge_cycles);	 
+   	sprintf(lcd_buffer,"%-.4f",capacitance);
+    //sprintf(lcd_buffer,"%-u", charge_cycles);	 
   }
   else {
   	sprintf(lcd_buffer,"N/A     ");
@@ -247,7 +247,12 @@ void refresh_lcd(void){
   // now move a char left and right
   
   
-  
+  LCDGotoXY(8,1);
+  LCDsendChar('n');
+  LCDGotoXY(9,1);
+  LCDsendChar('F');
+
+  /*
   LCDGotoXY(anipos,1);	   //second line
   LCDsendChar(' ');
   LCDGotoXY(anipos+1,1);
@@ -258,7 +263,8 @@ void refresh_lcd(void){
   LCDGotoXY(anipos,1);	   //second line
   LCDsendChar('n');
   LCDGotoXY(anipos+1,1);
-  LCDsendChar('F');  
+  LCDsendChar('F'); 
+  */ 
 }
 
 void initialize(void){
@@ -297,11 +303,16 @@ int main(void){
 	while(1){
 		if( led_time_count == 0){
 			led_time_count = LED_BLINK_PERIOD / 2;
+			//cli();
 			toggle_led();
+			//sei();
 		}
 		if( lcd_time_count == 0){
 			lcd_time_count = LCD_REFRESH_RATE;
+			cli();
 			refresh_lcd();
+			sei();
+			
 		}
 		if (!cap_discharged && !begin_cap_measurement && !cap_charged) {
 			cli();
@@ -309,13 +320,12 @@ int main(void){
 			sei();
 		}
 		if(cap_discharged && !begin_cap_measurement){
-			//cli();
 			//begin cap measurements
 			//mark that we can start cap measurement
 			begin_cap_measurement = TRUE;
 			//initalize timer for cap measurement
 			init_cap_measurement_analog_timer();
-			//sei();
+			
 		}
 		if(begin_cap_measurement && cap_charged){
 			cli();
