@@ -7,6 +7,7 @@
 #include <util/delay.h>
 #include <stdio.h>
 #include <avr/eeprom.h>
+#include <avr/interrupt.h>
       
 #include "uart.h"
 
@@ -121,7 +122,7 @@ void task2(void) {
 } 
  
 //Initialization used for the timer interrupts for debouncing
-int initialize(void) {
+void initialize(void) {
 	//set up timer 0 for 1 mSec timebase 
 	OCR0A = 249;  		//set the compare re to 250 time ticks
 	TIMSK0= (1<<OCIE0A);	//turn on timer 0 cmp match ISR 
@@ -166,7 +167,7 @@ int main(void) {
     // for a 32-bit DDS accumulator, running at 16e6/256 Hz:
     // increment = 2^32*256*Fout/16e6 = 68719 * Fout
     // Fout=1000 Hz, increment= 68719000 
-    increment = 68719000L ;
+    int increment = 68719000L ;
 
 	switch (butnum) {
 		case 1:
