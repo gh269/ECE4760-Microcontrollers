@@ -206,7 +206,7 @@ void initialize(void) {
 	TCCR0A= (1<<WGM01) ;
 
 	//init the task timers
-	time1=t1;  
+	time1=0;  
 	// PORT B is an input
 	DDRB = 0x00;
 	//for no button push
@@ -237,7 +237,8 @@ int main(void) {
   //endless loop to read keyboard
   while(1) {
 	//Used for debouncing
-    if (time1==t1) {
+	//fprintf(stdout, "%u\n\r", time1);
+    if (time1>=t1) {
 	  	//fprintf(stdout, "Entering task1...\n\r");	
 		task1();
 	}
