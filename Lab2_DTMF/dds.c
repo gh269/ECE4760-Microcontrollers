@@ -151,27 +151,31 @@ void init_dtmf(){
 
 //plays fA and fB for a duration of duration ms
 void play(int fA, int fB, int duration){
+	if( !is_playing ){
+		is_playing = TRUE;
+		switch( fA){
+			case 1209: increment_a = INCREMENT_1209; break;
+			case 1336: increment_a = INCREMENT_1336; break;
+			case 1477: increment_a = INCREMENT_1477; break;
+			default: increment_a = 0; break;
+		}
 
-	switch( fA){
-		case 1209: increment_a = INCREMENT_1209; break;
-		case 1336: increment_a = INCREMENT_1336; break;
-		case 1477: increment_a = INCREMENT_1477; break;
-		default: increment_a = 0; break;
+		switch ( fB) {
+			case 697: increment_b = INCREMENT_697; break;
+			case 770: increment_b = INCREMENT_770; break;
+			case 825: increment_b = INCREMENT_825; break;
+			case 941: increment_b = INCREMENT_941; break;
+			default: increment_b = 0; break;
+		}
+		dds_duration = duration;
+		OCR0A = 128;	
 	}
 
-	switch ( fB) {
-		case 697: increment_b = INCREMENT_697; break;
-		case 770: increment_b = INCREMENT_770; break;
-		case 825: increment_b = INCREMENT_825; break;
-		case 941: increment_b = INCREMENT_941; break;
-		default: increment_b = 0; break;
-	}
-	dds_duration = duration;
-	OCR0A = 128;
 
 }
 
 void stop_playing(){
+	is_playing = FALSE;
 	sample = 0;
 	rampCount = 0;
 	increment_a = increment_b = 0;
