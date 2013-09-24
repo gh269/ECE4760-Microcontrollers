@@ -64,16 +64,18 @@ FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
 
 //**********************************************************
 //timer 0 comare match ISR
+/*
 ISR (TIMER0_COMPA_vect) {
   //Decrement the  time if they are not already zero
   if (time1>0) 	--time1;
 }
+*/
 
  
 //******************************* 
 //Task 1  
 void task1(void) {
-	time1=t1;  //reset the task timer
+	time1=0;  //reset the task timer
 
 	//get lower nibble
 	PORTDIR = 0x0f;
@@ -235,8 +237,8 @@ int main(void) {
   //endless loop to read keyboard
   while(1) {
 	//Used for debouncing
-    if (time1==0) {
-	  	//fprintf(stdout, "Entering task2...\n\r");	
+    if (time1==t1) {
+	  	//fprintf(stdout, "Entering task1...\n\r");	
 		task1();
 	}
   	}
