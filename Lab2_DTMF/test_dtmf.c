@@ -15,8 +15,8 @@
 
 int main(){
 	init_dtmf();
+	play(1336,697,1000);
 	while(1){
-		play(1209,0,1000);
 		if(time >= dds_duration){
 			stop_playing();
 		}

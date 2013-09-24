@@ -100,7 +100,7 @@ ISR( TIMER0_OVF_vect){
 	   ( (
 	   	   (sineTable[highbyte_b] + sineTable[highbyte_a])
 	   	                          * rampTable[rampCount]
-	   	 ) >> 7
+	   	 ) >> 8
 	   );
 
 	sample++;
