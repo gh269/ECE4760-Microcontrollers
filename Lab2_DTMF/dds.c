@@ -93,8 +93,8 @@ ISR( TIMER0_OVF_vect){
 	accumulator_a += increment_a;
 	accumulator_b += increment_b;
 
-	highbyte_a = accumulator_a >> 24;
-	highbyte_b = accumulator_b >> 24;
+	highbyte_a = (char) (accumulator_a >> 24);
+	highbyte_b = (char) (accumulator_b >> 24);
 
 	OCR0A = 128 + 
 	   ( (
@@ -122,8 +122,8 @@ ISR( TIMER0_OVF_vect){
 	count--;
 	if( count == 0){
 		count = COUNTMS;
-		time++;
-		time1++;
+		//time++;
+		//time1++;
 	}
 
 	
@@ -152,7 +152,7 @@ void init_dtmf(){
 //plays fA and fB for a duration of duration ms
 void play(int fA, int fB, int duration){
 	if( !is_playing ){
-		is_playing = TRUE;
+		//is_playing = TRUE;
 		switch( fA){
 			case 1209: increment_a = INCREMENT_1209; break;
 			case 1336: increment_a = INCREMENT_1336; break;

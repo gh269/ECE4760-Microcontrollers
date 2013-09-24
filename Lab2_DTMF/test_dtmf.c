@@ -15,10 +15,10 @@
 
 int main(){
 	init_dtmf();
-	play(1336,697,1000);
+	play(0,697,1000);
 	while(1){
-		if(time >= dds_duration){
-			stop_playing();
-		}
+		//if(time >= dds_duration){
+		//	stop_playing();
+		//}
 	}
 }
