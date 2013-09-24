@@ -85,6 +85,7 @@ char rampTable[RAMP_LENGTH] =
 #define INCREMENT_825 56693175L
 #define INCREMENT_941 646664579L
 
+char is_playing;
 int dds_duration;
 
 void init_dtmf();

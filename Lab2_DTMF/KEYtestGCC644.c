@@ -10,6 +10,8 @@
 #include <avr/interrupt.h>
       
 #include "uart.h"
+#include "dds.h"
+#include "atmega1284p.h"
 
 #define maxkeys 12
 #define PORTDIR DDRA
@@ -216,6 +218,7 @@ void initialize(void) {
 
 	mem_index = 0;
 
+	init_dtmf();
 	//crank up the ISRs
 	sei() ;
 }
