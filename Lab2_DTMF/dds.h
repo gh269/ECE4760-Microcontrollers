@@ -87,6 +87,7 @@ char rampTable[RAMP_LENGTH] =
 
 char is_playing;
 int dds_duration;
+volatile unsigned int time1;
 
 void init_dtmf();
 /*

@@ -20,7 +20,7 @@
 
 //timeout values for each task
 #define t1 20
-volatile unsigned int time1;	//timeout counters 
+//volatile unsigned int time1;	//timeout counters 
 unsigned char PushFlag;		//message indicating a button push 
 unsigned char PushState;	//state machine  
 //State machine state names
@@ -69,10 +69,6 @@ ISR (TIMER0_COMPA_vect) {
   if (time1>0) 	--time1;
 }
 
-// For compilation purposes only. MUST REMOVE!
-void play(int a, int b, int c) {
-	return;
-}
  
 //******************************* 
 //Task 1  
