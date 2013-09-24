@@ -1,7 +1,7 @@
                  
 // Keyscanner
 // Mega644 version 
-// assumes a standard 4x4 keypad connected to a port (example is PORTD)
+// assumes a standard 4x4 keypad connected to a port
 #define F_CPU 16000000UL
 #include <avr/io.h>
 #include <util/delay.h>
@@ -11,16 +11,14 @@
       
 #include "uart.h"
 
-#define maxkeys 16
+#define maxkeys 12
 #define PORTDIR DDRA
 #define PORTDATA PORTA
 #define PORTIN PINA
 
 //timeout values for each task
-#define t1 200  
-#define t2 30
-#define t3 30 
-volatile unsigned char time1, time2, time3;	//timeout counters 
+#define t1 20
+volatile unsigned int time1;	//timeout counters 
 unsigned char PushFlag;		//message indicating a button push 
 unsigned char PushState;	//state machine  
 //State machine state names
@@ -35,11 +33,15 @@ unsigned char key ;
 unsigned char butnum ;
 
 //key pad scan table
-unsigned char keytbl[16] = {0x77, 0x7b, 0x7d, 0x7e,
+/*unsigned char keytbl[16] = {0x77, 0x7b, 0x7d, 0x7e,
 							0xb7, 0xbb, 0xbd, 0xbe,
 							0xd7, 0xdb, 0xdd, 0xde,
-							0xe7, 0xeb, 0xed, 0xee};
+							0xe7, 0xeb, 0xed, 0xee}; */
 
+unsigned char keytbl[16] = {0x77, 0x7b, 0x7d, 0xb7,
+							0xbb, 0xbd, 0xd7, 0xdb,
+							0xdd, 0xe7, 0xeb, 0xed,
+							0xff, 0xff, 0xff, 0xff};
 
 // UART file descriptor
 // putchar and getchar are in uart.c
@@ -48,23 +50,15 @@ FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
 //**********************************************************
 //timer 0 comare match ISR
 ISR (TIMER0_COMPA_vect) {
-  //Decrement the three times if they are not already zero
-  if (time1>0)	--time1;
-  if (time2>0) 	--time2;
+  //Decrement the  time if they are not already zero
+  if (time1>0) 	--time1;
 }
 
-//**********************************************************          
-//Task subroutines
-//Task 1
-void task1(void) {
-  time1=t1;  //reset the task timer
-  if (PushFlag) PushFlag = 0;
-}  
  
 //******************************* 
-//Task 2  
-void task2(void) {
-	time2=t2;  //reset the task timer
+//Task 1  
+void task1(void) {
+	time1=t1;  //reset the task timer
 
 	//get lower nibble
 	PORTDIR = 0x0f;
@@ -90,12 +84,7 @@ void task2(void) {
 	else butnum=0;
 	
 	// Switching in the finite state machine.
-	if (butnum != 0) { // Possible button push
-		PushFlag = 1;
-		fprintf(stdout, "%d\n\r",butnum);
-	}
-
-	  switch (PushState) {
+	switch (PushState) {
      case NoPush: 
         if (butnum != 0) PushState=MaybePush;
         else PushState=NoPush;
@@ -108,7 +97,9 @@ void task2(void) {
         else PushState=NoPush;
         break;
      case Pushed:  
-        if (butnum != 0) PushState=Pushed; 
+        if (butnum != 0) {
+			PushState=Pushed;
+		}
         else PushState=MaybeNoPush;    
         break;
      case MaybeNoPush:
@@ -118,7 +109,12 @@ void task2(void) {
            PushFlag=0;
         }    
         break;
-  }
+  	}
+
+	if (PushFlag) {
+		PushFlag = 0;
+		fprintf(stdout, "%d\n\r",butnum);
+	}
 } 
  
 //Initialization used for the timer interrupts for debouncing
@@ -132,10 +128,8 @@ void initialize(void) {
 	TCCR0A= (1<<WGM01) ;
 
 	//init the task timers
-	time1=t1;
-	time2=t2;  
+	time1=t1;  
 
-	//init the  message
 	//for no button push
 	PushFlag = 0;
 	//init the state machine
@@ -146,7 +140,6 @@ void initialize(void) {
 }
 
 int main(void) {
-	//DDRD=0x02;	// PORT D is an input except for UART on D.1
   // Init port B to show keyboard result
   DDRB = 0xff;
   // and turn out the LEDs
@@ -157,18 +150,22 @@ int main(void) {
   stdout = stdin = stderr = &uart_str;
   fprintf(stdout, "Starting...\n\r");
 
+  initialize();
+
   //endless loop to read keyboard
   while(1) {
 	//Used for debouncing
-	if (time1==0)	task1();
-    if (time2==0) 	task2();
-  	
+    if (time1==0) {
+	  	//fprintf(stdout, "Entering task2...\n\r");	
+		task1();
+	}
+
+	/*  	
 	// init the DDS phase increment
     // for a 32-bit DDS accumulator, running at 16e6/256 Hz:
     // increment = 2^32*256*Fout/16e6 = 68719 * Fout
     // Fout=1000 Hz, increment= 68719000 
-    int increment = 68719000L ;
-
+    // int increment = 68719000L ;
 	switch (butnum) {
 		case 1:
 			break;
@@ -205,6 +202,6 @@ int main(void) {
 		default:
 			break;
 	}
- 	
+ 	*/
   	}
   }
