@@ -29,7 +29,7 @@ Pin B3 is the Timer0 OC0A output
 #define INCREMENT_941 646664579L
 
 char is_playing;
-int dds_duration;
+volatile int dds_duration;
 volatile unsigned int time1;
 
 void init_dtmf();

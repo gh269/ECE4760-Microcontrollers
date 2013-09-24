@@ -1,4 +1,4 @@
-                 
+
 // Keyscanner
 // Mega644 version 
 // assumes a standard 4x4 keypad connected to a port
@@ -242,5 +242,11 @@ int main(void) {
 	  	//fprintf(stdout, "Entering task1...\n\r");	
 		task1();
 	}
-  	}
+	if(time >= dds_duration){
+		time = 0;
+		OCR0A = 0;
+		stop_playing();
+	}
+
   }
+}
