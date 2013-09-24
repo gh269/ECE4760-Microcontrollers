@@ -20,7 +20,6 @@ unsigned long increment_b;
 
 volatile unsigned char highbyte_a;
 volatile unsigned char highbyte_b;
-volatile unsigned int time;
 volatile unsigned long rampCount, sample;
 volatile char count;
 

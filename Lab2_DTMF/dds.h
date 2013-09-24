@@ -30,6 +30,7 @@ Pin B3 is the Timer0 OC0A output
 
 char is_playing;
 volatile int dds_duration;
+volatile unsigned int time;
 volatile unsigned int time1;
 
 void init_dtmf();

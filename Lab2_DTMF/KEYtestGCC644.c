@@ -173,9 +173,9 @@ void task1(void) {
 		else if (butnum == 12) {
 			for (int i = 0; i < 12; i++) {
 				if (mem[i] != 0) {
-					fprintf(stdout, "%u\n\r", mem[i]);
-					//play(high_freq[mem[i]], low_freq[mem[i]], 100);
-					//play(0, 0, 30);
+					//fprintf(stdout, "%u\n\r", mem[i]);
+					play(high_freq[mem[i]], low_freq[mem[i]], 1000);
+					play(0, 0, 30);
 				}
 			}
 		}
@@ -184,7 +184,7 @@ void task1(void) {
 			if (mem_index < 12) {
 				mem[mem_index] = butnum;
 				mem_index++;
-				//play(high_freq[butnum], low_freq[butnum], 1000);
+				play(high_freq[butnum], low_freq[butnum], 1000);
 			}		
 		}
 		// For debugging purposes without sound.
