@@ -239,49 +239,5 @@ int main(void) {
 	  	//fprintf(stdout, "Entering task2...\n\r");	
 		task1();
 	}
-
-	/*  	
-	// init the DDS phase increment
-    // for a 32-bit DDS accumulator, running at 16e6/256 Hz:
-    // increment = 2^32*256*Fout/16e6 = 68719 * Fout
-    // Fout=1000 Hz, increment= 68719000 
-    // int increment = 68719000L ;
-	switch (butnum) {
-		case 1:
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		case 4: 
-			break;
-		case 5:
-			break;
-		case 6:
-			break;
-		case 7:
-			break;
-		case 8:
-			break;
-		case 9: 
-			break;
-		case 10: 
-			break;
-		case 11:
-			break;
-		case 12:
-			break;
-		case 13:
-			break;
-		case 14:
-			break;
-		case 15:
-			break;
-		case 16:
-			break;
-		default:
-			break;
-	}
- 	*/
   	}
   }

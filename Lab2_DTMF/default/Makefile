@@ -37,7 +37,7 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 
 ## Objects that must be built in order to link
-OBJECTS = KEYtestGCC644.o uart.o 
+OBJECTS = KEYtestGCC644.o uart.o dds.o 
 
 ## Objects explicitly added by the user
 LINKONLYOBJECTS = 
@@ -50,6 +50,9 @@ KEYtestGCC644.o: ../KEYtestGCC644.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 uart.o: ../uart.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+dds.o: ../dds.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 ##Link

@@ -2,7 +2,7 @@
 #define __4760_1284P_H__
 
 
-#define CS00 1
+#define T0_CS00 1
 #define TIMER0_OVERFLOW_INTERRUPT_ENABLE (1 << TOIE0)
 
 #define COMPARE_MATCH_OUTPUT_A0 (1 << COM0A0)
