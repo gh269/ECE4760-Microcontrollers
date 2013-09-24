@@ -43,6 +43,19 @@ unsigned char keytbl[16] = {0x77, 0x7b, 0x7d, 0xb7,
 							0xdd, 0xe7, 0xeb, 0xed,
 							0xff, 0xff, 0xff, 0xff};
 
+unsigned int mem[12] = {0, 0, 0, 0, 0, 0,
+			            0, 0, 0, 0, 0, 0};
+unsigned int mem_index;
+
+unsigned int high_freq[12] = {1209, 1336, 1477, 
+							  1209, 1336, 1477, 
+							  1209, 1336, 1477, 
+							  1209, 1336, 1477};
+unsigned int low_freq[12] = {697, 697, 697, 
+							 770, 770, 770, 
+							 852, 852, 852, 
+							 941, 941, 941};
+
 // UART file descriptor
 // putchar and getchar are in uart.c
 FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
@@ -54,6 +67,10 @@ ISR (TIMER0_COMPA_vect) {
   if (time1>0) 	--time1;
 }
 
+// For compilation purposes only. MUST REMOVE!
+void play(int a, int b, int c) {
+	return;
+}
  
 //******************************* 
 //Task 1  
@@ -91,14 +108,46 @@ void task1(void) {
         break;
      case MaybePush:
         if (butnum != 0) {
-           PushState=Pushed;   
-           PushFlag=1;
+           	PushState=Pushed; 
+			PushFlag=1;
+			//Test mode override
+			if (~PINB & 0x01) {
+		 		PushFlag=0;			
+		   	}  
         }
         else PushState=NoPush;
         break;
      case Pushed:  
         if (butnum != 0) {
 			PushState=Pushed;
+			//Test mode override
+			if (~PINB & 0x01) {
+		 		switch (butnum) {
+					case 1: 
+						play(697, 0, 100);
+						break;
+					case 2: 
+						play(770, 0, 100);
+						break;
+					case 3: 
+						play(852, 0, 100);
+						break;
+					case 4: 
+						play(941, 0, 100);
+						break;
+					case 5:
+						play(1209, 0, 100);
+						break;
+					case 6:
+						play(1336, 0, 100);
+						break;
+					case 7: 
+						play(1477, 0, 100);
+						break;
+					default:
+						break;
+				}	
+		   	}  
 		}
         else PushState=MaybeNoPush;    
         break;
@@ -113,7 +162,36 @@ void task1(void) {
 
 	if (PushFlag) {
 		PushFlag = 0;
-		fprintf(stdout, "%d\n\r",butnum);
+		// The * button was pressed. Clear all memory.
+		if (butnum == 10) {
+			for (int i = 0; i < 12; i++) {
+				mem[i] = 0;
+			}
+			mem_index = 0;
+		}
+		// The # button was pressed. Play all sounds in memory.
+		else if (butnum == 12) {
+			for (int i = 0; i < 12; i++) {
+				if (mem[i] != 0) {
+					fprintf(stdout, "%u\n\r", mem[i]);
+					//play(high_freq[mem[i]], low_freq[mem[i]], 100);
+					//play(0, 0, 30);
+				}
+			}
+		}
+		// A normal button press. 
+		else {
+			if (mem_index < 12) {
+				mem[mem_index] = butnum;
+				mem_index++;
+				//play(high_freq[butnum], low_freq[butnum], 1000);
+			}		
+		}
+		// For debugging purposes without sound.
+		for (int i = 0; i < 12; i++) {
+			fprintf(stdout, "%d ", mem[i]);
+		}
+		fprintf(stdout, "\n\r");
 	}
 } 
  
@@ -129,11 +207,14 @@ void initialize(void) {
 
 	//init the task timers
 	time1=t1;  
-
+	// PORT B is an input
+	DDRB = 0x00;
 	//for no button push
 	PushFlag = 0;
 	//init the state machine
 	PushState = NoPush;
+
+	mem_index = 0;
 
 	//crank up the ISRs
 	sei() ;
