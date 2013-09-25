@@ -9,7 +9,7 @@
 #include <avr/eeprom.h>
 #include <avr/interrupt.h>
       
-//#include "uart.h"
+#include "uart.h"
 #include "dds.h"
 #include "atmega1284p.h"
 
@@ -57,7 +57,7 @@ unsigned int low_freq[12] = {697, 697, 697,
 
 // UART file descriptor
 // putchar and getchar are in uart.c
-//FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
+FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
 
 //******************************* 
 //Task 1  
@@ -101,6 +101,7 @@ void task1(void) {
 			PushFlag=1;
 			//Test mode override
 			if (~PINB & 0x01) {
+				//fprintf(stdout, "PINB is pressed.\n\r");
 		 		PushFlag=0;			
 		   	}  
         }
@@ -113,16 +114,16 @@ void task1(void) {
 			if (~PINB & 0x01) {
 		 		switch (butnum) {
 					case 1: 
-						play(697, 0);
+						play(0, 697);
 						break;
 					case 2: 
-						play(770, 0);
+						play(0, 770);
 						break;
 					case 3: 
-						play(852, 0);
+						play(0, 852);
 						break;
 					case 4: 
-						play(941, 0);
+						play(0, 941);
 						break;
 					case 5:
 						play(1209, 0);
@@ -158,7 +159,7 @@ void task1(void) {
 		PushFlag = 0;
 		// The * button was pressed. Clear all memory.
 		if (butnum == 10) {
-			//fprintf(stdout, "%u\n\r", butnum);
+			fprintf(stdout, "%u\n\r", butnum);
 			for (int i = 0; i < 12; i++) {
 				mem[i] = 0;
 			}
@@ -166,7 +167,7 @@ void task1(void) {
 		}
 		// The # button was pressed. Play all sounds in memory.
 		else if (butnum == 12) {
-			//fprintf(stdout, "%u\n\r", butnum);
+			fprintf(stdout, "%u\n\r", butnum);
 			for (int i = 0; i < 12; i++) {
 				if (mem[i] != 0) {
 					play(high_freq[mem[i]], low_freq[mem[i]]);
@@ -175,7 +176,7 @@ void task1(void) {
 		}
 		// A normal button press. 
 		else {
-			//fprintf(stdout, "%u\n\r", butnum);
+			fprintf(stdout, "%u\n\r", butnum);
 			if (mem_index < 12) {
 				mem[mem_index] = butnum;
 				mem_index++;
@@ -218,10 +219,10 @@ int main(void) {
   PORTB = 0xff;   
   
   // init the UART
-  //uart_init();
-  //stdout = stdin = stderr = &uart_str;
-  //fprintf(stdout, "Starting...\n\r");
-  	initialize();
+  uart_init();
+  stdout = stdin = stderr = &uart_str;
+  fprintf(stdout, "Starting...\n\r");
+  initialize();
 
   //play(1336, 852);
 	

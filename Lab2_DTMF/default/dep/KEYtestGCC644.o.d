@@ -18,7 +18,7 @@ KEYtestGCC644.o: ../KEYtestGCC644.c \
  d:\program\ files\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.7.2/include/stddef.h \
  d:\program\ files\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.7.2/../../../../avr/include/avr/eeprom.h \
  d:\program\ files\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.7.2/../../../../avr/include/avr/interrupt.h \
- ../dds.h ../atmega1284p.h
+ ../uart.h ../dds.h ../atmega1284p.h
 
 d:\program\ files\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.7.2/../../../../avr/include/avr/io.h:
 
@@ -57,6 +57,8 @@ d:\program\ files\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.7.2/inclu
 d:\program\ files\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.7.2/../../../../avr/include/avr/eeprom.h:
 
 d:\program\ files\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.7.2/../../../../avr/include/avr/interrupt.h:
+
+../uart.h:
 
 ../dds.h:
 
