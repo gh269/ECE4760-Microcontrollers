@@ -32,11 +32,6 @@ unsigned char key ;
 unsigned char butnum ;
 
 //key pad scan table
-/*unsigned char keytbl[16] = {0x77, 0x7b, 0x7d, 0x7e,
-							0xb7, 0xbb, 0xbd, 0xbe,
-							0xd7, 0xdb, 0xdd, 0xde,
-							0xe7, 0xeb, 0xed, 0xee}; */
-
 unsigned char keytbl[16] = {0x77, 0x7b, 0x7d, 0xb7,
 							0xbb, 0xbd, 0xd7, 0xdb,
 							0xdd, 0xe7, 0xeb, 0xed,
@@ -151,7 +146,7 @@ void task1(void) {
   	}
 
 	if (PushState == NoPush && !is_timed_playing) {
-		fprintf(stdout, "Depressed...\n\r");
+		//fprintf(stdout, "Depressed...\n\r");
 		stop_playing();
 	}	
 
@@ -175,25 +170,17 @@ void task1(void) {
 			//init the playing state machine
 			is_timed_playing = FALSE;
 			while( i < 12){
+				update_status_variables();
 				if (mem[i] == 0) {
 					break;
 				}
-				play(high_freq[mem[i]], low_freq[mem[i]]);
-				is_timed_playing = TRUE;
-				break;
-				/*
-				//fprintf(stdout, "Int: %u\n\r", mem[i]);
 				if(silence == FALSE && !is_playing){
 					fprintf(stdout, "Int: %u\n\r", mem[i]);
-					play(high_freq[mem[i]], low_freq[mem[i]]);
-					//timed_play(high_freq[mem[i]], low_freq[mem[i]], 1000);
+					timed_play(high_freq[mem[i]], low_freq[mem[i]], 1000);
 					is_timed_playing = TRUE;
 					fprintf(stdout, "Playing sound\n\r");
 					silence = TRUE;
-					break;
 				}
-				*/
-				/*
 				if(silence == TRUE && !is_playing) {
 					timed_play(0, 0, 30);
 					is_timed_playing = TRUE;
@@ -214,13 +201,7 @@ void task1(void) {
 					silence = FALSE;
 					is_playing = FALSE;
 				}
-				*/
 			}
-			// for (int i = 0; i < 12; i++) {
-			// 	if (mem[i] != 0) {
-			// 		play(high_freq[mem[i]], low_freq[mem[i]]);
-			// 	}
-			// }
 		}
 		// A normal button press. 
 		else {

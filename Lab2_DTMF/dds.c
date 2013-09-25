@@ -125,11 +125,9 @@ ISR( TIMER0_OVF_vect){
 	if( count <= 0){
 		count = COUNTMS;
 		time1++;
-		/*
 		if( is_timed_playing && dds_duration > 0){
 			dds_duration--;
 		}
-		*/
 	}
 	count--;	
 }
@@ -145,7 +143,6 @@ void init_dtmf(){
 		// rampTable[0]=0 and rampTable[255]=127
 		rampTable[i] = i>>1 ;
 	}
-	time = 0;
 
 	// TCCR0B = 0;
 	// //set divider to 1, run T0 at 16 MHz 
