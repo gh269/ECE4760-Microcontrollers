@@ -38,6 +38,7 @@ volatile int dds_duration;
 volatile unsigned int time;
 volatile unsigned int time1;
 
+void update_status_variables();
 void init_dtmf();
 /*
 fa is the high frequency

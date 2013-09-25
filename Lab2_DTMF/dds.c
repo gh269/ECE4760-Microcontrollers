@@ -191,6 +191,32 @@ void stop_playing(){
 	accumulator_a = accumulator_b = 0;
 }
 
+void update_status_variables(){
+	if(changed == TRUE){
+		changed = FALSE;
+
+		sample++;
+		//ramping up
+		if( sample <= RAMPUPEND )
+			rampCount++;
+		//holdsteady the max value 
+		else if( sample > RAMPUPEND && sample <= RAMPDOWNSTART)
+			rampCount = 255;
+		//begin rampdown
+		else if( sample > RAMPDOWNSTART && sample <= RAMPDOWNEND)
+			rampCount--;
+		//finished ramping
+		else if(sample > RAMPDOWNEND){
+			rampCount = 0;
+			sample = 0;
+
+		}
+		else{
+			continue;
+		}
+
+	}
+}
 /*
 int main(){
 	init_dtmf();

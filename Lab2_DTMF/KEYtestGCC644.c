@@ -235,7 +235,7 @@ int main(void) {
 		//time++;
 		time1++;
 	}
-
+	update_status_variables();
 	//Used for debouncing
     if (time1>=t1) {
 		task1();
