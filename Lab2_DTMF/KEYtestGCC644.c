@@ -9,7 +9,7 @@
 #include <avr/eeprom.h>
 #include <avr/interrupt.h>
       
-#include "uart.h"
+//#include "uart.h"
 #include "dds.h"
 #include "atmega1284p.h"
 
@@ -22,12 +22,9 @@
 #define t1 20
 //volatile unsigned int time1;	//timeout counters 
 unsigned char PushFlag;		//message indicating a button push 
-unsigned char PushState;	//state machine  
+
 //State machine state names
-#define NoPush 1 
-#define MaybePush 2
-#define Pushed 3
-#define MaybeNoPush 4
+
 
 // The raw keyscan
 unsigned char key ;   
@@ -60,7 +57,7 @@ unsigned int low_freq[12] = {697, 697, 697,
 
 // UART file descriptor
 // putchar and getchar are in uart.c
-FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
+//FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
 
 //******************************* 
 //Task 1  
@@ -154,14 +151,14 @@ void task1(void) {
 
 	if (PushState == NoPush) {
 		//fprintf(stdout, "Depressed...\n\r");
-		//stop_playing();
+		stop_playing();
 	}	
 
 	if (PushFlag) {
 		PushFlag = 0;
 		// The * button was pressed. Clear all memory.
 		if (butnum == 10) {
-			fprintf(stdout, "%u\n\r", butnum);
+			//fprintf(stdout, "%u\n\r", butnum);
 			for (int i = 0; i < 12; i++) {
 				mem[i] = 0;
 			}
@@ -169,20 +166,20 @@ void task1(void) {
 		}
 		// The # button was pressed. Play all sounds in memory.
 		else if (butnum == 12) {
-			fprintf(stdout, "%u\n\r", butnum);
+			//fprintf(stdout, "%u\n\r", butnum);
 			for (int i = 0; i < 12; i++) {
 				if (mem[i] != 0) {
-					//play(high_freq[mem[i]], low_freq[mem[i]]);
+					play(high_freq[mem[i]], low_freq[mem[i]]);
 				}
 			}
 		}
 		// A normal button press. 
 		else {
-			fprintf(stdout, "%u\n\r", butnum);
+			//fprintf(stdout, "%u\n\r", butnum);
 			if (mem_index < 12) {
 				mem[mem_index] = butnum;
 				mem_index++;
-				//play(high_freq[butnum], low_freq[butnum]);
+				play(high_freq[butnum], low_freq[butnum]);
 			}		
 		}
 	}
@@ -221,34 +218,24 @@ int main(void) {
   PORTB = 0xff;   
   
   // init the UART
-  uart_init();
-  stdout = stdin = stderr = &uart_str;
-  fprintf(stdout, "Starting...\n\r");
+  //uart_init();
+  //stdout = stdin = stderr = &uart_str;
+  //fprintf(stdout, "Starting...\n\r");
+  	initialize();
 
-  initialize();
-
-  play(1477, 697);
+  //play(1336, 852);
 	
   //endless loop to read keyboard
   while(1) {
 	// Used for keeping track of time.
 	if( count <= 0){
 		count = COUNTMS;
-		//time++;
 		time1++;
 	}
 	update_status_variables();
 	//Used for debouncing
     if (time1>=t1) {
 		task1();
-	}
-	/*
-	if(time >= dds_duration){
-		time = 0;
-		OCR0A = 0;
-		stop_playing();
-	}
-	*/
-
+	}	
   }
 }

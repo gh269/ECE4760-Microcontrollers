@@ -27,9 +27,16 @@ Pin B3 is the Timer0 OC0A output
 
 #define INCREMENT_697 47897143L
 #define INCREMENT_770 52913630L
-#define INCREMENT_825 56693175L
+#define INCREMENT_852 58548588L
 #define INCREMENT_941 64664579L
 #define COUNTMS 62
+
+#define NoPush 1 
+#define MaybePush 2
+#define Pushed 3
+#define MaybeNoPush 4
+
+unsigned char PushState;	//state machine  
 
 volatile char count;
 
@@ -46,4 +53,7 @@ fb is the low frequency
 */
 void play( int fA, int fB);
 void stop_playing();
+
+
+
 #endif

@@ -53,7 +53,7 @@ signed char sineTable[256];
 -45, -42, -39, -36, -33, -30, -27, -24, -21, -18, -15, -12, 
 -9, -6, -3  };
 */
-char rampTable[256]; 
+unsigned char rampTable[256]; 
 /*= 
 
 { 0, 0, 0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4, 
@@ -171,7 +171,7 @@ void play(int fA, int fB){
 		switch ( fB) {
 			case 697: increment_b = INCREMENT_697; break;
 			case 770: increment_b = INCREMENT_770; break;
-			case 825: increment_b = INCREMENT_825; break;
+			case 852: increment_b = INCREMENT_852; break;
 			case 941: increment_b = INCREMENT_941; break;
 			case 1209: increment_a = INCREMENT_1209; break;
 			default: increment_b = 0; break;
@@ -191,10 +191,18 @@ void stop_playing(){
 	accumulator_a = accumulator_b = 0;
 }
 
+
 void update_status_variables(){
 	if(changed == TRUE){
 		changed = FALSE;
 
+		if (PushState == Pushed && rampCount < 255) {
+			rampCount++;
+		}
+		if (PushState == NoPush && rampCount > 0 ) {
+			rampCount++;
+		}
+		/*
 		sample++;
 		//ramping up
 		if( sample <= RAMPUPEND )
@@ -203,16 +211,16 @@ void update_status_variables(){
 		else if( sample > RAMPUPEND && sample <= RAMPDOWNSTART)
 			rampCount = 255;
 		//begin rampdown
-		else if( sample > RAMPDOWNSTART && sample <= RAMPDOWNEND)
+		else if( sample > RAMPDOWNSTART && sample <= RAMPDOWNEND && PushState == )
 			rampCount--;
 		//finished ramping
 		else if(sample > RAMPDOWNEND){
 			rampCount = 0;
-			sample = 0;     
+			sample = 0;
 		}
 		else{
 		}
-
+		*/
 	}
 }
 /*
