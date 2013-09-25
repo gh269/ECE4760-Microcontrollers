@@ -226,8 +226,7 @@ int main(void) {
   fprintf(stdout, "Starting...\n\r");
 
   initialize();
-  
-  play(1477, 697);
+
   //endless loop to read keyboard
   while(1) {
 	// Used for keeping track of time.
@@ -248,30 +247,6 @@ int main(void) {
 		stop_playing();
 	}
 	*/
-	if(changed == TRUE){
-
-		changed = FALSE;
-
-		sample++;
-		//ramping up
-		if( sample <= RAMPUPEND )
-			rampCount++;
-		//holdsteady the max value 
-		else if( sample > RAMPUPEND && sample <= RAMPDOWNSTART)
-			rampCount = 255;
-		//begin rampdown
-		else if( sample > RAMPDOWNSTART && sample <= RAMPDOWNEND)
-			rampCount--;
-		//finished ramping
-		else if(sample > RAMPDOWNEND){
-			rampCount = 0;
-			sample = 0;
-
-		}
-		else{
-			continue;
-		}
-	}
 
   }
 }
