@@ -173,7 +173,7 @@ void task1(void) {
 			char silence;
 			silence = FALSE;
 
-
+			is_timed_playing = TRUE;
 			while( i < 12 ){
 				fprintf(stdout, "Int: %u\n\r", i);
 				if(silence == FALSE && !is_playing){
@@ -196,6 +196,7 @@ void task1(void) {
 					is_playing = FALSE;
 				}
 			}
+			is_timed_playing = FALSE;
 			// for (int i = 0; i < 12; i++) {
 			// 	if (mem[i] != 0) {
 			// 		play(high_freq[mem[i]], low_freq[mem[i]]);

@@ -39,8 +39,8 @@ Pin B3 is the Timer0 OC0A output
 unsigned char PushState;	//state machine  
 
 volatile char count;
-
-char is_playing;
+volatile char is_timed_playing;
+volatile char is_playing;
 volatile int dds_duration;
 volatile unsigned int time;
 volatile unsigned int time1;
