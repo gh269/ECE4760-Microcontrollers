@@ -122,6 +122,9 @@ ISR( TIMER0_OVF_vect){
 	accumulator_b += increment_b;
 	//generates a 1 ms timebase
 	count--;	
+	if( is_playing && dds_duration > 0){
+		dds_duration--;
+	}
 }
 
 

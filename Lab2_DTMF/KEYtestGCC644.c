@@ -168,25 +168,32 @@ void task1(void) {
 		// The # button was pressed. Play all sounds in memory.
 		else if (butnum == 12) {
 			fprintf(stdout, "%u\n\r", butnum);
-			int i;
-			i = 0;
+			int i = 0;
+			is_playing = FALSE;
 			char silence;
 			silence = FALSE;
 
 
-			while( i <= 12 ){
-				if(silence == FALSE){
+			while( i < 12 ){
+				fprintf(stdout, "Int: %u\n\r", i);
+				if(silence == FALSE && !is_playing){
 					timed_play(high_freq[mem[i]], low_freq[mem[i]], 100);
+					fprintf(stdout, "Playing sound\n\r");
 				}
-				if(silence == TRUE)
-					timed_play(0, 0, 30)
-				if(is_playing && dds_duration < 0 ){
+				if(silence == TRUE && !is_playing) {
+					timed_play(0, 0, 30);
+					fprintf(stdout, "Playing silence\n\r");
+				}
+				if(is_playing && dds_duration <= 0 && !silence){
+					fprintf(stdout, "Playing timeout\n\r");
 					silence = TRUE;
 					is_playing = FALSE;
 				}
-				if( !is_playing && silence && dds_duration < 0){
+				if(silence && dds_duration <= 0){
+					fprintf(stdout, "Silence timeout\n\r");
 					i++;
 					silence = FALSE;
+					is_playing = FALSE;
 				}
 			}
 			// for (int i = 0; i < 12; i++) {
@@ -253,9 +260,6 @@ int main(void) {
 	if( count <= 0){
 		count = COUNTMS;
 		time1++;
-	}
-	if( is_playing && dds_duration > 0){
-		dds_duration--;
 	}
 	update_status_variables();
 	//Used for debouncing
