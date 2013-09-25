@@ -32,6 +32,10 @@ Pin B3 is the Timer0 OC0A output
 #define COUNTMS 62
 
 volatile char count;
+volatile unsigned char changed;
+volatile unsigned int sample;
+volatile unsigned int rampCount;
+
 
 char is_playing;
 volatile int dds_duration;
