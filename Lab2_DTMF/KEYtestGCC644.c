@@ -150,8 +150,8 @@ void task1(void) {
         break;
   	}
 
-	if (PushState == NoPush) {
-		//fprintf(stdout, "Depressed...\n\r");
+	if (PushState == NoPush && !is_timed_playing) {
+		fprintf(stdout, "Depressed...\n\r");
 		stop_playing();
 	}	
 
@@ -174,17 +174,26 @@ void task1(void) {
 			silence = FALSE;
 			//init the playing state machine
 			is_timed_playing = FALSE;
-			
 			while( i < 12){
 				if (mem[i] == 0) {
 					break;
 				}
-				fprintf(stdout, "Int: %u\n\r", i);
+				play(high_freq[mem[i]], low_freq[mem[i]]);
+				is_timed_playing = TRUE;
+				break;
+				/*
+				//fprintf(stdout, "Int: %u\n\r", mem[i]);
 				if(silence == FALSE && !is_playing){
-					timed_play(high_freq[mem[i]], low_freq[mem[i]], 1000);
+					fprintf(stdout, "Int: %u\n\r", mem[i]);
+					play(high_freq[mem[i]], low_freq[mem[i]]);
+					//timed_play(high_freq[mem[i]], low_freq[mem[i]], 1000);
 					is_timed_playing = TRUE;
 					fprintf(stdout, "Playing sound\n\r");
+					silence = TRUE;
+					break;
 				}
+				*/
+				/*
 				if(silence == TRUE && !is_playing) {
 					timed_play(0, 0, 30);
 					is_timed_playing = TRUE;
@@ -192,17 +201,20 @@ void task1(void) {
 				}
 				if(is_playing && dds_duration <= 0 && !silence){
 					fprintf(stdout, "Playing timeout\n\r");
+					stop_playing();
 					is_timed_playing = FALSE;
 					silence = TRUE;
 					is_playing = FALSE;
 				}
 				if(is_playing && dds_duration <= 0 && silence){
 					fprintf(stdout, "Silence timeout\n\r");
+					stop_playing();
 					is_timed_playing = FALSE;
 					i++;
 					silence = FALSE;
 					is_playing = FALSE;
 				}
+				*/
 			}
 			// for (int i = 0; i < 12; i++) {
 			// 	if (mem[i] != 0) {

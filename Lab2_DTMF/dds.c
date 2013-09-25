@@ -125,9 +125,11 @@ ISR( TIMER0_OVF_vect){
 	if( count <= 0){
 		count = COUNTMS;
 		time1++;
+		/*
 		if( is_timed_playing && dds_duration > 0){
 			dds_duration--;
 		}
+		*/
 	}
 	count--;	
 }
@@ -197,7 +199,6 @@ void timed_play(int fA, int fB, int duration){
 
 void stop_playing(){
 	is_playing = FALSE;
-	sample = 0;
 	rampCount = 0;
 	increment_a = increment_b = 0;
 	accumulator_a = accumulator_b = 0;
