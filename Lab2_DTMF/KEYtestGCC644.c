@@ -62,16 +62,6 @@ unsigned int low_freq[12] = {697, 697, 697,
 // putchar and getchar are in uart.c
 FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
 
-//**********************************************************
-//timer 0 comare match ISR
-/*
-ISR (TIMER0_COMPA_vect) {
-  //Decrement the  time if they are not already zero
-  if (time1>0) 	--time1;
-}
-*/
-
- 
 //******************************* 
 //Task 1  
 void task1(void) {
@@ -103,7 +93,9 @@ void task1(void) {
 	// Switching in the finite state machine.
 	switch (PushState) {
      case NoPush: 
-        if (butnum != 0) PushState=MaybePush;
+        if (butnum != 0) {
+			PushState=MaybePush;
+		}
         else PushState=NoPush;
         break;
      case MaybePush:
@@ -124,25 +116,25 @@ void task1(void) {
 			if (~PINB & 0x01) {
 		 		switch (butnum) {
 					case 1: 
-						play(697, 0, 100);
+						play(697, 0);
 						break;
 					case 2: 
-						play(770, 0, 100);
+						play(770, 0);
 						break;
 					case 3: 
-						play(852, 0, 100);
+						play(852, 0);
 						break;
 					case 4: 
-						play(941, 0, 100);
+						play(941, 0);
 						break;
 					case 5:
-						play(1209, 0, 100);
+						play(1209, 0);
 						break;
 					case 6:
-						play(1336, 0, 100);
+						play(1336, 0);
 						break;
 					case 7: 
-						play(1477, 0, 100);
+						play(1477, 0);
 						break;
 					default:
 						break;
@@ -160,10 +152,16 @@ void task1(void) {
         break;
   	}
 
+	if (PushState == NoPush) {
+		fprintf(stdout, "Depressed...");
+		//stop_playing();
+	}	
+
 	if (PushFlag) {
 		PushFlag = 0;
 		// The * button was pressed. Clear all memory.
 		if (butnum == 10) {
+			fprintf(stdout, "%u\n\r", butnum);
 			for (int i = 0; i < 12; i++) {
 				mem[i] = 0;
 			}
@@ -171,27 +169,22 @@ void task1(void) {
 		}
 		// The # button was pressed. Play all sounds in memory.
 		else if (butnum == 12) {
+			fprintf(stdout, "%u\n\r", butnum);
 			for (int i = 0; i < 12; i++) {
 				if (mem[i] != 0) {
-					//fprintf(stdout, "%u\n\r", mem[i]);
-					play(high_freq[mem[i]], low_freq[mem[i]], 1000);
-					play(0, 0, 30);
+					//play(high_freq[mem[i]], low_freq[mem[i]]);
 				}
 			}
 		}
 		// A normal button press. 
 		else {
 			if (mem_index < 12) {
+				fprintf(stdout, "%u\n\r", butnum);
 				mem[mem_index] = butnum;
 				mem_index++;
-				play(high_freq[butnum], low_freq[butnum], 1000);
+				//play(high_freq[butnum], low_freq[butnum]);
 			}		
 		}
-		// For debugging purposes without sound.
-		for (int i = 0; i < 12; i++) {
-			fprintf(stdout, "%d ", mem[i]);
-		}
-		fprintf(stdout, "\n\r");
 	}
 } 
  
@@ -237,16 +230,16 @@ int main(void) {
   //endless loop to read keyboard
   while(1) {
 	//Used for debouncing
-	//fprintf(stdout, "%u\n\r", time1);
     if (time1>=t1) {
-	  	//fprintf(stdout, "Entering task1...\n\r");	
 		task1();
 	}
+	/*
 	if(time >= dds_duration){
 		time = 0;
 		OCR0A = 0;
 		stop_playing();
 	}
+	*/
 
   }
 }

@@ -40,6 +40,6 @@ void init_dtmf();
 fa is the high frequency
 fb is the low frequency
 */
-void play( int fA, int fB, int time);
+void play( int fA, int fB);
 void stop_playing();
 #endif

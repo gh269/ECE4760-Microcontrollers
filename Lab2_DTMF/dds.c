@@ -158,7 +158,7 @@ void init_dtmf(){
 }
 
 //plays fA and fB for a duration of duration ms
-void play(int fA, int fB, int duration){
+void play(int fA, int fB){
 	//if( !is_playing ){
 		//is_playing = TRUE;
 		switch( fA){
@@ -178,7 +178,7 @@ void play(int fA, int fB, int duration){
 			case 1209: increment_a = INCREMENT_1209; break;
 			default: increment_b = 0; break;
 		}
-		dds_duration = duration;
+		//dds_duration = duration;
 		//OCR0A = 128;	
 	//}
 
@@ -193,7 +193,7 @@ void stop_playing(){
 	accumulator_a = accumulator_b = 0;
 }
 
-
+/*
 int main(){
 	init_dtmf();
 	play(1477, 697, 1000);
@@ -230,3 +230,4 @@ int main(){
 		}
 	}
 }
+*/
