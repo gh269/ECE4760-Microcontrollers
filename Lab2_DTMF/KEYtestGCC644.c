@@ -153,7 +153,7 @@ void task1(void) {
   	}
 
 	if (PushState == NoPush) {
-		fprintf(stdout, "Depressed...");
+		fprintf(stdout, "Depressed...\n\r");
 		//stop_playing();
 	}	
 
@@ -229,6 +229,13 @@ int main(void) {
 
   //endless loop to read keyboard
   while(1) {
+	// Used for keeping track of time.
+	if( count <= 0){
+		count = COUNTMS;
+		//time++;
+		time1++;
+	}
+
 	//Used for debouncing
     if (time1>=t1) {
 		task1();

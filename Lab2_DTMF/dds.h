@@ -29,6 +29,9 @@ Pin B3 is the Timer0 OC0A output
 #define INCREMENT_770 52913630L
 #define INCREMENT_825 56693175L
 #define INCREMENT_941 64664579L
+#define COUNTMS 62
+
+volatile char count;
 
 char is_playing;
 volatile int dds_duration;

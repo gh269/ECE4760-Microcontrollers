@@ -8,7 +8,6 @@
 #include "dds.h"
 
 #define OUTPUT_PIN (1 << PINB3);
-#define COUNTMS 62
 
 volatile unsigned long accumulator_a;
 volatile unsigned long accumulator_b;
@@ -25,7 +24,6 @@ volatile unsigned char highbyte_a;
 volatile unsigned char highbyte_b;
 
 volatile unsigned int rampCount, sample;
-volatile char count;
 
 #define RAMP_LENGTH 312
 
