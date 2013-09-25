@@ -153,7 +153,7 @@ void task1(void) {
   	}
 
 	if (PushState == NoPush) {
-		fprintf(stdout, "Depressed...\n\r");
+		//fprintf(stdout, "Depressed...\n\r");
 		//stop_playing();
 	}	
 
@@ -178,8 +178,8 @@ void task1(void) {
 		}
 		// A normal button press. 
 		else {
+			fprintf(stdout, "%u\n\r", butnum);
 			if (mem_index < 12) {
-				fprintf(stdout, "%u\n\r", butnum);
 				mem[mem_index] = butnum;
 				mem_index++;
 				//play(high_freq[butnum], low_freq[butnum]);
@@ -227,6 +227,8 @@ int main(void) {
 
   initialize();
 
+  play(1477, 697);
+	
   //endless loop to read keyboard
   while(1) {
 	// Used for keeping track of time.

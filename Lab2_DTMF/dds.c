@@ -208,11 +208,9 @@ void update_status_variables(){
 		//finished ramping
 		else if(sample > RAMPDOWNEND){
 			rampCount = 0;
-			sample = 0;
-
+			sample = 0;     
 		}
 		else{
-			continue;
 		}
 
 	}
