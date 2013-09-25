@@ -18,14 +18,19 @@ unsigned char highbyte;
 unsigned long increment_a;
 unsigned long increment_b;
 
+volatile unsigned long sineA;
+volatile unsigned long sineB;
+
 volatile unsigned char highbyte_a;
 volatile unsigned char highbyte_b;
-volatile unsigned long rampCount, sample;
+
+volatile unsigned int rampCount, sample;
 volatile char count;
 
 #define RAMP_LENGTH 312
 
-signed char sineTable[256] = 
+signed char sineTable[256];
+/* = 
 
 { 0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 
 39, 42, 45, 48, 51, 54, 57, 59, 62, 65, 67, 70, 
@@ -49,8 +54,9 @@ signed char sineTable[256] =
 -78, -75, -73, -70, -67, -65, -62, -59, -57, -54, -51, -48, 
 -45, -42, -39, -36, -33, -30, -27, -24, -21, -18, -15, -12, 
 -9, -6, -3  };
-
-char rampTable[RAMP_LENGTH] = 
+*/
+char rampTable[256]; 
+/*= 
 
 { 0, 0, 0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4, 
 5, 5, 6, 6, 6, 7, 7, 8, 8, 8, 9, 9, 
@@ -78,7 +84,7 @@ char rampTable[RAMP_LENGTH] =
 113, 113, 113, 114, 114, 115, 115, 115, 116, 116, 117, 117, 
 118, 118, 118, 119, 119, 120, 120, 120, 121, 121, 122, 122, 
 122, 123, 123, 124, 124, 124, 125, 125, 126, 126, 127  };
-
+*/
 /*
 Timer0 is a 8 bit register 
 and will overflow at a rate of 
@@ -88,75 +94,79 @@ and will overflow at a rate of
  256 
  To generate a 1ms time base, 
 */
+
+volatile unsigned long accumulator ;
+volatile unsigned char changed;
+
+
+volatile unsigned long increment;
 ISR( TIMER0_OVF_vect){
 
-	accumulator_a += increment_a;
-	accumulator_b += increment_b;
+//	highbyte_a = (char) (accumulator_a >> 24);7
+//	highbyte_b = (char) (accumulator_b >> 24);
+	//changed = TRUE;
 
-	highbyte_a = (char) (accumulator_a >> 24);
-	highbyte_b = (char) (accumulator_b >> 24);
+
+	//accumulator = accumulator + increment ;
+	//highbyte = (char)(accumulator >> 24) ;
+	
+	// output the wavefrom sample
+	//OCR0A = 128 + ((sineTable[highbyte] * rampTable[rampCount])>>7) ;
+	changed = TRUE;
+
 
 	OCR0A = 128 + 
 	   ( (
-	   	   (sineTable[highbyte_b] + sineTable[highbyte_a])
-	   	                          * rampTable[rampCount]
+	   	   (sineTable[(accumulator_a >> 24)] + sineTable[(accumulator_b >> 24)]) * rampTable[rampCount]
 	   	 ) >> 8
 	   );
-
-	sample++;
-
-	//ramping up
-	if( sample <= RAMPUPEND )
-		rampCount++;
-	//holdsteady the max value 
-	if( sample <= RAMPUPEND && sample <= RAMPDOWNSTART)
-		rampCount = RAMP_LENGTH - 1;
-	//begin rampdown
-	if( sample > RAMPDOWNSTART && sample <= RAMPDOWNSTART)
-		rampCount--;
-	//finished ramping
-	if(sample > RAMPDOWNEND)
-		rampCount = 0;
-
+	accumulator_a += increment_a;
+	accumulator_b += increment_b;
 	//generates a 1 ms timebase
-	count--;
-	if( count == 0){
-		count = COUNTMS;
-		//time++;
-		//time1++;
-	}
-
-	
+	count--;	
 }
 
 
 void init_dtmf(){
 	DDRB = 0;
 	DDRB |= OUTPUT_PIN;
-
+	int i;
+	for (i=0; i<256; i++){
+		sineTable[i] = (char)(127.0 * sin(6.283*((float)i)/256.0)) ;
+		// the following table needs 
+		// rampTable[0]=0 and rampTable[255]=127
+		rampTable[i] = i>>1 ;
+	}
 	time = 0;
 
-	TCCR0B = 0;
-	//set divider to 1, run T0 at 16 MHz 
-	TCCR0B |= T0_CS00;
-
+	// TCCR0B = 0;
+	// //set divider to 1, run T0 at 16 MHz 
+	// TCCR0B |= T0_CS00;
+	TCCR0B = 1;
 	TIMSK0 = 0;
 	TIMSK0 |= TIMER0_OVERFLOW_INTERRUPT_ENABLE;
 	//turn on fast PWM and OC0A - output 
 	TCCR0A = 0;
-	TCCR0A |= WAVE_GEN_M00 + WAVE_GEN_M01 + COMPARE_MATCH_OUTPUT_A0 + COMPARE_MATCH_OUTPUT_A1; 
-	OCR0A = 0;
+	TCCR0A = (1<<COM0A0) | (1<<COM0A1) | (1<<WGM00) | (1<<WGM01) ; 
+
+	//TCCR0A |= WAVE_GEN_M00 + WAVE_GEN_M01 + COMPARE_MATCH_OUTPUT_A0 + COMPARE_MATCH_OUTPUT_A1; 
+	OCR0A = 128;
+	//increment = INCREMENT_941;
+	//increment_a = INCREMENT_941;
+	//increment_b = INCREMENT_941;
 	sei();
 }
 
 //plays fA and fB for a duration of duration ms
 void play(int fA, int fB, int duration){
-	if( !is_playing ){
+	//if( !is_playing ){
 		//is_playing = TRUE;
 		switch( fA){
 			case 1209: increment_a = INCREMENT_1209; break;
 			case 1336: increment_a = INCREMENT_1336; break;
 			case 1477: increment_a = INCREMENT_1477; break;
+			case 697:  increment_a = INCREMENT_697; break;
+			case 941: increment_a = INCREMENT_941; break;
 			default: increment_a = 0; break;
 		}
 
@@ -165,11 +175,12 @@ void play(int fA, int fB, int duration){
 			case 770: increment_b = INCREMENT_770; break;
 			case 825: increment_b = INCREMENT_825; break;
 			case 941: increment_b = INCREMENT_941; break;
+			case 1209: increment_a = INCREMENT_1209; break;
 			default: increment_b = 0; break;
 		}
 		dds_duration = duration;
-		OCR0A = 128;	
-	}
+		//OCR0A = 128;	
+	//}
 
 
 }
@@ -183,3 +194,39 @@ void stop_playing(){
 }
 
 
+int main(){
+	init_dtmf();
+	play(1477, 697, 1000);
+	while(1){
+		if( count <= 0){
+			count = COUNTMS;
+			//time++;
+			//time1++;
+		}
+
+		if(changed == TRUE){
+			changed = FALSE;
+
+			sample++;
+			//ramping up
+			if( sample <= RAMPUPEND )
+				rampCount++;
+			//holdsteady the max value 
+			else if( sample > RAMPUPEND && sample <= RAMPDOWNSTART)
+				rampCount = 255;
+			//begin rampdown
+			else if( sample > RAMPDOWNSTART && sample <= RAMPDOWNEND)
+				rampCount--;
+			//finished ramping
+			else if(sample > RAMPDOWNEND){
+				rampCount = 0;
+				sample = 0;
+
+			}
+			else{
+				continue;
+			}
+
+		}
+	}
+}

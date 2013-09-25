@@ -14,10 +14,12 @@ Pin B3 is the Timer0 OC0A output
 //5 milliseconds and ramp down again in about the same amount of time
 //each button press is 1 sec
 
-#define RAMPUPEND  312//     5 ms * 62.5 cycles / ms
-#define RAMPDOWNSTART 62187// (1000 ms - 5 = 995) ms * 62.5 cycles / ms 
-#define RAMPDOWNEND 62500 // 1000 * 62.5
-
+// #define RAMPUPEND  312//     5 ms * 62.5 cycles / ms
+// #define RAMPDOWNSTART 62187// (1000 ms - 5 = 995) ms * 62.5 cycles / ms 
+// #define RAMPDOWNEND 62500 // 1000 * 62.5
+#define RAMPUPEND 250 // = 4*62.5 or 4mSec * 62.5 samples/mSec NOTE:max=255
+#define RAMPDOWNSTART 625 // = 10*62.5
+#define RAMPDOWNEND 875 // = 14*62.5 NOTE: RAMPDOWNEND-RAMPDOWNSTART<255 
 //increment = 68719 * F
 #define INCREMENT_1209 83081271L
 #define INCREMENT_1336 91808584L
@@ -26,7 +28,7 @@ Pin B3 is the Timer0 OC0A output
 #define INCREMENT_697 47897143L
 #define INCREMENT_770 52913630L
 #define INCREMENT_825 56693175L
-#define INCREMENT_941 646664579L
+#define INCREMENT_941 64664579L
 
 char is_playing;
 volatile int dds_duration;

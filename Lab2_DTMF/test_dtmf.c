@@ -12,13 +12,15 @@
 #include "dds.h"
 #include "atmega1284p.h"
 
-
+/*
 int main(){
 	init_dtmf();
-	play(0,697,1000);
+	//play(0, 941,1000);
 	while(1){
+		
 		//if(time >= dds_duration){
 		//	stop_playing();
 		//}
 	}
 }
+*/
