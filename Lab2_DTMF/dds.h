@@ -47,7 +47,7 @@ volatile unsigned int time1;
 
 volatile char play_stop;
 volatile char play_start;
-
+volatile unsigned int rampCount;
 void update_status_variables();
 void init_dtmf();
 /*

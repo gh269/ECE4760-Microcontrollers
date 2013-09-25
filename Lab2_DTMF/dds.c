@@ -23,7 +23,7 @@ volatile unsigned long sineB;
 volatile unsigned char highbyte_a;
 volatile unsigned char highbyte_b;
 
-volatile unsigned int rampCount, sample;
+volatile unsigned int  sample;
 
 #define RAMP_LENGTH 312
 
