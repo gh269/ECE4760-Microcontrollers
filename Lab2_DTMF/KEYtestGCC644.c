@@ -173,30 +173,33 @@ void task1(void) {
 			char silence;
 			silence = FALSE;
 
-			is_timed_playing = TRUE;
+			
 			while( i < 12 ){
 				fprintf(stdout, "Int: %u\n\r", i);
 				if(silence == FALSE && !is_playing){
-					timed_play(high_freq[mem[i]], low_freq[mem[i]], 100);
+					timed_play(high_freq[mem[i]], low_freq[mem[i]], 1000);
+					is_timed_playing = TRUE;
 					fprintf(stdout, "Playing sound\n\r");
 				}
 				if(silence == TRUE && !is_playing) {
 					timed_play(0, 0, 30);
+					is_timed_playing = TRUE;
 					fprintf(stdout, "Playing silence\n\r");
 				}
 				if(is_playing && dds_duration <= 0 && !silence){
 					fprintf(stdout, "Playing timeout\n\r");
+					is_timed_playing = FALSE;
 					silence = TRUE;
 					is_playing = FALSE;
 				}
-				if(silence && dds_duration <= 0){
+				if(is_playing && dds_duration <= 0 && silence){
 					fprintf(stdout, "Silence timeout\n\r");
+					is_timed_playing = FALSE;
 					i++;
 					silence = FALSE;
 					is_playing = FALSE;
 				}
 			}
-			is_timed_playing = FALSE;
 			// for (int i = 0; i < 12; i++) {
 			// 	if (mem[i] != 0) {
 			// 		play(high_freq[mem[i]], low_freq[mem[i]]);
@@ -233,6 +236,8 @@ void initialize(void) {
 	PushFlag = 0;
 	//init the state machine
 	PushState = NoPush;
+	//init the playing state machine
+	is_timed_playing = FALSE;
 
 	mem_index = 0;
 
@@ -257,11 +262,6 @@ int main(void) {
 	
   //endless loop to read keyboard
   while(1) {
-	// Used for keeping track of time.
-	if( count <= 0){
-		count = COUNTMS;
-		time1++;
-	}
 	update_status_variables();
 	//Used for debouncing
     if (time1>=t1) {

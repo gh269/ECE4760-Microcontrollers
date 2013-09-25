@@ -121,6 +121,11 @@ ISR( TIMER0_OVF_vect){
 	accumulator_a += increment_a;
 	accumulator_b += increment_b;
 	//generates a 1 ms timebase
+	// Used for keeping track of time.
+	if( count <= 0){
+		count = COUNTMS;
+		time1++;
+	}
 	count--;	
 	if( is_timed_playing && dds_duration > 0){
 		dds_duration--;
