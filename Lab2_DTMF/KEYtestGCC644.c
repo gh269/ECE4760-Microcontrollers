@@ -147,7 +147,8 @@ void task1(void) {
 
 	if (PushState == NoPush && !is_timed_playing) {
 		//fprintf(stdout, "Depressed...\n\r");
-		stop_playing();
+		//stop_playing();
+		play_stop = FALSE;
 	}	
 
 	if (PushFlag) {
@@ -254,7 +255,16 @@ int main(void) {
   initialize();
 
   //play(1336, 852);
-	
+  if(rampCount >= 255){
+ 	 play_start = FALSE;
+ 	 rampCount = 255;
+  }
+  if( rampCount <= 0){
+  	play_stop = FALSE;
+  	rampCount = 0;
+  	stop_playing();
+  }
+
   //endless loop to read keyboard
   while(1) {
 	update_status_variables();

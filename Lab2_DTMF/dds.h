@@ -45,6 +45,9 @@ volatile int dds_duration;
 volatile unsigned int time;
 volatile unsigned int time1;
 
+volatile char play_stop;
+volatile char play_start;
+
 void update_status_variables();
 void init_dtmf();
 /*

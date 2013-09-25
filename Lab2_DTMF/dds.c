@@ -130,6 +130,13 @@ ISR( TIMER0_OVF_vect){
 		}
 	}
 	count--;
+	if( play_start){
+		rampCount++;
+	}
+
+	if(play_stop){
+		rampCount--;
+	}
 	//update_status_variables();	
 }
 
@@ -160,7 +167,9 @@ void init_dtmf(){
 	//increment = INCREMENT_941;
 	//increment_a = INCREMENT_941;
 	//increment_b = INCREMENT_941;
-
+	play_start = FALSE;
+	play_stop = FALSE;
+	rampCount = 0;
 	sample = 0;
 
 	sei();
