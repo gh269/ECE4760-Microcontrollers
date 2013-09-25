@@ -176,7 +176,7 @@ void task1(void) {
 				}
 				if(silence == FALSE && !is_playing){
 					fprintf(stdout, "Int: %u\n\r", mem[i]);
-					timed_play(high_freq[mem[i]], low_freq[mem[i]], 1000);
+					timed_play(high_freq[mem[i]], low_freq[mem[i]], 100);
 					is_timed_playing = TRUE;
 					fprintf(stdout, "Playing sound\n\r");
 					silence = TRUE;

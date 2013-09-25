@@ -129,7 +129,8 @@ ISR( TIMER0_OVF_vect){
 			dds_duration--;
 		}
 	}
-	count--;	
+	count--;
+	//update_status_variables();	
 }
 
 
@@ -159,13 +160,16 @@ void init_dtmf(){
 	//increment = INCREMENT_941;
 	//increment_a = INCREMENT_941;
 	//increment_b = INCREMENT_941;
+
+	sample = 0;
+
 	sei();
 }
 
 //plays fA and fB for a duration of duration ms
 void play(int fA, int fB){
 	//if( !is_playing ){
-		//is_playing = TRUE;
+		is_playing = TRUE;
 		switch( fA){
 			case 1209: increment_a = INCREMENT_1209; break;
 			case 1336: increment_a = INCREMENT_1336; break;
@@ -196,41 +200,46 @@ void timed_play(int fA, int fB, int duration){
 
 void stop_playing(){
 	is_playing = FALSE;
-	rampCount = 0;
+	//rampCount = 0;
 	increment_a = increment_b = 0;
 	accumulator_a = accumulator_b = 0;
 }
 
 
 void update_status_variables(){
-	if(changed == TRUE){
+	if(changed == TRUE ){
 		changed = FALSE;
-
-		if (PushState == Pushed && rampCount < 255) {
-			rampCount++;
-		}
-		if (PushState == NoPush && rampCount > 0 ) {
-			rampCount++;
+		
+		if (is_playing) {
+			if (PushState == Pushed && rampCount < 255) {
+				rampCount++;
+			}
+			if (PushState == NoPush && rampCount > 0 ) {
+				rampCount--;
+			}
 		}
 		/*
-		sample++;
-		//ramping up
-		if( sample <= RAMPUPEND )
-			rampCount++;
-		//holdsteady the max value 
-		else if( sample > RAMPUPEND && sample <= RAMPDOWNSTART)
-			rampCount = 255;
-		//begin rampdown
-		else if( sample > RAMPDOWNSTART && sample <= RAMPDOWNEND && PushState == )
-			rampCount--;
-		//finished ramping
-		else if(sample > RAMPDOWNEND){
-			rampCount = 0;
-			sample = 0;
-		}
-		else{
+		if (is_playing) {
+			sample++;
+			//ramping up
+			if( sample <= RAMPUPEND )
+				rampCount++;
+			//holdsteady the max value 
+			else if( sample > RAMPUPEND && sample <= RAMPDOWNSTART)
+				rampCount = 255;
+			//begin rampdown
+			else if( sample > RAMPDOWNSTART && sample <= RAMPDOWNEND)
+				rampCount--;
+			//finished ramping
+			else if(sample > RAMPDOWNEND){
+				rampCount = 0;
+				sample = 0;
+			}
+			else{
+			}
 		}
 		*/
+		
 	}
 }
 /*
