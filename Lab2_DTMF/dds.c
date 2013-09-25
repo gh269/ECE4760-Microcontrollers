@@ -125,11 +125,11 @@ ISR( TIMER0_OVF_vect){
 	if( count <= 0){
 		count = COUNTMS;
 		time1++;
+		if( is_timed_playing && dds_duration > 0){
+			dds_duration--;
+		}
 	}
 	count--;	
-	if( is_timed_playing && dds_duration > 0){
-		dds_duration--;
-	}
 }
 
 

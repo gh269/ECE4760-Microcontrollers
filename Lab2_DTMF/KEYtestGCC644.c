@@ -172,9 +172,13 @@ void task1(void) {
 			is_playing = FALSE;
 			char silence;
 			silence = FALSE;
-
+			//init the playing state machine
+			is_timed_playing = FALSE;
 			
-			while( i < 12 ){
+			while( i < 12){
+				if (mem[i] == 0) {
+					break;
+				}
 				fprintf(stdout, "Int: %u\n\r", i);
 				if(silence == FALSE && !is_playing){
 					timed_play(high_freq[mem[i]], low_freq[mem[i]], 1000);
@@ -236,8 +240,6 @@ void initialize(void) {
 	PushFlag = 0;
 	//init the state machine
 	PushState = NoPush;
-	//init the playing state machine
-	is_timed_playing = FALSE;
 
 	mem_index = 0;
 
