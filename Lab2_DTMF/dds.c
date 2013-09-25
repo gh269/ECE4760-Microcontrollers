@@ -179,8 +179,12 @@ void play(int fA, int fB){
 		//dds_duration = duration;
 		//OCR0A = 128;	
 	//}
+}
 
-
+void timed_play(int fA, int fB, int duration){
+	dds_duration = duration;
+	play(fA, fB);
+	is_playing=TRUE;
 }
 
 void stop_playing(){
