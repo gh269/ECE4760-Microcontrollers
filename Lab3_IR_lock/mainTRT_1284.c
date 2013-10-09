@@ -1,23 +1,12 @@
 #include "trtSettings.h"
-#include "trtkernel_1284.c"
-#include "IR_comm_loopback_GCC1284_v2.c"
 #include <util/delay.h>
 #include <stdio.h>
 #include <stdlib.h> 
 
-// serial communication library
-// Don't mess with the semaphores
-#define SEM_RX_ISR_SIGNAL 1
-#define SEM_STRING_DONE 2 // user hit <enter>
 #include "trtUart.h"
-#include "trtUart_usart_1.c"
-// UART file descriptor
-// putchar and getchar are in uart.c
-FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
-
-// input arguments to each thread
-// not actually used in this example
-int args[2] ;
+#include "trtkernel_1284.c"
+#include "trtUART_usart_1.c"
+#include "IR_comm_loopback_GCC1284_v2.c"
 
 // two semaphores to protect message --
 // sender must wait until message is received 
@@ -25,9 +14,12 @@ int args[2] ;
 // receiver must wait until message is sent
 #define SEM_TX_WAIT  4
 #define SEM_RX_WAIT  5
-
 // semaphore to protect shared variable
-#define SEM_SHARED 7
+#define SEM_SHARED 6
+
+// input arguments to each thread
+// not actually used in this example
+int args[2] ;
 
 // binary states
 #define FALSE 0
@@ -61,7 +53,6 @@ unsigned char key_state;
 unsigned char lock_state;
 //task to transmit
 unsigned char lock_command;
-
 //recieved time used to prevent man in the middle attacks
 char* challenge_time_string; 
 
@@ -87,14 +78,17 @@ void read_switches() {
 }
 
 // --- define task 1  ----------------------------------------
-void IR_key() {
+void IR_key(void* args) {
+	//trtWait(SEM_UART);
+	//fprintf(stdout, "Made it to IR_key task!");
+	//trtSignal(SEM_UART);
 	uint32_t rel, dead;
-	char ir_tx_data[buffer_size];
-	char ir_rx_data[buffer_size];
+	//char ir_tx_data[buffer_size];
+	//char ir_rx_data[buffer_size];
 	// Initialize the state variable
-	key_state = IDLE;
+	//key_state = IDLE;
 	// Read the switches
-	read_switches();
+	//read_switches();
 	// FSM for IR_key
 	while (TRUE) {
 		/*
@@ -146,17 +140,20 @@ void IR_key() {
 }
 
 // --- define task 2  ----------------------------------------
-void IR_lock() {
+void IR_lock(void* args) {
+	//trtWait(SEM_UART);
+	fprintf(&uart_str, "Made it to IR_lock task!");
+	//trtSignal(SEM_UART);
 	uint32_t rel, dead;
-	char ir_tx_data[buffer_size];
-	char ir_rx_data[buffer_size];
-	char rec_state;
+	//char ir_tx_data[buffer_size];
+	//char ir_rx_data[buffer_size];
+	//char rec_state;
 	// Initialize the state variable
-	lock_state = IDLE;
+	//lock_state = IDLE;
 	// Initialize the state of the lock
-	state = LOCK;
+	//state = LOCK;
 	// Read the switches 
-	read_switches();
+	//read_switches();
 	// FSM for IR_key
 	while (TRUE) {
 		/*
@@ -218,24 +215,24 @@ void IR_lock() {
 // --- Main Program ----------------------------------
 int main(void) {
 
-  DDRC = 0xff;    	// led connections
-  PORTC = 0xff;
+  DDRC = 0x01;    	// led connections
+  PORTC = 0x00;
   DDRB = 0x00; 		// switch connections
   PORTB = 0xff; 	// pullup on
 
   //init the UART -- trt_uart_init() is in trtUart.c
   trt_uart_init();
   stdout = stdin = stderr = &uart_str;
-  fprintf(stdout,"\n\r TRT 09feb09\n\r\n\r");
+  fprintf(stdout,"\n\r TRT 9feb2009\n\r\n\r");
 
-  // start TRT
-  trtInitKernel(80); // 80 bytes for the idle task stack
+  initialize_IR();
 
   // --- create semaphores ----------
   // You must creat the first two semaphores if you use the uart
   trtCreateSemaphore(SEM_RX_ISR_SIGNAL, 0) ; // uart receive ISR semaphore
   trtCreateSemaphore(SEM_STRING_DONE,0) ;  // user typed <enter>
-  
+  trtCreateSemaphore(SEM_UART, 1) ;
+
   // message protection
   trtCreateSemaphore(SEM_TX_WAIT, 1) ; // message send interlock
   trtCreateSemaphore(SEM_RX_WAIT, 0) ; // message receive interlock
@@ -243,18 +240,17 @@ int main(void) {
   // variable protection
   trtCreateSemaphore(SEM_SHARED, 1) ; // protect shared variable
 
- // --- creat tasks  ----------------
-  
-  trtCreateTask(IR_lock, 100, SECONDS2TICKS(0.1), SECONDS2TICKS(0.2), &(args[0]));
-  trtCreateTask(IR_key, 100, SECONDS2TICKS(0.1), SECONDS2TICKS(0.2), &(args[1]));
-  
+  // --- create tasks  ----------------
+  trtCreateTask(IR_lock, 1000, SECONDS2TICKS(0.1), SECONDS2TICKS(0.2), &(args[0]));
+  trtCreateTask(IR_key, 1000, SECONDS2TICKS(0.1), SECONDS2TICKS(0.2), &(args[1]));
+
   // --- Idle task --------------------------------------
   // For debugging, blink an LED
   // For production, you would probably comment out the body of the WHILE
-  while (1) {}
-  /*{
-  	PORTC = PORTC ^ 0x80 ;
+  while (1) {
+  	PORTC = PORTC ^ 0x01 ;
 	_delay_ms(500) ;
-  }*/
+	
+  }
 
 } // main

@@ -41,9 +41,10 @@
 #include <stdio.h>
 #include <util/delay.h>
 #include <string.h>
+#include "trtUart_usart_1.c"
+#include "trtSettings.h"
+#include "trtkernel_1284.c"
 
-/* CPU frequency */
-#define F_CPU 16000000UL
 /* UART baud rate */
 // for IR link
 #define IR_UART_BAUD  4800
@@ -98,9 +99,6 @@ volatile char ir_tx_ready, ir_rx_ready ;
 ISR (TIMER0_COMPA_vect) {
 	unsigned char c ;
 	    
-  	//Decrement the time if not already zero
-  	time++ ; // running cpu time
-	
 	//**********************
   	// send an ir char if tx is ready and still char in buffer to send
 	// and USART is ready
@@ -166,9 +164,10 @@ void ir_send_packet(char tx_id, char ir_data[])
   	ir_tx_count = 0 ;
   	ir_tx_ready = 1 ;
 
-	tx_send_time = time ;
+	tx_send_time =  trtCurrentTime();
+
 	// wait 
-	while (ir_tx_ready && (time < tx_send_time + ir_tx_timeout)) {};
+	while (ir_tx_ready && (trtCurrentTime() < tx_send_time + ir_tx_timeout)) {};
 	
 }
 
@@ -216,7 +215,7 @@ char ir_rec_packet(char tx_id, char ir_data[])
 
 //********************************************************** 
 //Set it all up
-void initialize(void)
+void initialize_IR(void)
 {
   //********************    
   //set up timer 0 for 1 mSec timebase 
@@ -246,6 +245,11 @@ void initialize(void)
   UBRR0L = (F_CPU / (16UL * IR_UART_BAUD)) - 1;
   UCSR0B = _BV(TXEN0) | _BV(RXEN0); /* tx/rx enable */
   UCSR0C = (1<<UCSZ01) | (1<<USBS0) ; // 7 bit | 2 stop bits
+
+  //init UART1 for PC comm
+  UBRR1L = (F_CPU / (16UL * PC_UART_BAUD)) - 1;
+  UCSR1B = _BV(TXEN1) ; //| _BV(RXEN1); /* tx/rx enable */
+  fprintf(stdout,"\n\r...Starting IR comm ...\n\r");
   
   //********************
   //crank up the ISRs

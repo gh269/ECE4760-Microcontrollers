@@ -9,9 +9,14 @@
 // -- Added one byte to stack init section in trtCreateTask
 //---------------------------------------------------------------
 
+#ifndef TRT_KERNEL_C
+#define TRT_KERNEL_C
+
 #include <inttypes.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include "trtUart.h"
+#include "trtUart_usart_1.c"
 
 #define TERMINATED 0
 #define READYQ 1
@@ -22,7 +27,6 @@
 
 #define lo8(X) ((uint8_t)((uint16_t)(X)))
 #define hi8(X) ((uint8_t)((uint16_t)(X) >> 8))
-
 
 /******************* KERNEL DATA STRUCTURES ************************/
 
@@ -59,7 +63,7 @@ ISR(TIMER1_COMPA_vect) {
   uint32_t now;
   uint32_t nextHit;
   int32_t timeleft;
-	
+  
   TIMSK1 = 0 ; //&= ~(1<<OCIE1A); // turn off output compare 1A ISR
   //PORTC = ~PORTC ;
   nextHit = 0x7FFFFFFF;
@@ -81,18 +85,18 @@ ISR(TIMER1_COMPA_vect) {
     t = &kernel.tasks[i];
     if (t->state == TIMEQ) {
       if (t->release <= now) {
-	t->state = READYQ;
+  t->state = READYQ;
       } else if (t->release < nextHit) {
-	nextHit = t->release;
+  nextHit = t->release;
       }
     }
     if (t->state == READYQ) {
       if (t->deadline < kernel.tasks[running].deadline) {
-	running = i;
+  running = i;
       }
     }
   }
-
+  fprintf(stdout, "Old: %u New: %u\n\r", oldrunning, running);
   if (running != oldrunning) { // perform context switch?
 
     // store old context
@@ -181,14 +185,15 @@ void trtCreateTask(void (*fun)(void*), uint16_t stacksize, uint32_t release, uin
     *sp-- = 0x00;         // store r26-r31
 
   t = &kernel.tasks[kernel.nbrOfTasks];
-
+  ///*
   t->release = release;
   t->deadline = deadline;
   t->state = TIMEQ;
-
+  //*/
   t->spl = lo8(sp);       // store stack pointer
   t->sph = hi8(sp);
   
+
   // call interrupt handler to schedule
   TIMER1_COMPA_vect();
 
@@ -219,7 +224,7 @@ void trtWait(uint8_t semnbr) {
 
     t->state = semnbr + WAIT_OFFSET; // waiting for Sem#semnbr
     // call interrupt handler to schedule
-	TIMER1_COMPA_vect();
+  TIMER1_COMPA_vect();
   }
 
   sei(); // reenable interrupts
@@ -238,8 +243,8 @@ void trtSignal(uint8_t semnbr) {
     t = &kernel.tasks[i];
     if (t->state == (semnbr + WAIT_OFFSET)) {
       if (t->deadline <= minDeadline) {
-	taskToReadyQ = i;
-	minDeadline = t->deadline;
+  taskToReadyQ = i;
+  minDeadline = t->deadline;
       }
     }
   }
@@ -249,7 +254,7 @@ void trtSignal(uint8_t semnbr) {
   } else {
     kernel.tasks[taskToReadyQ].state = READYQ; // make task ready
     // call interrupt handler to schedule
-	TIMER1_COMPA_vect();
+  TIMER1_COMPA_vect();
   }
 
   sei(); // reenable interrupts
@@ -314,3 +319,5 @@ uint8_t trtAccept(uint8_t semnbr) {
   sei(); // reenable interrupts
   return temp ;
 }
+
+#endif

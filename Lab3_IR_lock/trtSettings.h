@@ -1,9 +1,11 @@
 
 //trtSettings.h
 // include before trtkernel
+#ifndef TRTKERNEL_H
+#define TRTKERNEL_H
 
-#define MAXNBRTASKS 4
-#define MAXNBRSEMAPHORES 7 // 3 sem (1-3) are needed for uart
+#define MAXNBRTASKS 3
+#define MAXNBRSEMAPHORES 8 // 3 sem (1-3) are needed for uart
 #define MAXNBRMUTEX 1
 
 #define PRESCALER 1024 // the actual value for timer1 prescalar
@@ -14,3 +16,5 @@
 
 /* UART baud rate */
 #define UART_BAUD  9600
+
+#endif

@@ -11,10 +11,12 @@
  * $Id: uart.h,v 1.1 2005/12/28 21:38:59 joerg_wunsch Exp $
  */
 
+#ifndef UART_H
+#define UART_H
 /*
  * Perform UART startup initialization.
  */
-void	uart_init(void);
+void	trt_uart_init(void);
 
 /*
  * Send one character to the UART.
@@ -25,6 +27,12 @@ int	uart_putchar(char c, FILE *stream);
  * Size of internal line buffer used by uart_getchar().
  */
 #define RX_BUFSIZE 80
+// serial communication library
+// Don't mess with the semaphores
+#define SEM_RX_ISR_SIGNAL 1
+#define SEM_STRING_DONE 2 // user hit <enter>
+// allow task2 to control task1
+#define SEM_UART 3
 
 /*
  * Receive one character from the UART.  The actual reception is
@@ -32,3 +40,9 @@ int	uart_putchar(char c, FILE *stream);
  * each invokation.
  */
 int	uart_getchar(FILE *stream);
+
+// UART file descriptor
+// putchar and getchar are in uart.c
+FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
+
+#endif

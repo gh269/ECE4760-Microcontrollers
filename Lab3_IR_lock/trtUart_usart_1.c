@@ -15,6 +15,7 @@
  * Circular buffer/ISR driven putchar added by Jeff Melville
  */
 
+#ifndef UART_USE_RING_BUF_TX
 #define UART_USE_RING_BUF_TX
 
 /* CPU frequency */
@@ -22,16 +23,16 @@
 
 // UART baud rate defined in settings
 //#define UART_BAUD  9600
-
-
 #include <stdint.h>
 #include <stdio.h>
 #include <avr/io.h>
+#include "trtUart.h"
+#include "trtSettings.h"
+#include "trtkernel_1284.c"
+
 
 //jsm - add for interrupt handling
 #include <avr/interrupt.h>
-
-#include "trtuart.h"
 
 //jsm - create the circular buffer with in/out index
 #define TX_BUF_SIZE 200
@@ -231,4 +232,5 @@ uart_getchar(FILE *stream)
 
   return c;
 }
+#endif
 
