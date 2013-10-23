@@ -33,8 +33,27 @@ void initialize_external_interrupt(void){
 	// turn on timer 2 overflow ISR for double precision time
 	TIMSK2 = 1 ;
 }
+/*
+
+motor period cycles       1 second        1 minute         7
+-------------------   *   ---------  *   ----------    * -------------- 
+    		            15,625 cycles     60 seconds      1 rotation
+
+*/
 double cycles_to_rpm(int cycles, int frequency){
 	return  (   (60*((double)frequency)) / ((double) cycles * 7) );
+}
+/*
+
+rpm rotations      1 minute 		     7		    1 second
+-------------  * --------------  *  ---------- * ---------------- 
+	1 minute       60 seconds       1 rotation    15, 625 cycles 
+
+same conversion factor?? WTH?
+*/
+
+double rpm_to_cycles(int rpm, int frequency){
+	return ( (60*((double)frequency)) / ((double) rpm * 7) )
 }
 //----external ISR------
 /*			16 000 000 

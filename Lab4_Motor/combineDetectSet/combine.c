@@ -28,8 +28,15 @@ volatile int motor_period = 0;
 #define WAVE_GEN_M00 (1<<WGM00)
 #define WAVE_GEN_M01 (1 << WGM01)
 
+int K_P = 10;
+int K_D = 5;
+int K_I = 2;
 
+char pid_ready = FALSE;
+struct PID_DATA pid_data;
 
+//Target [ T2 Cycles ] @ 15625 Hz
+int16_t target = rpm_to_cycles(2000);
 /*
 Use Timer 2 to measure the rotation time and output it onto the UART
 
@@ -86,7 +93,10 @@ motor period cycles       1 second        1 minute         7
 -------------------   *   ---------  *   ----------    * -------------- 
     		            15,625 cycles     60 seconds      1 rotation
 
+
 */
+
+
 // --- external interrupt ISR ------------------------
 ISR (INT0_vect) {
         motor_period = TCNT2 + motor_period_ovlf  ;
@@ -96,9 +106,39 @@ ISR (INT0_vect) {
 		
 }
 // --- set up extra 8 bits on timer 2 ----------------
+/*
+PID is run once every 50 seconds
+			16 000 000 
+F_T2 =   --------------- = 15, 625 Hz
+			   1024
+
+			   15, 625 Hz
+F_T2_OVF =   ----------------   =  61.035 Hz
+				  256
+CLOSE ENOUGH
+*/
 ISR (TIMER2_OVF_vect) {
         motor_period_ovlf = motor_period_ovlf + 256 ;
+        pid_ready = TRUE;
+}	
+
+//set control input to the system
+//sets the output from the controller 
+// as input to the system
+void set_input( int8_t input_value){
+	OCR0A = input_value;
 }
+
+//motor period [ T2 cycles] @ 15625 Hz
+int16_t get_measurement(void){
+	return motor_period;
+}
+
+
+int16_t get_reference(void){
+	return target;
+}
+
 
 void init_pwm(){
 	DDRB = 0;
@@ -119,12 +159,16 @@ int main(void){
 	initialize_external_interrupt();
 	init_pwm();
 
+	pid_data = (char *) malloc(sizeof(pidData_t));
+	pid_Init(K_P * SCALING_FACTOR, K_I * SCALING_FACTOR , K_D * SCALING_FACTOR , &pidData);
+
 
 	uart_init();
 	stdout = stdin = stderr = &uart_str;
   	fprintf(stdout, "Starting...\n\r");
 	sei();
 	while(1){
+
 		if( flag ) {
 			//fprintf(stdout, "%d\n", cou);
 			//cou = (cou+1) % 256;
@@ -132,6 +176,13 @@ int main(void){
 			double motor_period_prime = rpm_to_cycle(rpm, 15625);
 			fprintf(stdout, "RPM: %f\n, Cycles: ", rpm, motor_period_prime);
 			flag = FALSE;
+			if (pid_ready){
+				pid_ready = FALSE;
+				referenceValue = get_reference();
+				measementValue = get_measurement();
+				input_value = pid_Controller(referenceValue, measurementValue, & pidData);
+			}
+
 		}
 	}
 }
