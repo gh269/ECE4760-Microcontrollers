@@ -11,6 +11,7 @@
 #include "trtUart.h"
 #include "trtkernel_1284.c"
 #include "trtUART.c"
+#include "lcd_lib.c"
 
 /********************************************************************/
 //						UART Functions
@@ -42,12 +43,9 @@ volatile int motor_period;
 volatile int motor_period_ovlf;
 
 // lcd variables
-const int8_t LCD_initialize[] PROGMEM = "LCD Initialized\0";
-const int8_t LCD_line[] PROGMEM = "line 1\0";
+const int8_t LCD_initialize[] PROGMEM = "RPM: ";
 const int8_t LCD_number[] PROGMEM = "Number=\0";
 int8_t lcd_buffer[17];	// LCD display buffer
-uint16_t count;			// a number to display on the LCD  
-uint8_t anipos, dir;	// move a character around  
 
 /********************************************************************/
 // 							ISRs & Helper Functions
@@ -76,42 +74,39 @@ void init_lcd(void) {
 //********************************************************** 
 //Set it all up
 void initialize(void) {
-    DDRC = 0x01;    	// led connections
-    PORTC = 0x00;
-    DDRB = 0x00; 		// switch connections
-    PORTB = 0xff; 	// pullup on
+  DDRC = 0xff;    	// led connections
+  PORTC = 0x00;
+  DDRB = 0x00; 		// switch connections
+  PORTB = 0xff; 	// pullup on
 
-    //******************** 
-    //init LCD
-    init_lcd();
-    LCDclr;
-    // put some stuff on LCD
-    CopyStringtoLCD(LCD_line, 8, 1);//start at char=8 line=1	
-    CopyStringtoLCD(LCD_number, 0, 0);//start at char=0 line=0
-    // init animation state variables	
-    count=0;
-    anipos = 0;
-    LCDGotoXY(anipos,1);	//second line
-    LCDsendChar('o');
+  //******************** 
+  //initialize variables
+  trtWait(SEM_SHARED) ;
+  speed = 0;
+  prop_gain = 0;
+  diff_gain = 0;
+  int_gain = 0; 
+  trtSignal(SEM_SHARED) ;
 
-    //******************** 
-	//set up INT0
-	EIMSK = 1<<INT0 ; // turn on int0
-	EICRA = 3 ;       // rising edge
-	// turn on timer 2 to be read in int0 ISR
-	TCCR2B = 7 ; // divide by 1024
-	// turn on timer 2 overflow ISR for double precision time
-	TIMSK2 = 1 ;
-
-	//******************** 
-    //init UART0 for PC comm
-    UBRR0L = (F_CPU / (16UL * PC_UART_BAUD)) - 1;
-    UCSR0B = _BV(TXEN0) ; //| _BV(RXEN1); /* tx/rx enable */
-    fprintf(&uart0,"\n\r...Starting IR comm ...\n\r");
+  //******************** 
+  //init LCD
+  init_lcd();
+  LCDclr;
+  // put some stuff on LCD
+  CopyStringtoLCD(LCD_number, 0, 0);//start at char=0 line=0
+ 
+  //******************** 
+  //set up INT0
+  EIMSK = (1 << INT0) ; // turn on int0
+  EICRA = 3 ;       // rising edge
+  // turn on timer 2 to be read in int0 ISR
+  TCCR2B = 7 ; // divide by 1024
+  // turn on timer 2 overflow ISR for double precision time
+  TIMSK2 = 1 ;
   
-    //********************
-    //crank up the ISRs
-    sei();
+  //********************
+  //crank up the ISRs
+  sei();
 }  
 //==================================================
 
@@ -124,6 +119,8 @@ void serialComm(void* args) {
 	// Declare the command and num variables
 	double num ;
 	char cmd[4] ;
+  // initialize
+  initialize();
 	while (TRUE) {
 		// commands:
 		// 's' sets the motor speed
@@ -131,50 +128,45 @@ void serialComm(void* args) {
 		// 'i' sets the differential gain
 		// 'd' sets the integral gain
 		fprintf(stdout, ">") ;
-		fscanf(stdin, "%s%d", cmd, &num) ;
+		fscanf(stdin, "%s%le", cmd, &num) ;
+		fprintf(stdout, "%s%le\n\r", cmd, &num);
 		// update shared variables
 		trtWait(SEM_SHARED) ;
 		switch (cmd[0]) {
 			case 's':	
 				speed = (int) num;
+				fprintf(stdout, "%u\n\r", speed);
 				break;
 			case 'p':
 				prop_gain = (int) num;
+				fprintf(stdout, "%u\n\r", prop_gain);
 				break;
 			case 'i':
 				diff_gain = (int) num;
+				fprintf(stdout, "%u\n\r", diff_gain);
 				break;
 			case 'd': 
 				int_gain = num;
+				fprintf(stdout, "%u\n\r", int_gain);
 				break;
 			default:
 				break;
 		}
 		trtSignal(SEM_SHARED);
 		// Sleep
-	    rel = trtCurrentTime() + SECONDS2TICKS(0.1);
-	    dead = trtCurrentTime() + SECONDS2TICKS(0.1);
-	    trtSleepUntil(rel, dead);
+	  rel = trtCurrentTime() + SECONDS2TICKS(0.1);
+	  dead = trtCurrentTime() + SECONDS2TICKS(0.1);
+	  trtSleepUntil(rel, dead);
 	}
 }
 
 // --- define task 2  ----------------------------------------
 void lcdComm(void* args) {
 	// increment time counter and format string 
-  	sprintf(lcd_buffer,"%-i",count++);	                 
-  	LCDGotoXY(7, 0);
-  	// display the count 
-  	LCDstring(lcd_buffer, strlen(lcd_buffer));	
-      	
-  	// now move a char left and right
-  	LCDGotoXY(anipos,1);	   //second line
-  	LCDsendChar(' '); 
-      	
-  	if (anipos>=7) dir=-1;   // check boundaries
-  	if (anipos<=0 ) dir=1;
-  	anipos=anipos+dir;
-  	LCDGotoXY(anipos,1);	   //second line
-  	LCDsendChar('o');
+  sprintf(lcd_buffer, "%u", speed);	                 
+  LCDGotoXY(7, 0);
+  // display the count 
+  LCDstring(lcd_buffer, strlen(lcd_buffer));	
 }
 
 // --- Main Program ----------------------------------
@@ -195,8 +187,8 @@ int main(void) {
   trtCreateSemaphore(SEM_SHARED, 1) ; // protect shared variable
 
   // --- create tasks  ----------------
-  trtCreateTask(serialComm, 100, SECONDS2TICKS(0.1), SECONDS2TICKS(0.1), &(args[0]));
-  trtCreateTask(lcdComm, 100, SECONDS2TICKS(0.2), SECONDS2TICKS(0.3), &(args[0]));
+  trtCreateTask(serialComm, 1000, SECONDS2TICKS(0.1), SECONDS2TICKS(0.1), &(args[0]));
+  trtCreateTask(lcdComm, 1000, SECONDS2TICKS(0.2), SECONDS2TICKS(0.4), &(args[0]));
 
   // --- Idle task --------------------------------------
   // For debugging, blink an LED
