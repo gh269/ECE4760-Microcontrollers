@@ -4,18 +4,16 @@
 
 ## General Flags
 PROJECT = detectSpeed
-MCU = atmega1284p
+MCU = atmega128
 TARGET = detectSpeed.elf
 CC = avr-gcc
-
-CPP = avr-g++
 
 ## Options common to compile, link and assembly rules
 COMMON = -mmcu=$(MCU)
 
 ## Compile options common for all C compilation units.
 CFLAGS = $(COMMON)
-CFLAGS += -Wall -gdwarf-2 -std=gnu99 -DF_CPU=16000000UL -Os -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
+CFLAGS += -Wall -gdwarf-2 -Os -std=gnu99 -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
 CFLAGS += -MD -MP -MT $(*F).o -MF dep/$(@F).d 
 
 ## Assembly specific flags
@@ -43,7 +41,9 @@ OBJECTS = detectSpeed.o uart.o
 LINKONLYOBJECTS = 
 
 ## Build
-all: $(TARGET) detectSpeed.hex detectSpeed.eep detectSpeed.lss## Compile
+all: $(TARGET) detectSpeed.hex detectSpeed.eep detectSpeed.lss size
+
+## Compile
 detectSpeed.o: ../detectSpeed.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
@@ -63,6 +63,10 @@ $(TARGET): $(OBJECTS)
 %.lss: $(TARGET)
 	avr-objdump -h -S $< > $@
 
+size: ${TARGET}
+	@echo
+	@avr-size -C --mcu=${MCU} ${TARGET}
+
 ## Clean target
 .PHONY: clean
 clean:
@@ -70,5 +74,5 @@ clean:
 
 
 ## Other dependencies
--include $(shell mkdir dep 2>NUL) $(wildcard dep/*)
+-include $(shell mkdir dep 2>/dev/null) $(wildcard dep/*)
 

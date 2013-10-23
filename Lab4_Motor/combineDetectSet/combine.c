@@ -9,13 +9,13 @@ Tasks = read motor speed
 #include <stdio.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
-
+#include "pid.h"
 #include "uart.h"
 #include "atmega1284p.h"
 #include <inttypes.h>
 
-volatile int motor_period_ovlf = 0;
-volatile int motor_period = 0;
+volatile int16_t motor_period_ovlf = 0;
+volatile int16_t motor_period = 0; 
 
 #define OUTPUT_PIN (1 << PINB3);
 
@@ -28,15 +28,15 @@ volatile int motor_period = 0;
 #define WAVE_GEN_M00 (1<<WGM00)
 #define WAVE_GEN_M01 (1 << WGM01)
 
-int K_P = 10;
-int K_D = 5;
-int K_I = 2;
+double K_P = 1;
 
+double K_I = 0.1;
+double K_D = 0.01;
 char pid_ready = FALSE;
 struct PID_DATA pid_data;
 
 //Target [ T2 Cycles ] @ 15625 Hz
-int16_t target = rpm_to_cycles(2000);
+volatile double target; 
 /*
 Use Timer 2 to measure the rotation time and output it onto the UART
 
@@ -74,7 +74,7 @@ same conversion factor?? WTH?
 */
 
 double rpm_to_cycles(double rpm, int frequency){
-	return ( (60*((double)frequency)) / ((double) rpm * 7) )
+	return ( (60*((double)frequency)) / ((double) rpm * 7) );
 }
 //----external ISR------
 /*			16 000 000 
@@ -145,24 +145,29 @@ void init_pwm(){
 	DDRB |= OUTPUT_PIN;
 
 	TIMSK0 = 0;
-	TIMSK0 |= TIMER0_OVERFLOW_INTERRUPT_ENABLE;
+	//TIMSK0 |= TIMER0_OVERFLOW_INTERRUPT_ENABLE;
 	//turn on fast PWM and OC0A - output 
 	TCCR0A = 0;
 	//divide PWM clock by 1024 
-	TCCR0B = (1 << CS02)  |( 1 << CS00 )  ;
+	TCCR0B = 3;// (1 << CS01)  |( 1 << CS00 )  ;
 	TCCR0A = (1<<COM0A0) | (1<<COM0A1) | (1 << WGM02) | (1<<WGM00) | (1<<WGM01) ; 
 
-	OCR0A = 1;
-	sei();
+	OCR0A =87;
+	//sei();
 }
 int main(void){
 	initialize_external_interrupt();
 	init_pwm();
 
-	pid_data = (char *) malloc(sizeof(pidData_t));
-	pid_Init(K_P * SCALING_FACTOR, K_I * SCALING_FACTOR , K_D * SCALING_FACTOR , &pidData);
+	int16_t referenceValue,inputValue;
+	double measurementValue = 0;
+	double rpm = 0;
+	double motor_period_prime = 0;
+	inputValue = 0;
+	//pid_data = (struct PID_DATA *) malloc(sizeof(pidData_t));
+	pid_Init(K_P * SCALING_FACTOR, K_I * SCALING_FACTOR , K_D * SCALING_FACTOR , &pid_data);
 
-
+	target = rpm_to_cycles(2000, 15625);
 	uart_init();
 	stdout = stdin = stderr = &uart_str;
   	fprintf(stdout, "Starting...\n\r");
@@ -172,17 +177,22 @@ int main(void){
 		if( flag ) {
 			//fprintf(stdout, "%d\n", cou);
 			//cou = (cou+1) % 256;
-			double rpm = cycles_to_rpm(motor_period, 15625);
-			double motor_period_prime = rpm_to_cycle(rpm, 15625);
-			fprintf(stdout, "RPM: %f\n, Cycles: ", rpm, motor_period_prime);
+			rpm = cycles_to_rpm(motor_period, 15625);
+			//motor_period_prime = rpm_to_cycles(rpm, 15625);
+			//fprintf(stdout, "RPM: %f\n, Cycles: %f ", rpm, motor_period_prime);
 			flag = FALSE;
+			fprintf(stdout, "RPM: %f\n", rpm);
+			
 			if (pid_ready){
 				pid_ready = FALSE;
-				referenceValue = get_reference();
-				measementValue = get_measurement();
-				input_value = pid_Controller(referenceValue, measurementValue, & pidData);
+				referenceValue = cycles_to_rpm(get_reference(), 15625);
+				measurementValue = cycles_to_rpm(motor_period, 15625);
+				inputValue = pid_Controller(referenceValue, motor_period, & pid_data);
 			}
-
+			
+			fprintf(stdout, "RPM: %f,  input: %d, reference: %d, measurement: %f\n\r ", 
+					rpm,  inputValue, referenceValue, measurementValue);
+			
 		}
 	}
 }
