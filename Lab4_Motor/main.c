@@ -33,9 +33,9 @@ int args[2] ;
 #define TRUE 1
 
 // input variables
-volatile unsigned int speed;
-volatile unsigned int prop_gain;
-volatile unsigned int diff_gain;
+volatile double speed;
+volatile double prop_gain;
+volatile double diff_gain;
 volatile double int_gain; 
 
 // motor variables
@@ -91,7 +91,7 @@ void initialize(void) {
   //******************** 
   //init LCD
   init_lcd();
-  LCDclr;
+  LCDclr();
   // put some stuff on LCD
   CopyStringtoLCD(LCD_number, 0, 0);//start at char=0 line=0
  
@@ -115,12 +115,11 @@ void initialize(void) {
 /********************************************************************/
 // --- define task 1  ----------------------------------------
 void serialComm(void* args) {
-	uint32_t rel, dead;
 	// Declare the command and num variables
-	double num ;
+	volatile double num ;
 	char cmd[4] ;
-  // initialize
-  initialize();
+    // initialize
+    initialize();
 	while (TRUE) {
 		// commands:
 		// 's' sets the motor speed
@@ -128,10 +127,22 @@ void serialComm(void* args) {
 		// 'i' sets the differential gain
 		// 'd' sets the integral gain
 		fprintf(stdout, ">") ;
-		fscanf(stdin, "%s%le", cmd, &num) ;
-		fprintf(stdout, "%s%le\n\r", cmd, &num);
+		fscanf(stdin, "%s%d", cmd, &num) ;
+		//fprintf(stdout, "%s%le\n\r", cmd, &num);
 		// update shared variables
 		trtWait(SEM_SHARED) ;
+		if (cmd[0] == 's') {
+			speed = num;
+			fprintf(stdout, "%d\n\r", speed);
+		}
+		if (cmd[0] == 'p')		
+			prop_gain = (int) num;
+		if (cmd[0] == 'i')		
+			diff_gain = (int) num;
+		if (cmd[0] == 'i')		
+			diff_gain = num;
+
+		/*
 		switch (cmd[0]) {
 			case 's':	
 				speed = (int) num;
@@ -152,21 +163,36 @@ void serialComm(void* args) {
 			default:
 				break;
 		}
+		*/
 		trtSignal(SEM_SHARED);
-		// Sleep
-	  rel = trtCurrentTime() + SECONDS2TICKS(0.1);
-	  dead = trtCurrentTime() + SECONDS2TICKS(0.1);
-	  trtSleepUntil(rel, dead);
 	}
 }
 
 // --- define task 2  ----------------------------------------
 void lcdComm(void* args) {
+	uint32_t rel, dead;
 	// increment time counter and format string 
-  sprintf(lcd_buffer, "%u", speed);	                 
-  LCDGotoXY(7, 0);
-  // display the count 
-  LCDstring(lcd_buffer, strlen(lcd_buffer));	
+	while (TRUE) {
+	  trtWait(SEM_SHARED) ;
+	  //fprintf(stdout, "%u\n\r", speed);
+	  //lcd_buffer = NULL;
+	  //int8_t lcd_buffer[17]
+	  //lcd_buffer = (int8_t *) (calloc(17, sizeof(int8_t)));
+	  //int lcd_buf_i;
+	  //for( lcd_buf_i = 0; lcd_buf_i < 17; lcd_buf_i++){
+	  //	lcd_buffer[lcd_buf_i] ='\0';
+	  //}
+
+	  sprintf(lcd_buffer, "%d    ", speed);
+	  //fprintf(stdout, "%s\n\r", lcd_buffer);
+	  trtSignal(SEM_SHARED) ;	                 
+	  LCDGotoXY(7, 0);
+	  // display the count 
+	  LCDstring(lcd_buffer, strlen(lcd_buffer));
+	  rel = trtCurrentTime() + SECONDS2TICKS(0.2);
+	  dead = trtCurrentTime() + SECONDS2TICKS(0.4);
+	  trtSleepUntil(rel, dead);	
+  	}
 }
 
 // --- Main Program ----------------------------------
