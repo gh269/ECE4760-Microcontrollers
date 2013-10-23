@@ -19,10 +19,12 @@ void pid_Init(int16_t p_factor, int16_t i_factor, int16_t d_factor, struct PID_D
 }
 
 
-int16_t pid_Controller(int16_t setPoint, int16_t processValue, struct PID_DATA *pid_st)
+double pid_Controller(int16_t setPoint, int16_t processValue, struct PID_DATA *pid_st)
 {
-  int16_t error, p_term, d_term;
-  int32_t i_term, ret, temp;
+  double error;
+  double p_term;
+  double d_term;
+  double i_term, ret, temp;
 
   error = setPoint - processValue;
 
@@ -49,15 +51,16 @@ int16_t pid_Controller(int16_t setPoint, int16_t processValue, struct PID_DATA *
   }
   else{
     pid_st->sumError = temp;
-    i_term = pid_st->I_Factor * pid_st->sumError;
+    i_term = ((double)pid_st->I_Factor * pid_st->sumError);
   }
 
   // Calculate Dterm
-  d_term = pid_st->D_Factor * (pid_st->lastProcessValue - processValue);
+  d_term = ((double)pid_st->D_Factor * (pid_st->lastProcessValue - processValue));
 
   pid_st->lastProcessValue = processValue;
-
+	
   ret = (p_term + i_term + d_term) / SCALING_FACTOR;
+
   if(ret > MAX_INT){
     ret = MAX_INT;
   }
