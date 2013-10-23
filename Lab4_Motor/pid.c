@@ -2,7 +2,7 @@
 #include "pid.h"
 #include "stdint.h"
 
-void pid_Init(int16_t p_factor, int16_t i_factor, int16_t d_factor, struct PID_DATA *pid)
+void pid_Init(double p_factor, double i_factor, double d_factor, struct PID_DATA *pid)
 // Set up PID controller parameters
 {
  
@@ -60,15 +60,15 @@ double pid_Controller(int16_t setPoint, int16_t processValue, struct PID_DATA *p
   pid_st->lastProcessValue = processValue;
 	
   ret = (p_term + i_term + d_term) / SCALING_FACTOR;
-
+  
   if(ret > MAX_INT){
     ret = MAX_INT;
   }
   else if(ret < -MAX_INT){
     ret = -MAX_INT;
   }
-
-  return((int16_t)ret);
+  
+  return ret;
 } 
 
 void pid_Reset_Integrator(pidData_t *pid_st)

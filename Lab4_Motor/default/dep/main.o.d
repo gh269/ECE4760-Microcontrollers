@@ -18,7 +18,8 @@ main.o: ../main.c ../trtSettings.h \
   c:\winavr-20100110\bin\../lib/gcc/avr/4.3.3/include/stdarg.h \
   c:/winavr-20100110/lib/gcc/../../avr/include/stdlib.h \
   c:/winavr-20100110/lib/gcc/../../avr/include/string.h ../trtUart.h \
-  ../trtkernel_1284.c ../trtUART.c ../trtuart.h ../lcd_lib.c ../lcd_lib.h
+  ../trtkernel_1284.c ../trtUART.c ../trtuart.h ../lcd_lib.c ../lcd_lib.h \
+  ../pid.h
 
 ../trtSettings.h:
 
@@ -71,3 +72,5 @@ c:/winavr-20100110/lib/gcc/../../avr/include/string.h:
 ../lcd_lib.c:
 
 ../lcd_lib.h:
+
+../pid.h:

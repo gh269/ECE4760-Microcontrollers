@@ -24,7 +24,6 @@ FILE uart0 = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
 /********************************************************************/
 // semaphore to protect shared variable
 #define SEM_SHARED 4
-
 // input arguments to each thread
 // not actually used in this example
 int args[2] ;
@@ -42,12 +41,11 @@ volatile double int_gain;
 
 // motor variables
 #define OUTPUT_PIN (1 << PINB3);
+#define OUTPUT_PIN2 (1 << PINB4);
 #define T0_CS00 1
-#define TIMER0_OVERFLOW_INTERRUPT_ENABLE (1 << TOIE0)
+#define TIMER2_OVERFLOW_INTERRUPT_ENABLE (1 << TOIE2)
 #define COMPARE_MATCH_OUTPUT_A0 (1 << COM0A0)
 #define COMPARE_MATCH_OUTPUT_A1 (1 << COM0A1)
-#define WAVE_GEN_M00 (1<<WGM00)
-#define WAVE_GEN_M01 (1 << WGM01)
 volatile int motor_period;
 volatile int motor_period_ovlf;
 volatile char flag = 0; 
@@ -75,6 +73,7 @@ ISR (INT0_vect) {
 ISR (TIMER2_OVF_vect) {
         motor_period_ovlf = motor_period_ovlf + 256 ;
         pid_ready = TRUE;
+		
 }
 
 //**********************************************************
@@ -91,16 +90,18 @@ void init_lcd(void) {
 void init_pwm(){
 	DDRB = 0;
 	DDRB |= OUTPUT_PIN;
+	DDRB |= OUTPUT_PIN2 ;
 
 	TIMSK0 = 0;
-	//TIMSK0 |= TIMER0_OVERFLOW_INTERRUPT_ENABLE;
+	TIMSK2 |= TIMER2_OVERFLOW_INTERRUPT_ENABLE;
 	//turn on fast PWM and OC0A - output 
 	TCCR0A = 0;
 	//divide PWM clock by 1024 
 	TCCR0B = 3;// (1 << CS01)  |( 1 << CS00 )  ;
-	TCCR0A = (1<<COM0A0) | (1<<COM0A1) | (1 << WGM02) | (1<<WGM00) | (1<<WGM01) ; 
+	TCCR0A = /*(1<<COM0A0)*/ (1<<COM0A1) | (1<<COM0B1) | (1 << WGM02) | (1<<WGM00) | (1<<WGM01) ; 
 
-	OCR0A = 1;
+	OCR0A = 128;
+	OCR0B = 128;
 }
 
 //********************************************************** 
@@ -114,11 +115,11 @@ void initialize(void) {
   //******************** 
   //initialize variables
   trtWait(SEM_SHARED) ;
-  speed = 0;
+  speed = 1000;
   real_speed = 0;
-  prop_gain = 0;
-  diff_gain = 0;
-  int_gain = 0; 
+  prop_gain = 10;
+  diff_gain = .2;
+  int_gain = 1; 
   trtSignal(SEM_SHARED) ;
 
   //******************** 
@@ -166,24 +167,36 @@ same conversion factor?? WTH?
 */
 
 double rpm_to_cycles(int rpm, int frequency){
-	return ( (60*((double)frequency)) / ((double) rpm * 7) )
+	return ( (60*((double)frequency)) / ((double) rpm * 7) );
 }
 
 //set control input to the system
 //sets the output from the controller 
 // as input to the system
 void set_input( int8_t input_value){
-	OCR0A += input_value;
-}
+	/*
+	if(  input_value > 0 && OCR0A < (-1 * input_value)){
+		fprintf(stdout, " you\n\r");
+		//OCR0A = 1;
+		return;
+	}
+	if( input_value < (255 - OCR0A) && input_value > 0){
+		fprintf(stdout, "Another  you\n\r");
+		//OCR0A = 255;
+		return;
+	}
+	else if( (255 - OCR0A) > input_value && input_value > 0){
+		fprintf(stdout, "Another Fuck you\n\r");
+		OCR0A = 255;
+	}
+	*/
 
-//motor period [ T2 cycles] @ 15625 Hz
-int16_t get_measurement(void){
-	return motor_period;
-}
-
-
-int16_t get_reference(void){
-	return speed;
+	if ( OCR0A + input_value > 255 || OCR0A + input_value < 1 ) {
+		return;
+	}
+	else {
+		OCR0A += input_value;
+	}
 }
 //==================================================
 
@@ -204,18 +217,26 @@ void serialComm(void* args) {
 		// 'i' sets the differential gain
 		// 'd' sets the integral gain
 		fprintf(stdout, ">") ;
-		fscanf(stdin, "%s%d", cmd, &num) ;
-		//fprintf(stdout, "%s%le\n\r", cmd, &num);
+		fscanf(stdin, "%s%f", cmd, &num) ;
 		// update shared variables
 		trtWait(SEM_SHARED) ;
-		if (cmd[0] == 's')
+		if (cmd[0] == 's') {
 			speed = num;
-		if (cmd[0] == 'p')		
+		}
+		if (cmd[0] == 'p') {	
 			prop_gain = num;
-		if (cmd[0] == 'i')		
+			pid_Init(prop_gain, int_gain, diff_gain, &pid_data);
+		}
+		if (cmd[0] == 'i') {	
 			int_gain = num;
-		if (cmd[0] == 'd')		
+			pid_Init(prop_gain, int_gain, diff_gain, &pid_data);
+		}
+		if (cmd[0] == 'd') {		
 			diff_gain = num;
+			pid_Init(prop_gain, int_gain, diff_gain, &pid_data);
+		}
+		if (cmd[0] == 'o')
+			OCR0A = num;
 		trtSignal(SEM_SHARED);
 	}
 }
@@ -227,11 +248,11 @@ void lcdComm(void* args) {
 	while (TRUE) {
 	  // display the ideal count
 	  trtWait(SEM_SHARED) ;
-	  sprintf(lcd_buffer, "%d   ", speed);
+	  sprintf(lcd_buffer, "%f   ", speed);
 	  LCDGotoXY(7, 0);
 	  LCDstring(lcd_buffer, strlen(lcd_buffer));
 	  // display the actual count 
-	  sprintf(lcd_buffer, "%d   ", real_speed);
+	  sprintf(lcd_buffer, "%f   ", real_speed);
 	  LCDGotoXY(7, 1);
 	  LCDstring(lcd_buffer, strlen(lcd_buffer));
 	  trtSignal(SEM_SHARED) ;
@@ -244,45 +265,28 @@ void lcdComm(void* args) {
 
 // --- define task 3  ----------------------------------------
 void adjustSpeed(void* args) {
-	int16_t referenceValue,inputValue;
-	double measurementValue = 0;
-	double rpm = 0;
-	double motor_period_prime = 0;
-	inputValue = 0;
-	while(1){
+	uint32_t rel, dead;
+	double inputValue = 0.0;
+	while(TRUE){
 		// detection of the fan speed
 		if( flag ) {
 			trtWait(SEM_SHARED);
-			real_speed = cycles_to_rpm(motor_period, 15625);
-			trtSignal(SEM_SHARED);
+			real_speed = cycles_to_rpm((int) motor_period, 15625);
+			flag = FALSE;
 			//fprintf(stdout, "RPM: %f\n", real_speed);
-			flag = FALSE;
+			trtSignal(SEM_SHARED);
+			pid_ready = FALSE;
+			inputValue = pid_Controller(speed, real_speed, &pid_data);
+			//fprintf(stdout, "RPM: %f,  delta: %f, target: %f, OCR0A: %d \n\r", real_speed,  inputValue, speed, OCR0A);
+			set_input(inputValue);
 
-			//INSERT PID SHIT HERE
-			pid_Init(prop_gain * SCALING_FACTOR, int_gain * SCALING_FACTOR , diff_gain * SCALING_FACTOR , &pid_data);
-
-			//fprintf(stdout, "%d\n", cou);
-			//cou = (cou+1) % 256;
-			rpm = cycles_to_rpm(motor_period, 15625);
-			//motor_period_prime = rpm_to_cycles(rpm, 15625);
-			//fprintf(stdout, "RPM: %f\n, Cycles: %f ", rpm, motor_period_prime);
-			flag = FALSE;
-			fprintf(stdout, "RPM: %f\n", rpm);
-			
-			if (pid_ready){
-				pid_ready = FALSE;
-				referenceValue = cycles_to_rpm(get_reference(), 15625);
-				measurementValue = cycles_to_rpm(motor_period, 15625);
-				inputValue = pid_Controller(referenceValue, motor_period, & pid_data);
-				set_input(inputValue);
-			}
-			
-			fprintf(stdout, "RPM: %f,  input: %d, reference: %d, measurement: %f\n\r ", 
-					rpm,  inputValue, referenceValue, measurementValue);
-
-
-
+			//second pwm
+			OCR0B = 255 - (real_speed / 12);
 		}
+		// sleep
+	  	rel = trtCurrentTime() + SECONDS2TICKS(0.02);
+	  	dead = trtCurrentTime() + SECONDS2TICKS(0.03);
+	  	trtSleepUntil(rel, dead);	
 	}
 
 }
@@ -307,7 +311,7 @@ int main(void) {
   // --- create tasks  ----------------
   trtCreateTask(serialComm, 1000, SECONDS2TICKS(0.1), SECONDS2TICKS(0.1), &(args[0]));
   trtCreateTask(lcdComm, 1000, SECONDS2TICKS(0.2), SECONDS2TICKS(0.4), &(args[0]));
-  trtCreateTask(adjustSpeed, 1000, SECONDS2TICKS(0.02), SECONDS2TICKS(0.02), &(args[0]));
+  trtCreateTask(adjustSpeed, 1000, SECONDS2TICKS(0.02), SECONDS2TICKS(0.03), &(args[0]));
 
   // --- Idle task --------------------------------------
   // For debugging, blink an LED

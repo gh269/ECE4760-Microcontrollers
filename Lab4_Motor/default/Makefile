@@ -13,7 +13,7 @@ COMMON = -mmcu=$(MCU)
 
 ## Compile options common for all C compilation units.
 CFLAGS = $(COMMON)
-CFLAGS += -Wall -gdwarf-2 -std=gnu99          -Wl,-u,vfprintf -lprintf_flt -lm            -DF_CPU=16000000UL -Os -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
+CFLAGS += -Wall -gdwarf-2 -std=gnu99             -DF_CPU=16000000UL -Os -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
 CFLAGS += -MD -MP -MT $(*F).o -MF dep/$(@F).d 
 
 ## Assembly specific flags
@@ -23,7 +23,7 @@ ASMFLAGS += -x assembler-with-cpp -Wa,-gdwarf2
 
 ## Linker flags
 LDFLAGS = $(COMMON)
-LDFLAGS +=  -Wl,-u,vfprintf  -Wl,-Map=Lab5_motor.map
+LDFLAGS +=  -Wl,-u,vfprintf -lprintf_flt -lm  -Wl,-u,vfscanf -lscanf_flt -lm  -Wl,-Map=Lab5_motor.map
 
 
 ## Intel Hex file production flags
@@ -38,7 +38,7 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 LIBS = -lm -lprintf_flt 
 
 ## Objects that must be built in order to link
-OBJECTS = main.o 
+OBJECTS = main.o pid.o 
 
 ## Objects explicitly added by the user
 LINKONLYOBJECTS = 
@@ -48,6 +48,9 @@ all: $(TARGET) Lab5_motor.hex Lab5_motor.eep Lab5_motor.lss size
 
 ## Compile
 main.o: ../main.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+pid.o: ../pid.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 ##Link
