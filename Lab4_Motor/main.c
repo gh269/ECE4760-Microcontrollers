@@ -12,6 +12,7 @@
 #include "trtkernel_1284.c"
 #include "trtUART.c"
 #include "lcd_lib.c"
+#include "pid.h"
 
 /********************************************************************/
 //						UART Functions
@@ -50,6 +51,10 @@ volatile double int_gain;
 volatile int motor_period;
 volatile int motor_period_ovlf;
 volatile char flag = 0; 
+char pid_ready = FALSE;
+struct PID_DATA pid_data;
+//Target [ T2 Cycles ] @ 15625 Hz
+volatile double target; 
 
 // lcd variables
 const int8_t LCD_line1[] PROGMEM = "iRPM=\0";
@@ -69,6 +74,7 @@ ISR (INT0_vect) {
 // --- set up extra 8 bits on timer 2 ----------------
 ISR (TIMER2_OVF_vect) {
         motor_period_ovlf = motor_period_ovlf + 256 ;
+        pid_ready = TRUE;
 }
 
 //**********************************************************
@@ -87,11 +93,11 @@ void init_pwm(){
 	DDRB |= OUTPUT_PIN;
 
 	TIMSK0 = 0;
-	TIMSK0 |= TIMER0_OVERFLOW_INTERRUPT_ENABLE;
+	//TIMSK0 |= TIMER0_OVERFLOW_INTERRUPT_ENABLE;
 	//turn on fast PWM and OC0A - output 
 	TCCR0A = 0;
 	//divide PWM clock by 1024 
-	TCCR0B = (1 << CS02)  |( 1 << CS00 )  ;
+	TCCR0B = 3;// (1 << CS01)  |( 1 << CS00 )  ;
 	TCCR0A = (1<<COM0A0) | (1<<COM0A1) | (1 << WGM02) | (1<<WGM00) | (1<<WGM01) ; 
 
 	OCR0A = 1;
@@ -162,6 +168,23 @@ same conversion factor?? WTH?
 double rpm_to_cycles(int rpm, int frequency){
 	return ( (60*((double)frequency)) / ((double) rpm * 7) )
 }
+
+//set control input to the system
+//sets the output from the controller 
+// as input to the system
+void set_input( int8_t input_value){
+	OCR0A += input_value;
+}
+
+//motor period [ T2 cycles] @ 15625 Hz
+int16_t get_measurement(void){
+	return motor_period;
+}
+
+
+int16_t get_reference(void){
+	return speed;
+}
 //==================================================
 
 /********************************************************************/
@@ -190,8 +213,8 @@ void serialComm(void* args) {
 		if (cmd[0] == 'p')		
 			prop_gain = num;
 		if (cmd[0] == 'i')		
-			diff_gain = num;
-		if (cmd[0] == 'i')		
+			int_gain = num;
+		if (cmd[0] == 'd')		
 			diff_gain = num;
 		trtSignal(SEM_SHARED);
 	}
@@ -221,6 +244,11 @@ void lcdComm(void* args) {
 
 // --- define task 3  ----------------------------------------
 void adjustSpeed(void* args) {
+	int16_t referenceValue,inputValue;
+	double measurementValue = 0;
+	double rpm = 0;
+	double motor_period_prime = 0;
+	inputValue = 0;
 	while(1){
 		// detection of the fan speed
 		if( flag ) {
@@ -231,6 +259,26 @@ void adjustSpeed(void* args) {
 			flag = FALSE;
 
 			//INSERT PID SHIT HERE
+			pid_Init(prop_gain * SCALING_FACTOR, int_gain * SCALING_FACTOR , diff_gain * SCALING_FACTOR , &pid_data);
+
+			//fprintf(stdout, "%d\n", cou);
+			//cou = (cou+1) % 256;
+			rpm = cycles_to_rpm(motor_period, 15625);
+			//motor_period_prime = rpm_to_cycles(rpm, 15625);
+			//fprintf(stdout, "RPM: %f\n, Cycles: %f ", rpm, motor_period_prime);
+			flag = FALSE;
+			fprintf(stdout, "RPM: %f\n", rpm);
+			
+			if (pid_ready){
+				pid_ready = FALSE;
+				referenceValue = cycles_to_rpm(get_reference(), 15625);
+				measurementValue = cycles_to_rpm(motor_period, 15625);
+				inputValue = pid_Controller(referenceValue, motor_period, & pid_data);
+				set_input(inputValue);
+			}
+			
+			fprintf(stdout, "RPM: %f,  input: %d, reference: %d, measurement: %f\n\r ", 
+					rpm,  inputValue, referenceValue, measurementValue);
 
 
 
