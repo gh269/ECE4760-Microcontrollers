@@ -96,7 +96,6 @@ void task1(void) {
 			PushFlag=1;
 			//Test mode override
 			if (~PINB & 0x01) {
-				//fprintf(stdout, "PINB is pressed.\n\r");
 		 		PushFlag=0;			
 		   	}  
         }
@@ -147,7 +146,6 @@ void task1(void) {
 
 	if (PushState == NoPush && !is_timed_playing) {
 		//fprintf(stdout, "Depressed...\n\r");
-		//stop_playing();
 		play_stop = FALSE;
 	}	
 
@@ -155,7 +153,6 @@ void task1(void) {
 		PushFlag = 0;
 		// The * button was pressed. Clear all memory.
 		if (butnum == 10) {
-			fprintf(stdout, "%u\n\r", butnum);
 			for (int i = 0; i < 12; i++) {
 				mem[i] = 0;
 			}
@@ -163,7 +160,6 @@ void task1(void) {
 		}
 		// The # button was pressed. Play all sounds in memory.
 		else if (butnum == 12) {
-			fprintf(stdout, "%u\n\r", butnum);
 			int i = 0;
 			is_playing = FALSE;
 			char silence;
