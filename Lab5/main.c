@@ -14,8 +14,6 @@
 #include "lcd_lib.h"
 #include "lcd_lib.c"
 
-bleh
-
 
 /********************************************************************/
 //						UART Functions
@@ -41,30 +39,8 @@ volatile int cTemp;		// current temperature
 volatile int dTemp;		// desired temperature
 volatile int time_rem;  // time remaining in seconds
 
-
-/*
-// input variables
-volatile double speed;
-volatile double real_speed;
-volatile double prop_gain;
-volatile double diff_gain;
-volatile double int_gain; 
-
-// motor variables
-#define OUTPUT_PIN (1 << PINB3);
-#define OUTPUT_PIN2 (1 << PINB4);
-#define T0_CS00 1
-#define TIMER2_OVERFLOW_INTERRUPT_ENABLE (1 << TOIE2)
-#define COMPARE_MATCH_OUTPUT_A0 (1 << COM0A0)
-#define COMPARE_MATCH_OUTPUT_A1 (1 << COM0A1)
-volatile int motor_period;
-volatile int motor_period_ovlf;
-volatile char flag = 0; 
-char pid_ready = FALSE;
-struct PID_DATA pid_data;
-//Target [ T2 Cycles ] @ 15625 Hz
-volatile double target; 
-*/
+// timer variable
+volatile int msec;
 
 // lcd variables
 const int8_t LCD_line1[] PROGMEM = "Current:\0";
@@ -74,25 +50,36 @@ int8_t lcd_buffer[17];	// LCD display buffer
 /********************************************************************/
 // 							ISRs & Helper Functions
 /********************************************************************/
-// --- external interrupt ISR ------------------------
-ISR (INT0_vect) {
-	
+// --- Timer ISR ------------------------
+/*
+ISR (TIMER2_COMPA_vect) {
+	trtWait(SEM_SHARED);
+	if (time_rem > 0) {
+		if (msec < 1000) {
+			msec++;
+		}
+		else {
+			msec = 0;
+			time_rem--;
+		}
+	}
+    trtSignal(SEM_SHARED);
+}
+*/
+ISR (TIMER0_COMPA_vect) {
+	trtWait(SEM_SHARED);
+	if (time_rem > 0) {
+		if (msec < 1000) {
+			msec++;
+		}
+		else {
+			msec = 0;
+			time_rem--;
+		}
+	}
+    trtSignal(SEM_SHARED);
+}
 
-	/*
-        motor_period = TCNT2 + motor_period_ovlf  ;
-        TCNT2 = 0 ;
-        motor_period_ovlf = 0 ;
-        flag = TRUE;
-    */
-}
-// --- set up extra 8 bits on timer 2 ----------------
-ISR (TIMER2_OVF_vect) {
-	/*
-        motor_period_ovlf = motor_period_ovlf + 256 ;
-        pid_ready = TRUE;
-    */
-		
-}
 
 //**********************************************************
 // LCD setup
@@ -103,26 +90,23 @@ void init_lcd(void) {
 	LCDGotoXY(0,0);
 }
 
-/*
-// **********************************************************
-// pwm setup
-void init_pwm(){
-	DDRB = 0;
-	DDRB |= OUTPUT_PIN;
-	DDRB |= OUTPUT_PIN2 ;
-
-	TIMSK0 = 0;
-	TIMSK2 |= TIMER2_OVERFLOW_INTERRUPT_ENABLE;
-	//turn on fast PWM and OC0A - output 
-	TCCR0A = 0;
-	//divide PWM clock by 1024 
-	TCCR0B = 3;// (1 << CS01)  |( 1 << CS00 )  ;
-	TCCR0A = (1<<COM0A1) | (1<<COM0B1) | (1 << WGM02) | (1<<WGM00) | (1<<WGM01) ; 
-
-	OCR0A = 128;
-	OCR0B = 128;
+//********************************************************** 
+// ADC setup
+void adc_init(void){
+ ADCSRA |= ((1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0));    //16Mhz/128 = 125Khz the ADC reference clock
+ ADMUX |= (1<<REFS0);                //Voltage reference from Avcc (5v)
+ ADCSRA |= (1<<ADEN);                //Turn on ADC
+ ADCSRA |= (1<<ADSC);                //Do an initial conversion because this one is the slowest and to ensure that everything is up and running
 }
-*/
+ 
+uint16_t read_adc(uint8_t channel){
+ ADMUX &= 0xF0;                    //Clear the older channel that was read
+ ADMUX |= channel;                //Defines the new ADC channel to be read
+ ADCSRA |= (1<<ADSC);                //Starts a new conversion
+ while(ADCSRA & (1<<ADSC));            //Wait until the conversion is done
+ return ADCW;                    //Returns the ADC value of the chosen channel
+}
+// http://hekilledmywire.wordpress.com/2011/03/16/using-the-adc-tutorial-part-5/
 
 //********************************************************** 
 //Set it all up
@@ -140,6 +124,7 @@ void initialize(void) {
   cTemp = 0.0;
   dTemp = 0.0;
   time_rem = 0;
+  msec = 0;
   trtSignal(SEM_SHARED);
 
   //******************** 
@@ -152,18 +137,24 @@ void initialize(void) {
 
 
   // ******************** 
-  //set up INT0
-  //EIMSK = (1 << INT0) ; // turn on int0
-  //EICRA = 3 ;       // rising edge
-  // turn on timer 2 to be read in int0 ISR
-  TCCR2B = 7 ; // divide by 1024
-  // turn on timer 2 overflow ISR for double precision time
-  TIMSK2 = 1 ;
+  /*
+  //set up timer 2 for 1 mSec timebase 
+  TIMSK2= (1<<OCIE2A);	//turn on timer 2 cmp match ISR 
+  OCR2A = 249;  		//set the compare reg to 250 time ticks
+  //set prescalar to divide by 64 
+  TCCR2B= 3; 	
   
-  // ********************
-  //set up PWM
-  //init_pwm();
+  // turn on clear-on-match
+  TCCR2A= (1<<WGM21) ;
+  */
 
+  //set up timer 0 for 1 mSec timebase 
+  TIMSK0= (1<<OCIE0A);	//turn on timer 0 cmp match ISR 
+  OCR0A = 249;  		//set the compare reg to 250 time ticks
+  //set prescalar to divide by 64 
+  TCCR0B= 3; 	
+  // turn on clear-on-match
+  TCCR0A= (1<<WGM01) ;
 
   // ********************
   //crank up the ISRs
@@ -189,24 +180,19 @@ void serialComm(void* args) {
 		fscanf(stdin, "%s%u", cmd, &num) ;
 		// update shared variables
 		trtWait(SEM_SHARED) ;
-
 		if (strcmp(cmd, "temp") == 0) {
 			dTemp = num;
 			fprintf(stdout, "dTemp: %i\n\r", dTemp); 
 		}
 		if (strcmp(cmd, "time") == 0) {
 			time_rem = num;
+			//msec= 0;
 			fprintf(stdout, "Time: %i\n\r", time_rem); 
 		}
 		if (strcmp(cmd, "set") == 0) {
 			cTemp = num;
 			fprintf(stdout, "cTemp: %i\n\r", time_rem); 
 		}
-		/*
-		if (cmd[0] == 't' && cmd[1] == 'e') {
-			dTemp = num;
-		}
-		*/
 		trtSignal(SEM_SHARED);
 	}
 }
@@ -216,19 +202,20 @@ void lcdComm(void* args) {
 	uint32_t rel, dead;
 	// increment time counter and format string 
 	while (TRUE) {
-	  // display the ideal count
+	  // display the current temp
 	  trtWait(SEM_SHARED) ;
-	  sprintf(lcd_buffer, "%iF", cTemp);
+	  sprintf(lcd_buffer, "%iF      ", cTemp);
 	  LCDGotoXY(9, 0);
 	  LCDstring(lcd_buffer, strlen(lcd_buffer));
-	  // display the actual count 
-	  sprintf(lcd_buffer, "%iF", dTemp);
+	  // display the desired temp 
+	  //sprintf(lcd_buffer, "%iF", dTemp);
+	  sprintf(lcd_buffer, "%is      ", time_rem);
 	  LCDGotoXY(9, 1);
 	  LCDstring(lcd_buffer, strlen(lcd_buffer));
 	  trtSignal(SEM_SHARED) ;
 	  // sleep
-	  rel = trtCurrentTime() + SECONDS2TICKS(0.2);
-	  dead = trtCurrentTime() + SECONDS2TICKS(0.4);
+	  rel = trtCurrentTime() + SECONDS2TICKS(0.25);
+	  dead = trtCurrentTime() + SECONDS2TICKS(0.5);
 	  trtSleepUntil(rel, dead);	
   	}
 }
@@ -282,7 +269,7 @@ int main(void) {
   // --- create tasks  ----------------
   trtCreateTask(serialComm, 1000, SECONDS2TICKS(0.1), SECONDS2TICKS(0.1), &(args[0]));
   trtCreateTask(lcdComm, 1000, SECONDS2TICKS(0.2), SECONDS2TICKS(0.4), &(args[0]));
-  trtCreateTask(adjustTemp, 1000, SECONDS2TICKS(0.02), SECONDS2TICKS(0.03), &(args[0]));
+  //trtCreateTask(adjustTemp, 1000, SECONDS2TICKS(0.02), SECONDS2TICKS(0.03), &(args[0]));
 
   // --- Idle task --------------------------------------
   // For debugging, blink an LED
