@@ -1,0 +1,12 @@
+Tasks to complete:
+- Reading, storing and displaying UART
+- Refreshing LCD
+- Timer to countdown cooking time
+- Temperature reading
+- Temperature modification (PID?)
+- Timer Noise (?)
+
+UART Reading, Storing & Displaying
+- Current temperature
+- Desired temperature
+- Time remaining
