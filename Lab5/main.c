@@ -296,6 +296,7 @@ void readAnalogInputs(void * args) {
 
 	uint32_t rel, dead;
 	while(TRUE){
+		
 		//analog_input_update(ant);
 		//write_buffers_to_screen();
 		//fprintf(stdout, "%d\n\r", displaybuffer_left[0]);
@@ -309,13 +310,13 @@ void readAnalogInputs(void * args) {
 
 void ledComm(void * args){
 	uint32_t rel, dead;
+	analog_input_init(ant);
 	while(TRUE){
-		analog_input_update(ant);
 		write_buffers_to_screen();
-
+		analog_input_update(ant);
 		switch( current_state){
 			case STATE_HAPPY: if(go_button_changed(ant) &&  ant->current_go_button < 600 ) next_state = STATE_CURR_TEMP;
-							  else if( temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
+							  else if(  temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
 							  else if(minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
 							  else if( seconds_changed(ant)) next_state = STATE_SEC_DISPLAY;
 							  else next_state = STATE_HAPPY;
@@ -341,9 +342,11 @@ void ledComm(void * args){
 			
 			case STATE_CURR_TEMP: if(go_button_changed(ant) &&  ant->current_go_button < 600 ) next_state = STATE_HAPPY;
 							else next_state = STATE_CURR_TEMP;
+							break;
 			default: break;
 			
 		}
+		analog_input_update(ant);
 		current_state = next_state;
 		write_state_message_on_buffer();
 
