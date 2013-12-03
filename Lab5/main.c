@@ -268,18 +268,15 @@ void readAnalogInputs(void * args) {
 	uint32_t rel, dead;
 	while(TRUE){
 		analog_input_update(ant);
-		fprintf(stdout, "current minutes: %d\n\r", ant->current_minutes);
-		if( ant-> current_minutes > 512){
-			PORTD |= SOUND_EN;
-		}
-		else{
-			PORTD &= ~SOUND_EN;
-		}
+		fprintf(stdout, "Current Minutes to Temp : %d\n\n", pot_to_temp(ant->current_minutes));
 	}
 	rel = trtCurrentTime() + SECONDS2TICKS(0.25);
 	dead = trtCurrentTime() + SECONDS2TICKS(0.5);
 	trtSleepUntil(rel, dead);	
 }
+
+// --- define task 5 - update the led screen ------
+
 
 // --- Main Program ----------------------------------
 int main(void) {

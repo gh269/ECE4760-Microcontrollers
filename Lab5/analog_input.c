@@ -36,6 +36,17 @@ char temperature_changed(struct ANALOG_INPUT * t){
 	return delta > 2 || delta < -2;
 }
 
+/*
+Performs linear mapping
+from original range to new range
+*/
+int linear_scale(int original_value, int original_min, int original_max, int new_min, int new_max){
+	return ( original_value - original_min) * (new_max - new_min) / (original_max - original_min) + new_min;
+}
+
+int pot_to_temp(int value){
+	return linear_scale(value, 0, 1023, 0, 100);
+}
 
 // UTILITY FUNCTIONS
 void analog_input_init(struct ANALOG_INPUT * t){

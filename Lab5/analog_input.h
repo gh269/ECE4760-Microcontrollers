@@ -43,6 +43,7 @@ uint16_t read_adc(uint8_t channel);
 char minutes_button_changed(struct ANALOG_INPUT * t);
 char go_button_changed(struct ANALOG_INPUT * t);
 char temp_button_changed(struct ANALOG_INPUT * t);
+int linear_scale(int original_value, int original_min, int original_max, int new_min, int new_max);
 
 char seconds_changed(struct ANALOG_INPUT * t);
 char minutes_changed(struct ANALOG_INPUT * t);
