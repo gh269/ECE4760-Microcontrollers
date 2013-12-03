@@ -54,7 +54,7 @@ const int8_t LCD_line1[] PROGMEM = "Current:\0";
 const int8_t LCD_line2[] PROGMEM = "Desired:\0";
 int8_t lcd_buffer[17];	// LCD display buffer
 
-struct ANALOG_INPUT ant;
+struct ANALOG_INPUT * ant;
 
 /********************************************************************/
 // 							ISRs & Helper Functions
@@ -261,7 +261,7 @@ void adjustTemp(void* args) {
 
 // --- define task 4 - read analog inputs ----------
 void readAnalogInputs(void * args) {
-	int pot;
+
 	uint32_t rel, dead;
 	while(TRUE){
 		analog_input_update(ant);

@@ -39,7 +39,7 @@ typedef struct ANALOG_INPUT{
 	//-----------------------
 
 } analog_input_t;
-
+uint16_t read_adc(uint8_t channel);
 char minutes_button_changed(struct ANALOG_INPUT * t);
 char go_button_changed(struct ANALOG_INPUT * t);
 char temp_button_changed(struct ANALOG_INPUT * t);
