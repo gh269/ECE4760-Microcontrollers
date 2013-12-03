@@ -45,10 +45,7 @@ int args[2] ;
 #define SOUND_EN 0x10
 
 
-// input and output variables
-volatile int cTemp;		// current temperature
-volatile int dTemp;		// desired temperature
-volatile int time_rem;  // time remaining in seconds
+
 
 // timer variable
 volatile int msec;
@@ -63,6 +60,9 @@ const int8_t LCD_line2[] PROGMEM = "Desired:\0";
 int8_t lcd_buffer[17];	// LCD display buffer
 
 //struct ANALOG_INPUT * ant;
+
+void convert_seconds_to
+
 
 /********************************************************************/
 // 							ISRs & Helper Functions
@@ -295,7 +295,7 @@ void readAnalogInputs(void * args) {
 	uint32_t rel, dead;
 	while(TRUE){
 		analog_input_update(ant);
-		write_buffers_to_screen();
+		
 		//fprintf(stdout, "%d\n\r", displaybuffer_left[0]);
 		//fprintf(stdout, "Current Minutes to Temp : %d\n\r", pot_to_temp(ant->current_minutes));
 	}
@@ -304,6 +304,16 @@ void readAnalogInputs(void * args) {
 	trtSleepUntil(rel, dead);	
 }
 
+
+void ledComm(void * args){
+	uint32_t rel, dead;
+	while(TRUE){
+		write_buffers_to_screen();
+	}
+	rel = trtCurrentTime() + SECONDS2TICKS(0.25);
+	dead = trtCurrentTime() + SECONDS2TICKS(0.5);
+	trtSleepUntil(rel, dead);	
+}
 // --- define task 5 - update the led screen ------
 
 
@@ -311,7 +321,8 @@ void readAnalogInputs(void * args) {
 int main(void) {
   //init the UART -- trt_uart_init() is in trtUart.c
   trt_uart_init();
-  write_happy_to_buffer();
+  //write_happy_to_buffer();
+  write_time_to_buffer(480);
   //
   stdout = stdin = stderr = &uart0;
   fprintf(stdout,"\n\r Welcome to KitchenBot UI \n\r Please input your instructions below\n\r The options are: time, temp, & egg\n\r\n\r");
@@ -329,8 +340,9 @@ int main(void) {
 
   // --- create tasks  ----------------
   trtCreateTask(serialComm, 1000, SECONDS2TICKS(0.1), SECONDS2TICKS(0.1), &(args[0]));
-  trtCreateTask(lcdComm, 1000, SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
+  //trtCreateTask(lcdComm, 1000, SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
   trtCreateTask(adjustTemp, 2000, SECONDS2TICKS(2), SECONDS2TICKS(4), &(args[0]));
+  trtCreateTask(ledComm, 1000,  SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
   trtCreateTask(readAnalogInputs, 1000,  SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
 
 	

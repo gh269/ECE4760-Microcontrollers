@@ -98,6 +98,11 @@ int done[][8] = {
 	{0xf, 0x7, 0xb, 0xb, 0xb, 0x7, 0xf, 0xf}  //Done Right
 };
 
+// input and output variables
+volatile int cTemp;		// current temperature
+volatile int dTemp;		// desired temperature
+volatile int time_rem;  // time remaining in seconds
+
 //toggles pin in ISR w/ 1us time base
 void pulse_out();
 void write_to_buffer(int * left_valueR, int * left_valueL, int * right_valueR, int * right_valueL);

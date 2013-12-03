@@ -92,6 +92,24 @@ void write_min_to_buffer(int min){
 	write_to_buffer(left_valueR, left_valueL, right_valueR, right_valueL);
 }
 
+/*
+if time > 10:00 - display the minutes with a m
+if time < 10:00 M:SS
+*/
+void write_time_to_buffer(int total_seconds){
+	if(total_seconds > 600){
+		write_min_to_buffer(total_seconds/60);
+	}
+	else{
+
+		int * left_valueL = numbers[total_seconds / 60];
+		int * left_valueR = colon;
+		int * right_valueL = numbers[(total_seconds % 60) / 10];
+		int * right_valueR = numbers[(total_seconds % 60) % 10];
+		write_to_buffer(left_valueR, left_valueL, right_valueR, right_valueL);
+
+	}
+}
 void write_sec_to_buffer(int sec){
 	//int sec = pot_to_minutes(t->current_minutes);
 	int * right_valueR = space;

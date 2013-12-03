@@ -27,6 +27,7 @@ int current_state = STATE_HAPPY;
 // State Transitions
 //----------------------------------------------------------------------
 
+
 //----------------------------------------------------------------------
 // State Outputs
 //----------------------------------------------------------------------
@@ -39,12 +40,11 @@ void write_state_message_on_buffer(){
 		case STATE_TEMP_DISPLAY : write_temp_to_buffer(pot_to_temp(ant->current_temp)); break;
 		case STATE_MIN_DISPLAY  : write_min_to_buffer(pot_to_minutes(ant->current_minutes)); break;
 		case STATE_SEC_DISPLAY  : write_sec_to_buffer(pot_to_minutes(antt->current_minutes)); break;
-
+		case STATE_CURR_TEMP    : write_temp_to_buffer(cTemp); break;
 		case STATE_HOT          : write_hot_to_buffer(); break;
-
+		case STATE_CURR_TIME    : write_time_to_buffer(time_rem); break;
 		case STATE_DONE         : write_done_to_buffer(); break;
 
-		
 		default: write_empty_to_buffer(); break;
 
 	}
