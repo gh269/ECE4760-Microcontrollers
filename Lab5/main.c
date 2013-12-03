@@ -39,8 +39,9 @@ int args[2] ;
 // relay & LED bits
 #define LED_EN 	 0x04
 #define RELAY_EN 0x08
-//speaker
+//speaker D4
 #define SOUND_EN 0x10
+
 
 // input and output variables
 volatile int cTemp;		// current temperature
@@ -51,18 +52,31 @@ volatile int time_rem;  // time remaining in seconds
 volatile int msec;
 volatile int count_en;
 
+//delay flags
+volatile int clock_flag;
+volatile int row_scan_flag;
 // lcd variables
 const int8_t LCD_line1[] PROGMEM = "Current:\0";
 const int8_t LCD_line2[] PROGMEM = "Desired:\0";
 int8_t lcd_buffer[17];	// LCD display buffer
 
-struct ANALOG_INPUT * ant;
+//struct ANALOG_INPUT * ant;
 
 /********************************************************************/
 // 							ISRs & Helper Functions
 /********************************************************************/
 // --- Timer ISR ------------------------
+// F_ISR = 1 us 
 ISR (TIMER0_COMPA_vect) {
+
+	if( clock_flag > 0){
+		clock_flag--;
+	}
+
+	if(row_scan_flag > 0){
+		row_scan_flag--;
+	}
+
 	trtWait(SEM_SHARED);
 	if ((time_rem > 0) && count_en) {
 		if (msec < 1000) {
@@ -80,6 +94,17 @@ ISR (TIMER0_COMPA_vect) {
     trtSignal(SEM_SHARED);
 }
 
+void pulse_out(int y){
+	PORTB |= CLK;
+	clock_flag = y;
+	while(clock_flag > 0);
+	PORTB &= ~CLK;
+}
+
+void delay_row_scan(int y){
+	row_scan_flag = y;
+	while(row_scan_flag);
+}
 
 //**********************************************************
 // LCD setup
@@ -115,7 +140,7 @@ void initialize(void) {
 	PORTA = 0x00;
 	DDRC = 0xff;    	// LCD connections
 	PORTC = 0x00;
-	DDRD |= 0x1C;		// LED status light && Relay
+	DDRD |= 0x3C;		// LED status light && Relay, CLock and Sound
 
 	PORTD |= 0x08;		// Initialize relay to high
 
