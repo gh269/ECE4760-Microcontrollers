@@ -8,16 +8,16 @@
 typedef struct ANALOG_INPUT{
 	//-----BUTTONS-----------
 	//min is set time
-	byte current_min_button;
-	byte prev_min_button;
+	char current_min_button;
+	char prev_min_button;
 
 	//sec is GO
-	byte current_go_button;
-	byte prev_go_button;
+	char current_go_button;
+	char prev_go_button;
 
 	//temp is set temp
-	byte current_temp_button;
-	byte prev_temp_button;
+	char current_temp_button;
+	char prev_temp_button;
 	//-----------------------
 
 	//------DIALS------------
@@ -41,6 +41,8 @@ char seconds_changed(struct ANALOG_INPUT * t);
 char minutes_changed(struct ANALOG_INPUT * t);
 char temperature_changed(struct ANALOG_INPUT * t);
 
+void analog_input_init(struct ANALOG_INPUT * t);
+void analog_input_update(struct ANALOG_INPUT * t);
 
 
 #endif
