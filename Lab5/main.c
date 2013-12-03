@@ -14,6 +14,8 @@
 #include "lcd_lib.h"
 #include "lcd_lib.c"
 
+#include "analog_input.h"
+#include "analog_input.c"
 
 /********************************************************************/
 //						UART Functions
