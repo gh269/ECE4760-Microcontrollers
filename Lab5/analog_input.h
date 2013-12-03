@@ -12,8 +12,8 @@ typedef struct ANALOG_INPUT{
 	byte prev_min_button;
 
 	//sec is GO
-	byte current_sec_button;
-	byte prev_sec_button;
+	byte current_go_button;
+	byte prev_go_button;
 
 	//temp is set temp
 	byte current_temp_button;
@@ -30,12 +30,17 @@ typedef struct ANALOG_INPUT{
 	int current_temp;
 	int prev_temp;
 	//-----------------------
-	
+
 } analog_input_t;
 
+char minutes_button_changed(struct ANALOG_INPUT * t);
+char go_button_changed(struct ANALOG_INPUT * t);
+char temp_button_changed(struct ANALOG_INPUT * t);
 
-char seconds_changed();
-char minutes_changed();
-char temperature_changed();
+char seconds_changed(struct ANALOG_INPUT * t);
+char minutes_changed(struct ANALOG_INPUT * t);
+char temperature_changed(struct ANALOG_INPUT * t);
+
+
 
 #endif
