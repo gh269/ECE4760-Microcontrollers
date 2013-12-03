@@ -268,7 +268,7 @@ void readAnalogInputs(void * args) {
 	uint32_t rel, dead;
 	while(TRUE){
 		analog_input_update(ant);
-		fprintf(stdout, "Current Minutes to Temp : %d\n\n", pot_to_temp(ant->current_minutes));
+		fprintf(stdout, "Current Minutes to Temp : %d\n\r", pot_to_temp(ant->current_minutes));
 	}
 	rel = trtCurrentTime() + SECONDS2TICKS(0.25);
 	dead = trtCurrentTime() + SECONDS2TICKS(0.5);
