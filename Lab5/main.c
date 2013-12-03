@@ -54,6 +54,8 @@ const int8_t LCD_line1[] PROGMEM = "Current:\0";
 const int8_t LCD_line2[] PROGMEM = "Desired:\0";
 int8_t lcd_buffer[17];	// LCD display buffer
 
+struct ANALOG_INPUT ant;
+
 /********************************************************************/
 // 							ISRs & Helper Functions
 /********************************************************************/
@@ -145,6 +147,10 @@ void initialize(void) {
 	// turn on clear-on-match
 	TCCR0A= (1<<WGM01) ;
 
+	//*********************
+	//init analog input reading
+	ant = (analog_input_t *)malloc(sizeof(struct ANALOG_INPUT));
+	analog_input_init(ant);
 	// ********************
 	//crank up the ISRs
 	sei();
@@ -258,9 +264,7 @@ void readAnalogInputs(void * args) {
 	int pot;
 	uint32_t rel, dead;
 	while(TRUE){
-		pot = read_adc(1);
-		fprintf(stdout, "Pot value: %u \n\r", pot);
-
+		analog_input_update(ant);
 	}
 	rel = trtCurrentTime() + SECONDS2TICKS(0.25);
 	dead = trtCurrentTime() + SECONDS2TICKS(0.5);

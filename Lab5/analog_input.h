@@ -1,6 +1,13 @@
 #ifndef INPUT_H
 #define INPUT_H
 
+#define POT_MIN 1
+#define POT_SEC 2
+#define POT_TEMP 3
+
+#define BUTT_MIN 4
+#define BUTT_GO 5
+#define BUTT_TEMP 6
 /*
 	MIN	  SEC
  	  TEMP
