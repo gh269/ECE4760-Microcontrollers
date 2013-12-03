@@ -4,7 +4,7 @@
 #ifndef TRTKERNEL_H
 #define TRTKERNEL_H
 
-#define MAXNBRTASKS 3
+#define MAXNBRTASKS 4
 #define MAXNBRSEMAPHORES 8 // 3 sem (1-3) are needed for uart
 #define MAXNBRMUTEX 1
 

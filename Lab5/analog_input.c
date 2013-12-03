@@ -5,9 +5,7 @@
 
 #include "analog_input.h"
 
-char minutes_button_changed(struct ANALOG_INPUT * t){
-	
-}
+char minutes_button_changed(struct ANALOG_INPUT * t);
 char go_button_changed(struct ANALOG_INPUT * t);
 char temp_button_changed(struct ANALOG_INPUT * t);
 

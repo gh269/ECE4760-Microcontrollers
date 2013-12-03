@@ -19,7 +19,7 @@ main.o: ../main.c ../trtSettings.h \
   c:/winavr-20100110/lib/gcc/../../avr/include/stdlib.h \
   c:/winavr-20100110/lib/gcc/../../avr/include/string.h \
   ../trtkernel_1284.c ../trtUart.h ../trtUart.c ../trtuart.h ../lcd_lib.h \
-  ../lcd_lib.c
+  ../lcd_lib.c ../analog_input.h ../analog_input.c
 
 ../trtSettings.h:
 
@@ -72,3 +72,7 @@ c:/winavr-20100110/lib/gcc/../../avr/include/string.h:
 ../lcd_lib.h:
 
 ../lcd_lib.c:
+
+../analog_input.h:
+
+../analog_input.c:

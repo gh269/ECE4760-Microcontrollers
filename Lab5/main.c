@@ -254,14 +254,12 @@ void adjustTemp(void* args) {
 }
 
 // --- define task 4 - read analog inputs ----------
-void readAnalogInputs( void * args){
-	uint16_t pot;
+void readAnalogInputs(void * args) {
+	int pot;
 	uint32_t rel, dead;
 	while(TRUE){
 		pot = read_adc(1);
-		char * message = (char *) malloc(8 * (sizeof(char)));
-		sprintf(message, "pot value : %d\n", pot);
-		fprintf(stdout,message);
+		fprintf(stdout, "Pot value: %u \n\r", pot);
 
 	}
 	rel = trtCurrentTime() + SECONDS2TICKS(0.25);
@@ -287,10 +285,10 @@ int main(void) {
   trtCreateSemaphore(SEM_SHARED, 1) ; // protect shared variable
 
   // --- create tasks  ----------------
-  trtCreateTask(serialComm, 2000, SECONDS2TICKS(0.1), SECONDS2TICKS(0.1), &(args[0]));
-  trtCreateTask(lcdComm, 2000, SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
+  trtCreateTask(serialComm, 1000, SECONDS2TICKS(0.1), SECONDS2TICKS(0.1), &(args[0]));
+  trtCreateTask(lcdComm, 1000, SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
   trtCreateTask(adjustTemp, 2000, SECONDS2TICKS(2), SECONDS2TICKS(4), &(args[0]));
-  trtCreateTask(readAnalogInput, 2000, SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
+  trtCreateTask(readAnalogInputs, 1000, SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
 
 
   // --- Main Idle task --------------------------------------
