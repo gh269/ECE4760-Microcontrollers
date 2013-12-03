@@ -67,6 +67,7 @@ ISR (TIMER0_COMPA_vect) {
 			time_rem--;
 			if (time_rem == 0) {
 				count_en = 0;
+				fprintf(stdout, "Timer disabled.\n\r");
 			}
 		}
 	}
@@ -167,7 +168,7 @@ void serialComm(void* args) {
 		trtWait(SEM_SHARED) ;
 		if (strcmp(cmd, "temp") == 0) {
 			if (num < 0) {
-				fprintf(stdout, "Please input a positive temperature value.");
+				fprintf(stdout, "Please input a positive temperature value.\n\r");
 			}
 			else {
 				dTemp = num;
@@ -175,7 +176,7 @@ void serialComm(void* args) {
 		}
 		if (strcmp(cmd, "time") == 0) {
 			if (num < 0) {
-				fprintf(stdout, "Please input a positive time value in seconds.");
+				fprintf(stdout, "Please input a positive time value in seconds.\n\r");
 			}
 			else {
 				time_rem = num;
@@ -227,14 +228,19 @@ void adjustTemp(void* args) {
 		trtWait(SEM_SHARED);
 		cTemp = (adc_in + 3) / 2.1;
 		if (cTemp < 0) cTemp = 0; 
-		if (cTemp < (dTemp /* * .95 */)) {	// Factor of .9 to account for carryover effect
+		if (cTemp < (dTemp/* * .95*/)) {	// Factor of .95 to account for carryover effect
 			PORTD &= ~RELAY_EN;		// Turn on heating element
 			PORTD &= ~LED_EN;		// Turn off LED
 		}
 		else {
 			PORTD |= RELAY_EN;		// Turn off heating element
 			PORTD |= LED_EN;    	// Turn on LED
-			count_en = 1;			// Enable timer count down
+			if (dTemp != 0) {
+				if (count_en == 0) {
+					fprintf(stdout, "Timer enabled.\n\r");
+				}
+				count_en = 1;			// Enable timer count down
+			}
 		}
 		trtSignal(SEM_SHARED);
 
