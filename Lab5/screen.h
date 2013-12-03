@@ -19,8 +19,8 @@
 //B3 0000 1000
 #define SCREEN_RIGHT 0x08
 
-#define PULSE_DELAY 2
-#define ROW_SCAN_DELAY 3000
+#define PULSE_DELAY 1
+#define ROW_SCAN_DELAY 250
 
 // row scan release = 8 * row_scan_delay + fuzz 
 // converted into seconds 
@@ -54,8 +54,8 @@ int displaybuffer_right[] = { 0,
 					0,
 					0
 				 };
-
-int row_order[] = {1,2,3,4,5,6,7,8};
+				 // 0001 0000, 
+int row_order[] = {0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};
 
 int numbers[][8] = {
 	// 1   2    3    4    5    6    7    8

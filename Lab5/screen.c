@@ -27,12 +27,15 @@ void write_buffers_to_screen(){
 			else
 				PORTB &= ~SCREEN_RIGHT;
 
-			pulse_out(PULSE_DELAY);
+			PORTB |= CLK;
+			_delay_us(1);
+			PORTB &= ~CLK;
+			
 			val_left = val_left >> 1;
 			val_right = val_right >> 1;
 		}
-
-		delay_row_scan(ROW_SCAN_DELAY);
+		_delay_us(ROW_SCAN_DELAY);
+		//delay_row_scan(ROW_SCAN_DELAY);
 		PORTC &= ~row_order[i];
 	}
 }

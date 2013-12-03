@@ -79,6 +79,7 @@ ISR (TIMER0_COMPA_vect) {
 		row_scan_flag--;
 	}
 
+
 	trtWait(SEM_SHARED);
 	if ((time_rem > 0) && count_en) {
 		if (msec < 1000) {
@@ -96,17 +97,14 @@ ISR (TIMER0_COMPA_vect) {
     trtSignal(SEM_SHARED);
 }
 
+
 void pulse_out(int y){
 	PORTB |= CLK;
-	clock_flag = y;
-	while(clock_flag > 0);
+	_delay_us(y);
 	PORTB &= ~CLK;
 }
 
-void delay_row_scan(int y){
-	row_scan_flag = y;
-	while(row_scan_flag);
-}
+
 
 //**********************************************************
 // LCD setup
@@ -167,6 +165,8 @@ void initialize(void) {
 	// ********************
 	//init ADC
 	adc_init();
+
+	init_screens();
 
 	// ******************** 
 	//set up timer 0 for 1 mSec timebase 
@@ -295,7 +295,9 @@ void readAnalogInputs(void * args) {
 	uint32_t rel, dead;
 	while(TRUE){
 		analog_input_update(ant);
-		fprintf(stdout, "Current Minutes to Temp : %d\n\r", pot_to_temp(ant->current_minutes));
+		write_buffers_to_screen();
+		//fprintf(stdout, "%d\n\r", displaybuffer_left[0]);
+		//fprintf(stdout, "Current Minutes to Temp : %d\n\r", pot_to_temp(ant->current_minutes));
 	}
 	rel = trtCurrentTime() + SECONDS2TICKS(0.25);
 	dead = trtCurrentTime() + SECONDS2TICKS(0.5);
@@ -309,8 +311,11 @@ void readAnalogInputs(void * args) {
 int main(void) {
   //init the UART -- trt_uart_init() is in trtUart.c
   trt_uart_init();
+  write_happy_to_buffer();
+  //
   stdout = stdin = stderr = &uart0;
   fprintf(stdout,"\n\r Welcome to KitchenBot UI \n\r Please input your instructions below\n\r The options are: time, temp, & egg\n\r\n\r");
+  
     // start TRT
   trtInitKernel(80); // 80 bytes for the idle task stack
 
@@ -326,11 +331,13 @@ int main(void) {
   trtCreateTask(serialComm, 1000, SECONDS2TICKS(0.1), SECONDS2TICKS(0.1), &(args[0]));
   trtCreateTask(lcdComm, 1000, SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
   trtCreateTask(adjustTemp, 2000, SECONDS2TICKS(2), SECONDS2TICKS(4), &(args[0]));
-  trtCreateTask(readAnalogInputs, 1000, SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
+  trtCreateTask(readAnalogInputs, 1000,  SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
 
-
+	
   // --- Main Idle task --------------------------------------
   while (1) {
+	//write_buffers_to_screen();
+	
   	// Do nothing
   }
 } // main
