@@ -40,13 +40,21 @@ char temperature_changed(struct ANALOG_INPUT * t){
 Performs linear mapping
 from original range to new range
 */
-long map(long x, long in_min, long in_max, long out_min, long out_max){
+long linear_scale(long x, long in_min, long in_max, long out_min, long out_max){
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
 int pot_to_temp(int value){
 	return linear_scale(value, 0, 1023, 0, 100);
 }
+
+int pot_to_minutes(int value){
+	return linear_scale(value, 0, 1023, 0, 99);
+}
+int pot_to_seconds(int value){
+	return linear_scale(value, 0, 1023, 0, 59);
+}
+
 
 // UTILITY FUNCTIONS
 void analog_input_init(struct ANALOG_INPUT * t){
