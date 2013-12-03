@@ -39,6 +39,8 @@ int args[2] ;
 // relay & LED bits
 #define LED_EN 	 0x04
 #define RELAY_EN 0x08
+//speaker
+#define SOUND_EN 0x10
 
 // input and output variables
 volatile int cTemp;		// current temperature
@@ -113,8 +115,9 @@ void initialize(void) {
 	PORTA = 0x00;
 	DDRC = 0xff;    	// LCD connections
 	PORTC = 0x00;
-	DDRD |= 0x0C;		// LED status light && Relay
-	PORTC |= 0x08;		// Initialize relay to high
+	DDRD |= 0x1C;		// LED status light && Relay
+
+	PORTD |= 0x08;		// Initialize relay to high
 
 	// ******************** 
 	//initialize variables
@@ -265,6 +268,13 @@ void readAnalogInputs(void * args) {
 	uint32_t rel, dead;
 	while(TRUE){
 		analog_input_update(ant);
+		fprintf(stdout, "current minutes: %d\n\r", ant->current_minutes);
+		if( ant-> current_minutes > 512){
+			PORTD |= SOUND_EN;
+		}
+		else{
+			PORTD &= ~SOUND_EN;
+		}
 	}
 	rel = trtCurrentTime() + SECONDS2TICKS(0.25);
 	dead = trtCurrentTime() + SECONDS2TICKS(0.5);
