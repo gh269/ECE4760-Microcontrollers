@@ -32,7 +32,7 @@ void write_buffers_to_screen(){
 			val_right = val_right >> 1;
 		}
 
-		delayMicroseconds(ROW_SCAN_DELAY);
+		delay_row_scan(ROW_SCAN_DELAY);
 		PORTC &= ~row_order[i];
 	}
 }
@@ -42,7 +42,7 @@ void write_to_buffer(int * left_valueR, int * left_valueL, int * right_valueR, i
 	int i;
 	for( i = 0; i <8; i++){
 		displaybuffer_left[i] = left_valueR[i] | (left_valueL[i] << 4);
-		displaybuffer_right[i] = right_valueR[i] | right_valueL[i] << 4);
+		displaybuffer_right[i] = right_valueR[i] | (right_valueL[i] << 4);
 	}
 }
 
@@ -82,19 +82,19 @@ void write_temp_to_buffer(int temp_celsius){
 
 void write_min_to_buffer(int min){
 	//int min = pot_to_minutes(t->current_minutes);
-	int right_valueR = space;
-	int right_valueL = minutes;
-	int left_valueR = (min < 1) ? numbers[0] : number[min % 10];
-	int left_valueL = numbers[min / 10];
+	int * right_valueR = space;
+	int * right_valueL = minutes;
+	int * left_valueR = (min < 1) ? numbers[0] : numbers[min % 10];
+	int * left_valueL = numbers[min / 10];
 	write_to_buffer(left_valueR, left_valueL, right_valueR, right_valueL);
 }
 
 void write_sec_to_buffer(int sec){
 	//int sec = pot_to_minutes(t->current_minutes);
-	int right_valueR = space;
-	int right_valueL = seconds;
-	int left_valueR = (sec < 1) ? numbers[0] : number[sec % 10];
-	int left_valueL = numbers[sec / 10];
+	int * right_valueR = space;
+	int * right_valueL = seconds;
+	int * left_valueR = (sec < 1) ? numbers[0] : numbers[sec % 10];
+	int * left_valueL = numbers[sec / 10];
 	write_to_buffer(left_valueR, left_valueL, right_valueR, right_valueL);
 }
 

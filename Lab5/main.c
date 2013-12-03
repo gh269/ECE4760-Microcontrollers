@@ -17,6 +17,8 @@
 #include "analog_input.h"
 #include "analog_input.c"
 
+#include "screen.h"
+#include "screen.c"
 /********************************************************************/
 //						UART Functions
 /********************************************************************/

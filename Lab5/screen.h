@@ -103,8 +103,8 @@ void pulse_out();
 void write_to_buffer(int * left_valueR, int * left_valueL, int * right_valueR, int * right_valueL);
 void write_buffers_to_screen();
 void write_two_values_to_buffer(int * valueR, int * valueL, int screen);
-void delayMicroseconds(int delay);
-
+//void delayMicroseconds(int delay);
+void delay_row_scan(int delay);
 
 void write_happy_to_buffer();
 void write_empty_to_buffer();
