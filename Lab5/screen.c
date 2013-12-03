@@ -7,7 +7,8 @@ void write_buffers_to_screen(){
 	int i, j, temp_left, temp_right;
 	int val_left = 0;
 	int val_right = 0;
-
+	PORTC &= ~ row_order[0];
+	PORTC &= ~ row_order[7];
 	for( i = 1; i < 7; i++){
 		PORTC |= row_order[i];
 
@@ -111,7 +112,6 @@ void write_time_to_buffer(int total_seconds){
 	}
 }
 void write_sec_to_buffer(int sec){
-	//int sec = pot_to_minutes(t->current_minutes);
 	int * right_valueR = space;
 	int * right_valueL = seconds;
 	int * left_valueR = (sec < 1) ? numbers[0] : numbers[sec % 10];

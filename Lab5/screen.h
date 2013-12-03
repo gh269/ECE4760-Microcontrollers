@@ -27,6 +27,9 @@
 // 8 * 3000 ms -> 0.024 seconds 
 // 0.03 
 #define ROW_SCAN_REL 0.03
+volatile int cTemp;		// current temperature
+volatile int dTemp;		// desired temperature
+volatile int time_rem;  // time remaining in seconds
 
 void init_screens(){
 	DDRB = (CLK | CLR | SCREEN_LEFT | SCREEN_RIGHT);
@@ -99,9 +102,7 @@ int done[][8] = {
 };
 
 // input and output variables
-volatile int cTemp;		// current temperature
-volatile int dTemp;		// desired temperature
-volatile int time_rem;  // time remaining in seconds
+
 
 //toggles pin in ISR w/ 1us time base
 void pulse_out();

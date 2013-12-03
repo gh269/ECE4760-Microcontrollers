@@ -19,6 +19,8 @@
 
 #include "screen.h"
 #include "screen.c"
+
+#include "fsm.h"
 /********************************************************************/
 //						UART Functions
 /********************************************************************/
@@ -61,7 +63,6 @@ int8_t lcd_buffer[17];	// LCD display buffer
 
 //struct ANALOG_INPUT * ant;
 
-void convert_seconds_to
 
 
 /********************************************************************/
@@ -138,7 +139,7 @@ uint16_t read_adc(uint8_t channel){
 void initialize(void) {
 	DDRA = 0x00;		// ADC Port
 	PORTA = 0x00;
-	DDRC = 0xff;    	// LCD connections
+	DDRC = 0x7e;    	// LCD connections
 	PORTC = 0x00;
 	DDRD |= 0x3C;		// LED status light && Relay, CLock and Sound
 
@@ -181,6 +182,7 @@ void initialize(void) {
 	//init analog input reading
 	ant = (analog_input_t *)malloc(sizeof(struct ANALOG_INPUT));
 	analog_input_init(ant);
+
 	// ********************
 	//crank up the ISRs
 	sei();
@@ -294,8 +296,8 @@ void readAnalogInputs(void * args) {
 
 	uint32_t rel, dead;
 	while(TRUE){
-		analog_input_update(ant);
-		
+		//analog_input_update(ant);
+		//write_buffers_to_screen();
 		//fprintf(stdout, "%d\n\r", displaybuffer_left[0]);
 		//fprintf(stdout, "Current Minutes to Temp : %d\n\r", pot_to_temp(ant->current_minutes));
 	}
@@ -308,7 +310,43 @@ void readAnalogInputs(void * args) {
 void ledComm(void * args){
 	uint32_t rel, dead;
 	while(TRUE){
+		analog_input_update(ant);
 		write_buffers_to_screen();
+
+		switch( current_state){
+			case STATE_HAPPY: if(go_button_changed(ant) &&  ant->current_go_button < 600 ) next_state = STATE_CURR_TEMP;
+							  else if( temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
+							  else if(minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
+							  else if( seconds_changed(ant)) next_state = STATE_SEC_DISPLAY;
+							  else next_state = STATE_HAPPY;
+							  break;
+			case STATE_MIN_DISPLAY: if(go_button_changed(ant) &&  ant->current_go_button < 600 ) next_state = STATE_CURR_TEMP;
+							  else if( temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
+							  else if(minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
+							  else if( seconds_changed(ant)) next_state = STATE_SEC_DISPLAY;
+							  else next_state = STATE_MIN_DISPLAY;
+							  break;
+			case STATE_TEMP_DISPLAY: if(go_button_changed(ant) &&  ant->current_go_button < 600 ) next_state = STATE_CURR_TEMP;
+							  else if( temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
+							  else if(minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
+							  else if( seconds_changed(ant)) next_state = STATE_SEC_DISPLAY;
+							  else next_state = STATE_TEMP_DISPLAY;
+							  break;
+			case STATE_SEC_DISPLAY: if(go_button_changed(ant) &&  ant->current_go_button < 600 ) next_state = STATE_CURR_TEMP;
+							  else if( temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
+							  else if(minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
+							  else if( seconds_changed(ant)) next_state = STATE_SEC_DISPLAY;
+							  else next_state = STATE_SEC_DISPLAY;
+							  break;
+			
+			case STATE_CURR_TEMP: if(go_button_changed(ant) &&  ant->current_go_button < 600 ) next_state = STATE_HAPPY;
+							else next_state = STATE_CURR_TEMP;
+			default: break;
+			
+		}
+		current_state = next_state;
+		write_state_message_on_buffer();
+
 	}
 	rel = trtCurrentTime() + SECONDS2TICKS(0.25);
 	dead = trtCurrentTime() + SECONDS2TICKS(0.5);
@@ -322,7 +360,7 @@ int main(void) {
   //init the UART -- trt_uart_init() is in trtUart.c
   trt_uart_init();
   //write_happy_to_buffer();
-  write_time_to_buffer(480);
+  write_time_to_buffer(483);
   //
   stdout = stdin = stderr = &uart0;
   fprintf(stdout,"\n\r Welcome to KitchenBot UI \n\r Please input your instructions below\n\r The options are: time, temp, & egg\n\r\n\r");

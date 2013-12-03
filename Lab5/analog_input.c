@@ -14,7 +14,7 @@ char minutes_button_changed(struct ANALOG_INPUT * t){
 
 char go_button_changed(struct ANALOG_INPUT * t){
 	int delta = t->current_go_button- t->prev_go_button;
-	return delta > 20 || delta < -20;
+	return delta > 100 || delta < -100;
 }
 char temp_button_changed(struct ANALOG_INPUT * t){
 	int delta = t->current_temp_button- t->prev_temp_button;
@@ -23,17 +23,17 @@ char temp_button_changed(struct ANALOG_INPUT * t){
 // DIAL CHANGED METHODS
 char seconds_changed(struct ANALOG_INPUT * t){
 	int delta = t->current_seconds - t->prev_seconds;
-	return delta > 2 || delta < -2;
+	return delta > 4 || delta < -4;
 }
 
 char minutes_changed(struct ANALOG_INPUT * t){
-	int delta = t->current_seconds - t->prev_seconds;
-	return delta > 2 || delta < -2;
+	int delta = t->current_minutes - t->prev_minutes;
+	return delta > 4 || delta < -4;
 }
 
 char temperature_changed(struct ANALOG_INPUT * t){
 	int delta = t->current_temp - t->prev_temp;
-	return delta > 2 || delta < -2;
+	return delta > 4 || delta < -4;
 }
 
 /*
