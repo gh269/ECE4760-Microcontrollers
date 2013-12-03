@@ -227,20 +227,20 @@ void adjustTemp(void* args) {
 		trtWait(SEM_SHARED);
 		cTemp = (adc_in + 3) / 2.1;
 		if (cTemp < 0) cTemp = 0; 
-		if (cTemp < (dTemp * 9)) {	// Factor of .9 to account for carryover effect
+		if (cTemp < (dTemp /* * .95 */)) {	// Factor of .9 to account for carryover effect
 			PORTD &= ~RELAY_EN;		// Turn on heating element
-			PORTD |= LED_EN;    	// Turn on LED
+			PORTD &= ~LED_EN;		// Turn off LED
 		}
 		else {
 			PORTD |= RELAY_EN;		// Turn off heating element
-			PORTD &= ~LED_EN;		// Turn off LED
+			PORTD |= LED_EN;    	// Turn on LED
 			count_en = 1;			// Enable timer count down
 		}
 		trtSignal(SEM_SHARED);
 
 		// sleep
-	  	rel = trtCurrentTime() + SECONDS2TICKS(0.25);
-	  	dead = trtCurrentTime() + SECONDS2TICKS(0.5);
+	  	rel = trtCurrentTime() + SECONDS2TICKS(2);
+	  	dead = trtCurrentTime() + SECONDS2TICKS(4);
 	  	trtSleepUntil(rel, dead);	
 	}
 }
@@ -263,9 +263,9 @@ int main(void) {
   trtCreateSemaphore(SEM_SHARED, 1) ; // protect shared variable
 
   // --- create tasks  ----------------
-  trtCreateTask(serialComm, 1000, SECONDS2TICKS(0.1), SECONDS2TICKS(0.1), &(args[0]));
-  trtCreateTask(lcdComm, 1000, SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
-  trtCreateTask(adjustTemp, 1000, SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
+  trtCreateTask(serialComm, 2000, SECONDS2TICKS(0.1), SECONDS2TICKS(0.1), &(args[0]));
+  trtCreateTask(lcdComm, 2000, SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
+  trtCreateTask(adjustTemp, 2000, SECONDS2TICKS(2), SECONDS2TICKS(4), &(args[0]));
 
   // --- Main Idle task --------------------------------------
   while (1) {
