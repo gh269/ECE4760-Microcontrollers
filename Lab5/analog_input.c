@@ -40,8 +40,8 @@ char temperature_changed(struct ANALOG_INPUT * t){
 Performs linear mapping
 from original range to new range
 */
-int linear_scale(int original_value, int original_min, int original_max, int new_min, int new_max){
-	return ( original_value - original_min) * (new_max - new_min) / (original_max - original_min) + new_min;
+int linear_scale(int x, int in_min, int in_max, int out_min, int out_max){
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
 int pot_to_temp(int value){
