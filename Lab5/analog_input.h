@@ -8,6 +8,8 @@
 #define BUTT_MIN 4
 #define BUTT_GO 5
 #define BUTT_TEMP 6
+
+#include "input_db.h"
 /*
 	MIN	  SEC
  	  TEMP
@@ -38,9 +40,14 @@ typedef struct ANALOG_INPUT{
 	int prev_temp;
 	//-----------------------
 
+	//-----FSMS--------------
+	struct INPUT_DB_FSM * temp_dial_fsm;
+	struct INPUT_DB_FSM * min_dial_fsm;
+	struct INPUT_DB_FSM * sec_dial_fsm;
+	int can_tick;
 } analog_input_t;
 
-struct ANALOG_INPUT * ant;
+ struct ANALOG_INPUT * ant;
 
 
 uint16_t read_adc(uint8_t channel);

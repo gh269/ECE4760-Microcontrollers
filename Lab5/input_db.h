@@ -9,7 +9,7 @@
 #define TRUE 1
 
 //debounce delay in millis
-#define DEBOUNCE_DELAY 3
+#define DEBOUNCE_DELAY 1
 
 typedef struct INPUT_DB_FSM{
 	int state;
@@ -19,16 +19,34 @@ typedef struct INPUT_DB_FSM{
 	int input_state;
   char debouncing;
   int debounce_time;
+  int input_state_changed;
 
-} input_db_t;
+} input_db_t; 
 
-void create_input_db_fsm(struct INPUT_DB_FSM * fsm ){
+void create_input_db_fsm(struct INPUT_DB_FSM * fsm );
+void tick_fsm(struct INPUT_DB_FSM *fsm);
+void update_input(struct INPUT_DB_FSM * fsm , int pin);
+
+
+
+void create_input_db_fsm_test(struct INPUT_DB_FSM * fsm ,int init_value){
   fsm -> debouncing = FALSE;
   fsm -> debounce_time = 0;
   
   fsm -> state = STATE_READING;
   
-  fsm -> input_state = 0;
+  fsm -> input_state = init_value;
+  fsm -> prev_input_state = init_value;
+  fsm ->input_state_changed = FALSE;
+}
+
+void create_input_db_fsm(struct INPUT_DB_FSM * fsm ){
+  fsm -> debouncing = FALSE;
+  fsm -> debounce_time = 0;
+  fsm-> input_state_changed = FALSE;
+  fsm -> state = STATE_READING;
+  
+  fsm -> input_state = 0; 
   fsm -> prev_input_state = 0;
 }
 
@@ -40,14 +58,17 @@ void tick_fsm(struct INPUT_DB_FSM *fsm){
 
 void update_input(struct INPUT_DB_FSM * fsm , int pin){
   int reading = pin;
-  int next_state;
+  int next_state = 0;
   switch(fsm -> state){
-    case STATE_READING: if( reading != fsm->prev_input_state){ 
-                          next_state = STATE_DB_DELAY; 
-                           fsm->debouncing = FALSE; 
+    case STATE_READING:
+                        if( reading != fsm->prev_input_state){ 
+                           next_state = STATE_DB_DELAY; 
                          }
+                         fsm->debouncing = FALSE; 
                          break;
-    case STATE_DB_DELAY: if(fsm->debouncing && !fsm -> debounce_time) next_state = STATE_SET_NEW;
+
+    case STATE_DB_DELAY: if( reading != fsm->prev_input_state) next_state = STATE_READING;
+                         else if(fsm->debouncing && !fsm -> debounce_time) next_state = STATE_SET_NEW;
                          else if(fsm -> debouncing && fsm -> debounce_time) next_state = STATE_DB_DELAY;
                          else{
                            fsm -> debouncing = TRUE;
@@ -55,8 +76,12 @@ void update_input(struct INPUT_DB_FSM * fsm , int pin){
                            next_state = STATE_DB_DELAY;
                          }
                          break;
-    case STATE_SET_NEW: fsm -> input_state = reading; next_state = STATE_READING;
+    case STATE_SET_NEW: 
+                        fsm -> input_state = reading;
+                        next_state = STATE_READING;
+
                         break;
+
     default:            next_state = STATE_READING;
                         break;              
   }
