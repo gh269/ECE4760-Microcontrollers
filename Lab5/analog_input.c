@@ -81,9 +81,9 @@ void analog_input_init(struct ANALOG_INPUT * t){
 
 	t->can_tick = 0;
 
-	t->temp_dial_fsm = (struct INPUT_DB_FSM * ) malloc(sizeof(struct INPUT_DB_FSM));
-	t->min_dial_fsm = (struct INPUT_DB_FSM * ) malloc(sizeof(struct INPUT_DB_FSM));
-	t->sec_dial_fsm = (struct INPUT_DB_FSM * ) malloc(sizeof(struct INPUT_DB_FSM));
+	//t->temp_dial_fsm = (struct INPUT_DB_FSM * ) malloc(sizeof(struct INPUT_DB_FSM));
+	//t->min_dial_fsm = (struct INPUT_DB_FSM * ) malloc(sizeof(struct INPUT_DB_FSM));
+	//t->sec_dial_fsm = (struct INPUT_DB_FSM * ) malloc(sizeof(struct INPUT_DB_FSM));
 
 	int pot_sec_reading =  read_adc(POT_SEC); 
 	int pot_min_reading =  read_adc(POT_MIN); 

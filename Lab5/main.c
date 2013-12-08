@@ -145,12 +145,16 @@ uint16_t read_adc(uint8_t channel){
 //Set it all up
 void initialize(void) {
 	DDRA = 0x00;		// ADC Port
+	DDRB = 0x00;
 	PORTA = 0x00;
 	DDRC = 0x7e;    	// LCD connections
 	PORTC = 0x00;
 	DDRD |= 0x3C;		// LED status light && Relay, CLock and Sound
 
 	PORTD |= 0x08;		// Initialize relay to high
+	PINB = 0;
+	DDRB &= ~0x80;
+	//PORTB |= 0x80;
 
 	// ******************** 
 	//initialize variables
@@ -319,7 +323,7 @@ void print_state(){
 	/*
 	Print Value of Each Dial
 	*/
-	fprintf(stdout, "State: %d, Temp: %d, Sec: %d, Min: %d\n\r,",current_state, ant->current_temp, ant->current_seconds, minutes_changed(ant));
+	fprintf(stdout, "State: %d, Temp: %d, Sec: %d, Min: %d\n\r", (PINB & 0x80), ant->current_temp, ant->current_seconds, minutes_changed(ant));
 
 }
 void ledComm(void * args){
@@ -339,28 +343,35 @@ void ledComm(void * args){
 		}
 
 		switch ( current_state){
-			case STATE_HAPPY: if(go_button_changed(ant) &&  ant->current_go_button < 600 ) next_state = STATE_CURR_TEMP;
-							  if( minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
+			case STATE_HAPPY: if( (PINB & 0x80) ) next_state = STATE_CURR_TEMP;
+							  else if( minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
 							  else if( seconds_changed(ant) ) next_state = STATE_SEC_DISPLAY;
 							  else if(  temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
 
 							  else next_state = STATE_HAPPY;
 							  break;
 
-			case STATE_MIN_DISPLAY: if( seconds_changed(ant) ) next_state = STATE_SEC_DISPLAY;
+			case STATE_MIN_DISPLAY: if( (PINB & 0x80) ) next_state = STATE_CURR_TEMP;
+									else if( seconds_changed(ant) ) next_state = STATE_SEC_DISPLAY;
 									else if(  temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
 									else next_state = STATE_MIN_DISPLAY;
 									break;
-			case STATE_SEC_DISPLAY: if( minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
+			case STATE_SEC_DISPLAY:  if( (PINB & 0x80) ) next_state = STATE_CURR_TEMP;
+									else if( minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
 									else if(  temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
 									else next_state = STATE_SEC_DISPLAY;
 									break;
 			
-			case STATE_TEMP_DISPLAY: if( seconds_changed(ant)) next_state = STATE_SEC_DISPLAY;
+			case STATE_TEMP_DISPLAY: if( (PINB & 0x80) ) next_state = STATE_CURR_TEMP;
+									else if( seconds_changed(ant)) next_state = STATE_SEC_DISPLAY;
 							  		else if(minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
 									else next_state = STATE_TEMP_DISPLAY;
 									break;
-			
+			case STATE_CURR_TEMP: 
+ 							  if( minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
+							  else if( seconds_changed(ant) ) next_state = STATE_SEC_DISPLAY;
+							  else if(  temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
+							  break;
 			default:				break;
 		}
 		/*

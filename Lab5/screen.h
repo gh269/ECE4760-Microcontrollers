@@ -32,7 +32,7 @@ volatile int dTemp;		// desired temperature
 volatile int time_rem;  // time remaining in seconds
 
 void init_screens(){
-	DDRB = (CLK | CLR | SCREEN_LEFT | SCREEN_RIGHT);
+	DDRB |= (CLK | CLR | SCREEN_LEFT | SCREEN_RIGHT);
 	PORTB = CLR;
 }
 

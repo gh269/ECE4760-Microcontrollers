@@ -9,6 +9,7 @@
 #define BUTT_GO 5
 #define BUTT_TEMP 6
 
+#define BUTTON_MIN 0x80
 #include "input_db.h"
 /*
 	MIN	  SEC
@@ -42,7 +43,7 @@ typedef struct ANALOG_INPUT{
 
 	//-----FSMS--------------
 	struct INPUT_DB_FSM * temp_dial_fsm;
-	struct INPUT_DB_FSM * min_dial_fsm;
+	struct INPUT_DB_FSM * go_fsm;
 	struct INPUT_DB_FSM * sec_dial_fsm;
 	int can_tick;
 } analog_input_t;
