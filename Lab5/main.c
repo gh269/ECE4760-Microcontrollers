@@ -341,7 +341,7 @@ void ledComm(void * args){
 		if(input_tick <=0 ){
 			input_tick = INPUT_TICK_DELAY;
 		}
-
+		/*
 		switch ( current_state){
 			case STATE_HAPPY: if( (PINB & 0x80) ) next_state = STATE_CURR_TEMP;
 							  else if( minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
@@ -374,6 +374,7 @@ void ledComm(void * args){
 							  break;
 			default:				break;
 		}
+		*/
 		/*
 		switch( current_state){
 			case STATE_HAPPY: //if(go_button_changed(ant) &&  ant->current_go_button < 600 ) next_state = STATE_CURR_TEMP;
