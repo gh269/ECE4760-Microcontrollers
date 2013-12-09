@@ -33,7 +33,8 @@ typedef struct ANALOG_INPUT{
 	int current_temp;
 	int prev_temp;
 	//-----------------------
-
+	int can_tick;
+	
 } analog_input_t;
 
  struct ANALOG_INPUT * ant;

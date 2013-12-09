@@ -22,6 +22,9 @@
 #define PULSE_DELAY 1
 #define ROW_SCAN_DELAY 250
 
+#define TIME_DISP 0
+#define TEMP_DISP 1
+
 // row scan release = 8 * row_scan_delay + fuzz 
 // converted into seconds 
 // 8 * 3000 ms -> 0.024 seconds 

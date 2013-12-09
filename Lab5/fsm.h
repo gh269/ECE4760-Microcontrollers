@@ -16,7 +16,11 @@
 #define STATE_HOT 5
 #define STATE_CURR_TIME 6
 #define STATE_DONE 7
-
+#define STATE_GO 8
+#define STATE_TARGET_TIME 9 
+#define STATE_BEEP_ONCE 10
+#define STATE_TIME_REM 11
+#define STATE_CURR_TEMP_COOK 12
 //----------------------------------------------------------------------
 // State
 //----------------------------------------------------------------------
@@ -45,10 +49,18 @@ void write_state_message_on_buffer(){
 		case STATE_HOT          : write_hot_to_buffer(); break;
 		case STATE_CURR_TIME    : write_time_to_buffer(time_rem); break;
 		case STATE_DONE         : write_done_to_buffer(); break;
-		
-		default: write_empty_to_buffer(); break;
+			
+		default					: write_empty_to_buffer(); break;
 
 	}
 }
+
+void handle_state_logic(){
+	switch(current_state){
+		case STATE_GO: 			: dTemp = pot_to_temp(ant->current_temp); 
+		default					: break;
+	}
+}
+
 //
 #endif
