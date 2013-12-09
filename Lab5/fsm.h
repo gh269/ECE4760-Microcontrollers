@@ -3,7 +3,8 @@
 
 #include "screen.h"
 #include "analog_input.h"
-
+#include "trtkernel_1284.c"
+#include "regulate.h"
 //----------------------------------------------------------------------
 // State Definitions
 //----------------------------------------------------------------------
@@ -48,13 +49,13 @@ void write_state_message_on_buffer(){
 		case STATE_MIN_DISPLAY  : write_min_to_buffer(pot_to_minutes(ant->current_minutes)); break;
 		case STATE_SEC_DISPLAY  : write_sec_to_buffer(pot_to_seconds(ant->current_seconds)); break;
 
-		case STATE_CURR_TEMP    : write_done_to_buffer(); break;
-		case STATE_TARGET_TIME  : write_time_to_buffer(time_rem); break;
+		case STATE_CURR_TEMP    : write_temp_to_buffer(dTemp); break;
+		case STATE_TARGET_TIME  : write_time_to_buffer(time_rem);  break;
 
 
 		case STATE_BEEP_ONCE    : write_done_to_buffer();
 		case STATE_HOT          : write_hot_to_buffer(); break;
-		case STATE_CURR_TIME    : write_time_to_buffer(time_rem); break;
+		case STATE_CURR_TIME    : trtWait(SEM_SHARED) ; write_time_to_buffer(time_rem);  trtSignal(SEM_SHARED); break;
 		case STATE_DONE         : write_done_to_buffer(); break;
 		case STATE_GO           : write_empty_to_buffer(); break;
 		default					: write_empty_to_buffer(); break;
@@ -62,14 +63,17 @@ void write_state_message_on_buffer(){
 	}
 }
 
-void handle_state_logic(){
-	switch(current_state){
+void handle_next_state_logic(){
+	switch(next_state){
 
-		case STATE_GO 			: dTemp = pot_to_temp(ant->current_temp); 
+		case STATE_GO 			: trtWait(SEM_SHARED) ;
+								  dTemp = pot_to_temp(ant->current_temp); 
 								  time_rem = convert_time_to_seconds(pot_to_minutes(ant->current_minutes),
 								  									 pot_to_seconds(ant->current_seconds));
-								  break;
-		case STATE_BEEP_ONCE	: count_en = 1; 
+								 trtSignal(SEM_SHARED); 
+								 break;
+
+		case STATE_BEEP_ONCE	: beep_timer = 1000; PORTD |= SOUND_EN; while(beep_timer > 0); PORTD &= ~SOUND_EN; count_en = 1; 
 		default					: break;
 	}
 }

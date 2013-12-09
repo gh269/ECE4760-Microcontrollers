@@ -32,7 +32,7 @@ FILE uart0 = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
 /********************************************************************/
 // semaphore to protect shared variable
 // semaphores 1-3 are used by the UART
-#define SEM_SHARED 4
+
 // input arguments to each thread
 // not actually used in this example
 int args[2] ;
@@ -44,8 +44,7 @@ int args[2] ;
 // relay & LED bits
 #define LED_EN 	 0x04
 #define RELAY_EN 0x08
-//speaker D4
-#define SOUND_EN 0x10
+
 
 
 #define INPUT_TICK_DELAY 150
@@ -79,7 +78,9 @@ ISR (TIMER0_COMPA_vect) {
 	}
 	
 
-
+	if( beep_timer > 0){
+		beep_timer--;
+	}
 
 	trtWait(SEM_SHARED);
 	if ((time_rem > 0) && count_en) {
@@ -185,7 +186,7 @@ void initialize(void) {
 	//*********************
 	//init analog input reading
 	ant = (analog_input_t *)malloc(sizeof(struct ANALOG_INPUT));
-	analog_input_init(ant);
+	
 
 	// ********************
 	//crank up the ISRs
@@ -201,7 +202,7 @@ void serialComm(void* args) {
 	volatile int num ;
 	char cmd[4] ;
     // initialize
-    initialize();
+
 	while (TRUE) {
 		// commands:
 		// 'temp' sets the desired temperature
@@ -317,14 +318,15 @@ void print_state(){
 	Print Value of Each Dial
 	*/
 	//fprintf(stdout, "State: %d, Temp: %d, Sec: %d, Min: %d\n\r", (PINB & 0x80), ant->current_temp, ant->current_seconds, minutes_changed(ant));
-	fprintf(stdout, "Button Go: %d, Button Disp: %d\n\r", go_switched(ant), disp_switched(ant));
+	//fprintf(stdout, "Button Go: %d, Button Disp: %d\n\r", go_switched(ant), disp_switched(ant));
+	fprintf(stdout, "Temp: %d, Min :%d\n\r", cTemp, dTemp);
 }
 //-----------------------------------------------------------------------------------
 //--------------STATE TRANSITION LOGIC-----------------------------------------------
 //-----------------------------------------------------------------------------------
 void ledComm(void * args){
 	uint32_t rel, dead;
-	analog_input_init(ant);
+	
 	while(TRUE){
 		//fprintf(stdout, "input tick: %d\n\r", input_tick);
 		write_buffers_to_screen();
@@ -332,7 +334,8 @@ void ledComm(void * args){
 		current_state = next_state;
 		//print_state();
 		analog_input_update(ant);
-		
+		//dTemp = pot_to_temp(ant->current_temp);
+		//PORTD |= SOUND_EN;
 		
 		switch ( current_state){
 			
@@ -384,9 +387,12 @@ void ledComm(void * args){
 			case STATE_BEEP_ONCE:   if( !go_switched(ant) ) next_state = STATE_HAPPY;
 								 	else if( disp_switched(ant) == TEMP_DISP) next_state = STATE_CURR_TEMP_COOK;
 								 	else if( disp_switched(ant) == TIME_DISP) next_state = STATE_TIME_REM;
-								 	else next_state = STATE_HAPPY; //unexpected_issue
+								 	else next_state = STATE_DONE; //unexpected_issue
 								 	break;
 
+			case STATE_CURR_TEMP_COOK: next_state = STATE_DONE; break;
+			case STATE_TIME_REM:       next_state = STATE_DONE; break;
+			case STATE_DONE:		next_state = STATE_DONE;
 			default:				break;
 		}
 		
@@ -425,7 +431,7 @@ void ledComm(void * args){
 			
 		}
 		*/
-		handle_state_logic();
+		handle_next_state_logic();
 		//analog_input_update(ant);
 		write_state_message_on_buffer();
 
@@ -441,6 +447,9 @@ void ledComm(void * args){
 int main(void) {
   //init the UART -- trt_uart_init() is in trtUart.c
   trt_uart_init();
+  initialize();
+  analog_input_init(ant);
+  dTemp = pot_to_temp(ant->current_temp);
   //write_happy_to_buffer();
   write_time_to_buffer(483);
   //

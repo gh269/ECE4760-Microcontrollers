@@ -75,7 +75,7 @@ long linear_scale(long x, long in_min, long in_max, long out_min, long out_max){
 }
 
 int pot_to_temp(int value){
-	return linear_scale(value, 21, 1023, 0, 100);
+	return linear_scale(value, 18, 1023, 0, 100);
 }
 
 int pot_to_minutes(int value){
@@ -95,9 +95,9 @@ void analog_input_init(struct ANALOG_INPUT * t){
 	//t->min_dial_fsm = (struct INPUT_DB_FSM * ) malloc(sizeof(struct INPUT_DB_FSM));
 	//t->sec_dial_fsm = (struct INPUT_DB_FSM * ) malloc(sizeof(struct INPUT_DB_FSM));
 
-	int pot_sec_reading =  read_adc(POT_SEC); 
-	int pot_min_reading =  read_adc(POT_MIN); 
-	int pot_temp_reading =  read_adc(POT_TEMP); 
+	int pot_sec_reading  =  read_adc(POT_SEC); 
+	int pot_min_reading  =  read_adc(POT_MIN); 
+	int pot_temp_reading  =  read_adc(POT_TEMP); 
 
     //create_input_db_fsm_test(t->temp_dial_fsm, pot_sec_reading  );
 	//create_input_db_fsm_test(t->min_dial_fsm , pot_min_reading  );
