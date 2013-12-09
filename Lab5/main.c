@@ -48,11 +48,8 @@ int args[2] ;
 #define SOUND_EN 0x10
 
 
-#define INPUT_TICK_DELAY 250
+#define INPUT_TICK_DELAY 150
 
-// timer variable
-volatile int msec;
-volatile int count_en;
 
 //delay flags
 volatile int clock_flag;
@@ -81,13 +78,8 @@ ISR (TIMER0_COMPA_vect) {
 		row_scan_flag--;
 	}
 	
-	if(input_tick > 0){
-		input_tick--;
-	}
-	if(input_tick <= 0){
-		ant->can_tick = TRUE;
-	}
-	
+
+
 
 	trtWait(SEM_SHARED);
 	if ((time_rem > 0) && count_en) {
@@ -154,7 +146,7 @@ void initialize(void) {
 
 	PORTD |= 0x08;		// Initialize relay to high
 	PINB = 0;
-	DDRB &= ~0x80;
+	DDRB &= ~(SWITCH_GO + SWITCH_DISP);
 	//PORTB |= 0x80;
 
 	// ******************** 
@@ -324,8 +316,8 @@ void print_state(){
 	/*
 	Print Value of Each Dial
 	*/
-	fprintf(stdout, "State: %d, Temp: %d, Sec: %d, Min: %d\n\r", (PINB & 0x80), ant->current_temp, ant->current_seconds, minutes_changed(ant));
-
+	//fprintf(stdout, "State: %d, Temp: %d, Sec: %d, Min: %d\n\r", (PINB & 0x80), ant->current_temp, ant->current_seconds, minutes_changed(ant));
+	fprintf(stdout, "Button Go: %d, Button Disp: %d\n\r", go_switched(ant), disp_switched(ant));
 }
 //-----------------------------------------------------------------------------------
 //--------------STATE TRANSITION LOGIC-----------------------------------------------
@@ -338,21 +330,19 @@ void ledComm(void * args){
 		write_buffers_to_screen();
 
 		current_state = next_state;
-
+		//print_state();
 		analog_input_update(ant);
-		if(input_tick <=0 ){
-			input_tick = INPUT_TICK_DELAY;
-		}
-
+		
+		
 		switch ( current_state){
 			
-			case STATE_HAPPY: if( go_switched(ant) ) next_state = STATE_GO;
-							  else if( minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
-							  else if( seconds_changed(ant) ) next_state = STATE_SEC_DISPLAY;
-							  else if(  temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
-
-							  else next_state = STATE_HAPPY;
-							  break;
+		  case STATE_HAPPY		   : if( go_switched(ant) ) next_state = STATE_GO;
+								     else if( minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
+								     else if( seconds_changed(ant) ) next_state = STATE_SEC_DISPLAY;
+								     else if(  temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
+	   
+								     else next_state = STATE_HAPPY;
+								     break;
 
 			case STATE_MIN_DISPLAY: if( go_switched(ant) ) next_state = STATE_GO;
 									else if( seconds_changed(ant) ) next_state = STATE_SEC_DISPLAY;
@@ -387,8 +377,8 @@ void ledComm(void * args){
 			case STATE_TARGET_TIME: if( !go_switched(ant) ) next_state = STATE_HAPPY;
 									else if(cTemp >= dTemp) next_state = STATE_BEEP_ONCE;
 									else if(disp_switched(ant) == TEMP_DISP) next_state = STATE_CURR_TEMP;
-									else if( cTemp != dTemp) next_state = STATE_CURR_TEMP;
-									else next_state = STATE_HAPPY;
+									else if( cTemp != dTemp) next_state = STATE_TARGET_TIME;
+									else next_state = STATE_HAPPY; //unexpected_issue
 									break;
 
 			case STATE_BEEP_ONCE:   if( !go_switched(ant) ) next_state = STATE_HAPPY;
@@ -399,6 +389,7 @@ void ledComm(void * args){
 
 			default:				break;
 		}
+		
 		
 		/*
 		switch( current_state){

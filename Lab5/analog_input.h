@@ -2,7 +2,7 @@
 #define INPUT_H
 
 #define POT_MIN 1
-#define POT_SEC 2
+#define POT_SEC 4
 #define POT_TEMP 3
 
 #define BUTT_MIN 4
@@ -34,7 +34,7 @@ typedef struct ANALOG_INPUT{
 	int prev_temp;
 	//-----------------------
 	int can_tick;
-	
+
 } analog_input_t;
 
  struct ANALOG_INPUT * ant;
@@ -58,5 +58,7 @@ char temperature_changed(struct ANALOG_INPUT * t);
 void analog_input_init(struct ANALOG_INPUT * t);
 void analog_input_update(struct ANALOG_INPUT * t);
 
+char go_switched(struct ANALOG_INPUT * t);
+char disp_switched(struct ANALOG_INPUT * t);
 
 #endif

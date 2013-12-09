@@ -23,7 +23,7 @@
 #define ROW_SCAN_DELAY 250
 
 #define TIME_DISP 0
-#define TEMP_DISP 1
+#define TEMP_DISP 0x40
 
 // row scan release = 8 * row_scan_delay + fuzz 
 // converted into seconds 

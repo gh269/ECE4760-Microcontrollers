@@ -98,15 +98,24 @@ if time > 10:00 - display the minutes with a m
 if time < 10:00 M:SS
 */
 void write_time_to_buffer(int total_seconds){
+	
 	if(total_seconds > 600){
-		write_min_to_buffer(total_seconds/60);
+		int min = total_seconds / 60;
+		write_min_to_buffer(min);
+	}
+	else if(total_seconds < 60){
+		write_sec_to_buffer(total_seconds);
 	}
 	else{
+		int min = total_seconds / 60;
+		int sec = total_seconds - (60*min);
 
-		int * left_valueL = numbers[total_seconds / 60];
+		int * left_valueL = numbers[min];
 		int * left_valueR = colon;
-		int * right_valueL = numbers[(total_seconds % 60) / 10];
-		int * right_valueR = numbers[(total_seconds % 60) % 10];
+
+		int * right_valueL = numbers[sec / 10];
+		int * right_valueR = (sec < 1) ? numbers[0] : numbers[sec % 10];
+
 		write_to_buffer(left_valueR, left_valueL, right_valueR, right_valueL);
 
 	}

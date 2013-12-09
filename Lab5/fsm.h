@@ -27,9 +27,11 @@
 
 volatile int current_state = STATE_HAPPY;
 volatile int next_state = STATE_HAPPY;
-//----------------------------------------------------------------------
-// State Transitions
-//----------------------------------------------------------------------
+
+
+int convert_time_to_seconds(int minutes, int seconds){
+	return 60 * minutes + seconds;
+}
 
 
 //----------------------------------------------------------------------
@@ -41,15 +43,20 @@ void write_state_message_on_buffer(){
 	switch (current_state){
 
 		case STATE_HAPPY		: write_happy_to_buffer(); break;
+		//Display States - no associated logic
 		case STATE_TEMP_DISPLAY : write_temp_to_buffer(pot_to_temp(ant->current_temp)); break;
 		case STATE_MIN_DISPLAY  : write_min_to_buffer(pot_to_minutes(ant->current_minutes)); break;
 		case STATE_SEC_DISPLAY  : write_sec_to_buffer(pot_to_seconds(ant->current_seconds)); break;
 
-		case STATE_CURR_TEMP    : write_done_to_buffer(cTemp); break;
+		case STATE_CURR_TEMP    : write_done_to_buffer(); break;
+		case STATE_TARGET_TIME  : write_time_to_buffer(time_rem); break;
+
+
+		case STATE_BEEP_ONCE    : write_done_to_buffer();
 		case STATE_HOT          : write_hot_to_buffer(); break;
 		case STATE_CURR_TIME    : write_time_to_buffer(time_rem); break;
 		case STATE_DONE         : write_done_to_buffer(); break;
-			
+		case STATE_GO           : write_empty_to_buffer(); break;
 		default					: write_empty_to_buffer(); break;
 
 	}
@@ -58,7 +65,11 @@ void write_state_message_on_buffer(){
 void handle_state_logic(){
 	switch(current_state){
 
-		case STATE_GO 			: dTemp = pot_to_temp(ant->current_temp); break;
+		case STATE_GO 			: dTemp = pot_to_temp(ant->current_temp); 
+								  time_rem = convert_time_to_seconds(pot_to_minutes(ant->current_minutes),
+								  									 pot_to_seconds(ant->current_seconds));
+								  break;
+		case STATE_BEEP_ONCE	: count_en = 1; 
 		default					: break;
 	}
 }

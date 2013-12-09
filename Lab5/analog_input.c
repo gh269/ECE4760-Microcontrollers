@@ -5,8 +5,8 @@
 
 
 #include "analog_input.h"
-int d = 3;
-int d_time = 3;
+int d = 2;
+int d_time = 1;
 //BUTTON CHANGE METHODS
 /*
 char minutes_button_changed(struct ANALOG_INPUT * t){
@@ -75,7 +75,7 @@ long linear_scale(long x, long in_min, long in_max, long out_min, long out_max){
 }
 
 int pot_to_temp(int value){
-	return linear_scale(value, 0, 1023, 0, 100);
+	return linear_scale(value, 21, 1023, 0, 100);
 }
 
 int pot_to_minutes(int value){
@@ -107,6 +107,9 @@ void analog_input_init(struct ANALOG_INPUT * t){
 	t->current_go_button  = t->prev_go_button  = read_adc(BUTT_GO);
 	t->current_temp_button= t->current_temp_button = read_adc(BUTT_TEMP);
 	*/
+	t->current_disp_switch = (PINB & SWITCH_GO);
+	t->current_disp_switch = PINB & SWITCH_DISP;
+
 	t->current_seconds = t->prev_seconds = pot_sec_reading ;
 	t->current_minutes = t->prev_minutes = pot_min_reading ;
 	t->current_temp    = t->prev_temp    = pot_temp_reading;
