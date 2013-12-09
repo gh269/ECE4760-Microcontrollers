@@ -9,26 +9,19 @@
 #define BUTT_GO 5
 #define BUTT_TEMP 6
 
-#define BUTTON_MIN 0x80
+//Switch Go is on B7
+#define SWITCH_GO 0x80
+#define SWITCH_DISP 0x40
+
 #include "input_db.h"
 /*
 	MIN	  SEC
  	  TEMP
 */
 typedef struct ANALOG_INPUT{
-	//-----BUTTONS-----------
-	//min is set time
-	char current_min_button;
-	char prev_min_button;
 
-	//sec is GO
-	char current_go_button;
-	char prev_go_button;
-
-	//temp is set temp
-	char current_temp_button;
-	char prev_temp_button;
-	//-----------------------
+	char current_go_switch;
+	char current_disp_switch;
 
 	//------DIALS------------
 	int current_seconds;
@@ -41,11 +34,6 @@ typedef struct ANALOG_INPUT{
 	int prev_temp;
 	//-----------------------
 
-	//-----FSMS--------------
-	struct INPUT_DB_FSM * temp_dial_fsm;
-	struct INPUT_DB_FSM * go_fsm;
-	struct INPUT_DB_FSM * sec_dial_fsm;
-	int can_tick;
 } analog_input_t;
 
  struct ANALOG_INPUT * ant;
@@ -55,6 +43,7 @@ uint16_t read_adc(uint8_t channel);
 char minutes_button_changed(struct ANALOG_INPUT * t);
 char go_button_changed(struct ANALOG_INPUT * t);
 char temp_button_changed(struct ANALOG_INPUT * t);
+
 long linear_scale(long x, long in_min, long in_max, long out_min, long out_max);
 
 int pot_to_temp(int value);

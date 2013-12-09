@@ -326,6 +326,9 @@ void print_state(){
 	fprintf(stdout, "State: %d, Temp: %d, Sec: %d, Min: %d\n\r", (PINB & 0x80), ant->current_temp, ant->current_seconds, minutes_changed(ant));
 
 }
+//-----------------------------------------------------------------------------------
+//--------------STATE TRANSITION LOGIC-----------------------------------------------
+//-----------------------------------------------------------------------------------
 void ledComm(void * args){
 	uint32_t rel, dead;
 	analog_input_init(ant);
@@ -341,9 +344,9 @@ void ledComm(void * args){
 		if(input_tick <=0 ){
 			input_tick = INPUT_TICK_DELAY;
 		}
-		/*
+
 		switch ( current_state){
-			case STATE_HAPPY: if( (PINB & 0x80) ) next_state = STATE_CURR_TEMP;
+			case STATE_HAPPY: if( go_switched(ant) ) next_state = STATE_GO;
 							  else if( minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
 							  else if( seconds_changed(ant) ) next_state = STATE_SEC_DISPLAY;
 							  else if(  temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
@@ -351,30 +354,33 @@ void ledComm(void * args){
 							  else next_state = STATE_HAPPY;
 							  break;
 
-			case STATE_MIN_DISPLAY: if( (PINB & 0x80) ) next_state = STATE_CURR_TEMP;
+			case STATE_MIN_DISPLAY: if( go_switched(ant) ) next_state = STATE_GO;
 									else if( seconds_changed(ant) ) next_state = STATE_SEC_DISPLAY;
 									else if(  temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
 									else next_state = STATE_MIN_DISPLAY;
 									break;
-			case STATE_SEC_DISPLAY:  if( (PINB & 0x80) ) next_state = STATE_CURR_TEMP;
+			case STATE_SEC_DISPLAY: if( go_switched(ant) ) next_state = STATE_GO;
 									else if( minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
 									else if(  temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
 									else next_state = STATE_SEC_DISPLAY;
 									break;
 			
-			case STATE_TEMP_DISPLAY: if( (PINB & 0x80) ) next_state = STATE_CURR_TEMP;
+			case STATE_TEMP_DISPLAY: if( (PINB & 0x80) ) next_state = STATE_GO;
 									else if( seconds_changed(ant)) next_state = STATE_SEC_DISPLAY;
 							  		else if(minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
 									else next_state = STATE_TEMP_DISPLAY;
 									break;
+									
 			case STATE_CURR_TEMP: 
  							  if( minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
 							  else if( seconds_changed(ant) ) next_state = STATE_SEC_DISPLAY;
 							  else if(  temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
 							  break;
+
+
 			default:				break;
 		}
-		*/
+		
 		/*
 		switch( current_state){
 			case STATE_HAPPY: //if(go_button_changed(ant) &&  ant->current_go_button < 600 ) next_state = STATE_CURR_TEMP;

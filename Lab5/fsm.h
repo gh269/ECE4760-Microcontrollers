@@ -45,7 +45,7 @@ void write_state_message_on_buffer(){
 		case STATE_HOT          : write_hot_to_buffer(); break;
 		case STATE_CURR_TIME    : write_time_to_buffer(time_rem); break;
 		case STATE_DONE         : write_done_to_buffer(); break;
-
+		
 		default: write_empty_to_buffer(); break;
 
 	}

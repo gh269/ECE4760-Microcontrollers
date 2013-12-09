@@ -22,6 +22,15 @@ char temp_button_changed(struct ANALOG_INPUT * t){
 	return delta > 20 || delta < -20;
 }
 
+
+
+char go_switched(struct ANALOG_INPUT * t){
+	return t->current_go_switch;
+}
+char disp_switched(struct ANALOG_INPUT * t){
+	return t->current_disp_switch;
+}
+
 // DIAL CHANGED METHODS
 char seconds_changed(struct ANALOG_INPUT * t){
 	int delta = t->current_seconds - t->prev_seconds;
@@ -111,6 +120,7 @@ void analog_input_update(struct ANALOG_INPUT * t){
 		t->can_tick = 0;
 	}
 	*/
+	/*
 	t->prev_min_button = t->current_min_button;
 	t->current_min_button = read_adc(BUTT_MIN);
 
@@ -119,7 +129,9 @@ void analog_input_update(struct ANALOG_INPUT * t){
 
 	t->prev_temp_button = t->current_temp_button;
 	t->current_temp_button = read_adc(BUTT_TEMP);
-
+	*/
+	t->current_go_switch = (PINB & SWITCH_GO);
+	t->current_disp_switch = PINB & SWITCH_DISP;
 	//int pot_sec_reading =  read_adc(POT_SEC); 
 	//int pot_min_reading =  read_adc(POT_MIN); 
 	//int pot_temp_reading = read_adc(POT_TEMP); 
