@@ -391,7 +391,11 @@ void ledComm(void * args){
 								 	else next_state = STATE_DONE; //unexpected_issue
 								 	break;
 
-			case STATE_CURR_TEMP_COOK: next_state = STATE_DONE; break;
+			case STATE_CURR_TEMP_COOK: if( !go_switched(ant) ) next_state = STATE_HAPPY;
+									   else if( disp_switched(ant) == TIME_DISP) next_state = STATE_TIME_REM;
+									   else if( time_rem > 0) next_state = STATE_CURR_TEMP_COOK;
+									   else if( time_rem <= 0 ) next_state = STATE_DONE_BEEP;
+									   break;
 
 			case STATE_TIME_REM:    if( !go_switched(ant) ) next_state = STATE_HAPPY;
 									else if( disp_switched(ant) == TEMP_DISP) next_state = STATE_CURR_TEMP_COOK;
@@ -403,48 +407,14 @@ void ledComm(void * args){
 			default:				break;
 		}
 		
-		
-		/*
-		switch( current_state){
-			case STATE_HAPPY: //if(go_button_changed(ant) &&  ant->current_go_button < 600 ) next_state = STATE_CURR_TEMP;
-							  if(  temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
-							  if(minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
-							  else if( seconds_changed(ant)) next_state = STATE_SEC_DISPLAY;
-							  else next_state = STATE_HAPPY;
-							  break;
-			case STATE_MIN_DISPLAY: //if(go_button_changed(ant) &&  ant->current_go_button < 600 ) next_state = STATE_CURR_TEMP;
-							   if( temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
-							  else if(minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
-							  else if( seconds_changed(ant)) next_state = STATE_SEC_DISPLAY;
-							  else next_state = STATE_MIN_DISPLAY;
-							  break;
-			case STATE_TEMP_DISPLAY: //if(go_button_changed(ant) &&  ant->current_go_button < 600 ) next_state = STATE_CURR_TEMP;
-							   if( temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
-							  else if(minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
-							  else if( seconds_changed(ant)) next_state = STATE_SEC_DISPLAY;
-							  else next_state = STATE_TEMP_DISPLAY;
-							  break;
-			case STATE_SEC_DISPLAY: //if(go_button_changed(ant) &&  ant->current_go_button < 600 ) next_state = STATE_CURR_TEMP;
-							  if( temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
-							  else if(minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
-							  else if( seconds_changed(ant)) next_state = STATE_SEC_DISPLAY;
-							  else next_state = STATE_SEC_DISPLAY;
-							  break;
-			
-			case STATE_CURR_TEMP: if(go_button_changed(ant) &&  ant->current_go_button < 600 ) next_state = STATE_HAPPY;
-							else next_state = STATE_CURR_TEMP;
-							break;
-			default: break;
-			
-		}
-		*/
+	
 		handle_next_state_logic();
 		//analog_input_update(ant);
 		write_state_message_on_buffer();
 
 	}
-	rel = trtCurrentTime() + SECONDS2TICKS(0.25);
-	dead = trtCurrentTime() + SECONDS2TICKS(0.5);
+	rel = trtCurrentTime() + SECONDS2TICKS(0.1);
+	dead = trtCurrentTime() + SECONDS2TICKS(0.1);
 	trtSleepUntil(rel, dead);	
 }
 // --- define task 5 - update the led screen ------
@@ -478,7 +448,7 @@ int main(void) {
   //trtCreateTask(lcdComm, 1000, SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
   trtCreateTask(adjustTemp, 2000, SECONDS2TICKS(2), SECONDS2TICKS(4), &(args[0]));
   trtCreateTask(ledComm, 1000,  SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
-  trtCreateTask(readAnalogInputs, 1000,  SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
+  //trtCreateTask(readAnalogInputs, 1000,  SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
 
 	
   // --- Main Idle task --------------------------------------

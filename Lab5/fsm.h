@@ -55,7 +55,7 @@ void write_state_message_on_buffer(){
 
 
 		case STATE_BEEP_ONCE    : write_done_to_buffer(); break;
-
+		case STATE_CURR_TEMP_COOK: write_temp_to_buffer(cTemp); break;
 		case STATE_TIME_REM     : trtWait(SEM_SHARED) ; write_time_to_buffer(time_rem);  trtSignal(SEM_SHARED); break;
 		case STATE_DONE         : write_done_to_buffer(); break;
 		case STATE_GO           : write_empty_to_buffer(); break;
