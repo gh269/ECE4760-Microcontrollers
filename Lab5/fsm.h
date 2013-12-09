@@ -57,7 +57,8 @@ void write_state_message_on_buffer(){
 
 void handle_state_logic(){
 	switch(current_state){
-		case STATE_GO: 			: dTemp = pot_to_temp(ant->current_temp); 
+
+		case STATE_GO 			: dTemp = pot_to_temp(ant->current_temp); break;
 		default					: break;
 	}
 }

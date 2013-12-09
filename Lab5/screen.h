@@ -30,9 +30,6 @@
 // 8 * 3000 ms -> 0.024 seconds 
 // 0.03 
 #define ROW_SCAN_REL 0.03
-volatile int cTemp;		// current temperature
-volatile int dTemp;		// desired temperature
-volatile int time_rem;  // time remaining in seconds
 
 void init_screens(){
 	DDRB |= (CLK | CLR | SCREEN_LEFT | SCREEN_RIGHT);

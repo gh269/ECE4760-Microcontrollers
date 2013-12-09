@@ -19,6 +19,7 @@
 
 #include "screen.h"
 #include "screen.c"
+#include "regulate.h"
 
 #include "fsm.h"
 /********************************************************************/
