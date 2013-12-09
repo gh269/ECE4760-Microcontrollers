@@ -75,7 +75,7 @@ long linear_scale(long x, long in_min, long in_max, long out_min, long out_max){
 }
 
 int pot_to_temp(int value){
-	return linear_scale(value, 18, 1023, 0, 100);
+	return linear_scale(value, 18, 1000, 0, 100);
 }
 
 int pot_to_minutes(int value){
