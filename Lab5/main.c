@@ -82,7 +82,9 @@ ISR (TIMER0_COMPA_vect) {
 	if( beep_timer > 0){
 		beep_timer--;
 	}
-
+	if(adjust_temp_timer >0 )
+		adjust_temp_timer--;
+	
 	trtWait(SEM_SHARED);
 	if ((time_rem > 0) && count_en) {
 		if (msec < 1000) {
@@ -188,7 +190,7 @@ void initialize(void) {
 	//init analog input reading
 	ant = (analog_input_t *)malloc(sizeof(struct ANALOG_INPUT));
 	
-
+	adjust_temp_timer = 0;
 	// ********************
 	//crank up the ISRs
 	sei();
@@ -262,17 +264,19 @@ void lcdComm(void* args) {
 }
 
 // --- define task 3  ----------------------------------------
-void adjustTemp(void* args) {
+void adjustTemperature(void* args) {
 	uint32_t rel, dead;
 	uint16_t adc_in;
 	while(TRUE){
 		// Read ADC value
-		adc_in = read_adc(0);
+		
 		//fprintf(stdout, "ADC: %i\n\r", adc_in);
+		fprintf(stdout,"heating\n\r");
 
 		// Control mechanism
 		trtWait(SEM_SHARED);
-		if(go_switched(ant)){
+		//if(go_switched(ant)){
+			adc_in = read_adc(0);
 			cTemp = (adc_in + 3) / 2.1;
 			if (cTemp < 0) cTemp = 0; 
 			if (cTemp < (dTemp/* * .95*/)) {	// Factor of .95 to account for carryover effect
@@ -289,7 +293,7 @@ void adjustTemp(void* args) {
 					count_en = 1;			// Enable timer count down
 				}
 			}
-		}
+		//}
 
 		trtSignal(SEM_SHARED);
 
@@ -406,6 +410,7 @@ void ledComm(void * args){
 									else if( time_rem > 0) next_state = STATE_TIME_REM;
 									else if( time_rem <= 0 ) next_state = STATE_DONE_BEEP;
 									break;
+
 			case STATE_DONE_BEEP:   next_state = STATE_HAPPY; break; 
 			case STATE_DONE:		next_state = STATE_DONE;
 			default:				break;
@@ -418,7 +423,7 @@ void ledComm(void * args){
 
 	}
 	rel = trtCurrentTime() + SECONDS2TICKS(0.1);
-	dead = trtCurrentTime() + SECONDS2TICKS(0.1);
+	dead = trtCurrentTime() + SECONDS2TICKS(0.4);
 	trtSleepUntil(rel, dead);	
 }
 // --- define task 5 - update the led screen ------
@@ -450,8 +455,9 @@ int main(void) {
   // --- create tasks  ----------------
   trtCreateTask(serialComm, 1000, SECONDS2TICKS(0.1), SECONDS2TICKS(0.1), &(args[0]));
   //trtCreateTask(lcdComm, 1000, SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
-  trtCreateTask(adjustTemp, 2000, SECONDS2TICKS(2), SECONDS2TICKS(4), &(args[0]));
   trtCreateTask(ledComm, 1000,  SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
+  //trtCreateTask(adjustTemp, 2000, SECONDS2TICKS(2), SECONDS2TICKS(4), &(args[0]));
+
   //trtCreateTask(readAnalogInputs, 1000,  SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
 
 	
