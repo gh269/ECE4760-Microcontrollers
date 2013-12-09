@@ -81,7 +81,8 @@ void handle_next_state_logic(){
 								  count_en = 1; 
 								  break; 
 
-		case STATE_DONE_BEEP    : PORTD |= SOUND_EN;
+		case STATE_DONE_BEEP    : count_en = 0;
+								  PORTD |= SOUND_EN;
 								  while(go_switched(ant)){
 								  	analog_input_update(ant);
 								  } 
