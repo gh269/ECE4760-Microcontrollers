@@ -43,6 +43,7 @@ int args[2] ;
 
 // relay & LED bits
 #define LED_EN 	 0x04
+// PORT D3
 #define RELAY_EN 0x08
 
 
@@ -271,7 +272,7 @@ void adjustTemp(void* args) {
 
 		// Control mechanism
 		trtWait(SEM_SHARED);
-		if(count_en){
+		if(go_switched(ant)){
 			cTemp = (adc_in + 3) / 2.1;
 			if (cTemp < 0) cTemp = 0; 
 			if (cTemp < (dTemp/* * .95*/)) {	// Factor of .95 to account for carryover effect
