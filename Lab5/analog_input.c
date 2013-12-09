@@ -6,7 +6,7 @@
 
 #include "analog_input.h"
 int d = 2;
-int d_time = 1;
+int d_time = 3;
 //BUTTON CHANGE METHODS
 /*
 char minutes_button_changed(struct ANALOG_INPUT * t){

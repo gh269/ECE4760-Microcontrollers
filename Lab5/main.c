@@ -326,7 +326,8 @@ void print_state(){
 //-----------------------------------------------------------------------------------
 void ledComm(void * args){
 	uint32_t rel, dead;
-	
+	analog_input_init(ant);
+	dTemp = pot_to_temp(ant->current_temp);
 	while(TRUE){
 		//fprintf(stdout, "input tick: %d\n\r", input_tick);
 		write_buffers_to_screen();
@@ -391,7 +392,13 @@ void ledComm(void * args){
 								 	break;
 
 			case STATE_CURR_TEMP_COOK: next_state = STATE_DONE; break;
-			case STATE_TIME_REM:       next_state = STATE_DONE; break;
+
+			case STATE_TIME_REM:    if( !go_switched(ant) ) next_state = STATE_HAPPY;
+									else if( disp_switched(ant) == TEMP_DISP) next_state = STATE_CURR_TEMP_COOK;
+									else if( time_rem > 0) next_state = STATE_TIME_REM;
+									else if( time_rem <= 0 ) next_state = STATE_DONE_BEEP;
+									break;
+			case STATE_DONE_BEEP:   next_state = STATE_HAPPY; break; 
 			case STATE_DONE:		next_state = STATE_DONE;
 			default:				break;
 		}
@@ -448,8 +455,7 @@ int main(void) {
   //init the UART -- trt_uart_init() is in trtUart.c
   trt_uart_init();
   initialize();
-  analog_input_init(ant);
-  dTemp = pot_to_temp(ant->current_temp);
+
   //write_happy_to_buffer();
   write_time_to_buffer(483);
   //

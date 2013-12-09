@@ -22,12 +22,13 @@
 #define STATE_BEEP_ONCE 10
 #define STATE_TIME_REM 11
 #define STATE_CURR_TEMP_COOK 12
+#define STATE_DONE_BEEP 13
 //----------------------------------------------------------------------
 // State
 //----------------------------------------------------------------------
 
 volatile int current_state = STATE_HAPPY;
-volatile int next_state = STATE_HAPPY;
+volatile int next_state    = STATE_HAPPY;
 
 
 int convert_time_to_seconds(int minutes, int seconds){
@@ -53,9 +54,9 @@ void write_state_message_on_buffer(){
 		case STATE_TARGET_TIME  : write_time_to_buffer(time_rem);  break;
 
 
-		case STATE_BEEP_ONCE    : write_done_to_buffer();
-		case STATE_HOT          : write_hot_to_buffer(); break;
-		case STATE_CURR_TIME    : trtWait(SEM_SHARED) ; write_time_to_buffer(time_rem);  trtSignal(SEM_SHARED); break;
+		case STATE_BEEP_ONCE    : write_done_to_buffer(); break;
+
+		case STATE_TIME_REM     : trtWait(SEM_SHARED) ; write_time_to_buffer(time_rem);  trtSignal(SEM_SHARED); break;
 		case STATE_DONE         : write_done_to_buffer(); break;
 		case STATE_GO           : write_empty_to_buffer(); break;
 		default					: write_empty_to_buffer(); break;
@@ -73,7 +74,20 @@ void handle_next_state_logic(){
 								 trtSignal(SEM_SHARED); 
 								 break;
 
-		case STATE_BEEP_ONCE	: beep_timer = 1000; PORTD |= SOUND_EN; while(beep_timer > 0); PORTD &= ~SOUND_EN; count_en = 1; 
+		case STATE_BEEP_ONCE	: beep_timer = BEEP_ONCE_TIME;
+								  PORTD |= SOUND_EN; 
+								  while(beep_timer > 0); 
+								  PORTD &= ~SOUND_EN; 
+								  count_en = 1; 
+								  break; 
+
+		case STATE_DONE_BEEP    : PORTD |= SOUND_EN;
+								  while(go_switched(ant)){
+								  	analog_input_update(ant);
+								  } 
+								  PORTD &= ~SOUND_EN; 
+								  break;
+
 		default					: break;
 	}
 }
