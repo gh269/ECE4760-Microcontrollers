@@ -5,10 +5,6 @@
 #define POT_SEC 4
 #define POT_TEMP 3
 
-#define BUTT_MIN 4
-#define BUTT_GO 5
-#define BUTT_TEMP 6
-
 //Switch Go is on B7
 #define SWITCH_GO 0x80
 #define SWITCH_DISP 0x40
