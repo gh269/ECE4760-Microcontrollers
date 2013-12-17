@@ -56,22 +56,18 @@
 <div id="sectiontitle">
   <h4><a href="http://people.ece.cornell.edu/land/courses/ece4760/">ECE 4760</a>: <a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/">Final Project</a></h4>
   <h1>Precision Cooker: A Temperature Controlled Cooker</h1>
-  <h3>Gary He(<a href="mailto:gh269@cornell.edu">gh269<!--REMOVE-->@<!--REMOVE-->cornell.edu</a>)</h3>
-  <h3>Alex Maass (<a href="mailto:am838@cornell.edu">am838<!--REMOVE-->@<!--REMOVE-->cornell.edu</a>)</h3>
+  <h3>Gary He(<a href="mailto:gh269@cornell.edu">gh269<!--REMOVE--> at <!--REMOVE-->cornell.edu</a>)</h3>
+  <h3>Alex Maass (<a href="mailto:am838@cornell.edu">am838<!--REMOVE--> at <!--REMOVE-->cornell.edu</a>)</h3>
 </div>
 <div id="wrapper">
   <div id="content">
     <div id="maincontent" class="hub">
     
       <div id="introblurb">
-      <div id="pullquote">
-          <p class="quote">"A running band with haptic temperature feedback to control your run."</p>
-        </div>
-      <p>For our ECE 4760 final project, we designed and built a running band that provides feedback to users with temperature and vibration.</p>
-      
-      <p>This provides an <strong>unique</strong> way to monitor running habits with <strong>temperature feedback</strong>. The running band attaches to a user's upper arm and counts the number of steps the user takes. It then determines whether or not the user is moving at a desired cadence. The band produces a cold sensation when the user is not moving fast enough. The band vibrates if the user continues to be slow. </p>
-      
-      <p>The band runs from an <strong>Atmel ATmega1284P</strong> microcontroller, a Peltier Plate, vibration motor, and various control circuits. Users operate a switch to determine if they want the band to operate in running or walking mode.</p>
+      <p>
+  Precise time and temperature control are critical when cooking. Slight deviations in either temperature or cooking time can ruin delicate ingredients. Despite this fact, most modern day stovetops provide no data regarding their current temperatures and do not have built in timers. The stovetops that do provide these functionalities are often expensive and require specialized cookware. As our final project for ECE 4760 at Cornell University, we decided to build a programmable temperature and time controlled cooker that would use traditional thermal conduction to cook food regardless of the cooking vessel’s material. The cooker can be used for a variety of purposes ranging from simply boiling the perfect 6-minute soft-boiled egg to sous-vide cooking a piece of delicate white fish. Quickset options can be programmed into the cooker allowing for easy preset operation.
+      </p>
+  
       
       <div class="image"> <a href="./ECE 4760 ColdRunner_files/IMG2.jpg"><img src="./ECE 4760 ColdRunner_files/IMG2.jpg" width="672" height="504"></a>
         <p class="caption">Our final project.</p>
@@ -82,67 +78,82 @@
       <div class="linklist"> <a name="design"></a>
         <h2>High Level Design &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/index.html#top">top</a></strong></font></h2>
         <h3>Overview</h3>
+        <p>
+        Our aim for this project was to make temperature controlled cooking accessible to those without culinary training and/or professional kitchen appliances. Our project focuses on immersion cooking methods such as poaching, simmering, boiling, or sous vide cooking. We decided to focus on these cooking methods as they require very little technique but rather precise temperature control and cooking time. Recipes often call for specific temperatures and timings, but as most modern-day stovetops provide no temperature or timing feedback, it is difficult to know when these requirements have been met. By being able to set precise timings and temperatures, users simply have to place the food in the cooker when prompted and let the cooker handle the rest in order to create a perfectly cooked dish.</p>
+	<h4>Rationale and Motivation Behind our Project</h4>
+        <p>
+      Cooking foods at controlled temperatures is a very difficult thing to achieve for extended periods of time. Using traditional gas stovetops, it is almost impossible to maintain a specific temperature for a set amount of time. However, by controlling the heat source electronically using a feedback loop, we can continuously measure the temperature and adjust it as necessary. Our project is designed to maintain any temperature between 45 and 100 degrees Celsius for extended periods of time with minimal deviation in temperature.
+      </p>
 
+<h4>Background Math</h4>
+  <p>
+  For background math, we will be discussing our PID controller and our voltage-temperature sensor calibration and equation derivation. 
+    For our temperature control feedback loop, we utilized a proportional-integral-derivative (PID) controller. The PID controller measures the deviation between the desired result and the current measurement and outputs a value that is calibrated to reach the desired value with minimal overshoot or undershoot. Our PID controller is sourced from the AVR221 application. The PID controller is composed of three terms: the proportional term, integral term, and derivative term. These three terms are summed together to calculate the output of the PID controller. The PID equation is defined as: 
+  </p>
+  <div class="image"> <img src="./ECE 4760 ColdRunner_files/pid_equation.png">
+  </div>
 
-
-        <p>This project was developed by using our knowledge of microcontrollers 
-		and hardware design. We ran our device using an Atmega1284p device and attached 
-		devices such as a voltage regulator to control voltage from a battery pack,
-		Peltier plate and vibration motor controlled by PWM and amplifier circuits and an 
-		accelerometer to measure rate of movement.
-		We came up with the idea because it was a good way
-		to monitor exercise while intuitively providing feedback to the
-		user through temperature and haptic feedback.</p>
-	<h4>Logical structures</h4>
-		<p> Our device operates first by taking in information from an accelerometer. This 
-		data provides information on the current acceleration of our device in two directions. 
-		Using this data, the device determines when there has been a massive change in acceleration, 
-		which we can say happens roughly when the user takes a step. Using this information, we estimate 
-		the user's current steps-per-interval (interval chosen to allow for adequate time to make an 
-		estimation). We compare this estimated steps-per-interval to one of two thresholds (walk or run) that 
-		is set by the user using a switch on the device. Either a red or green LED will light up depending on
-		whether the device is in run (red) or walk (green) mode. The thresholds are set in the beginning during a 15 second delay period
-		that also acts as a calibration period. The user's threshold is set during this time. If the steps-per-interval is lower than the threshold,
-		we turn on a Peltier plate that cools the side that is in contact with the user.Once the user has 
-		increased the steps-per-interval to above the threshold, the Peltier plate will be turned off. If the 
-		user's steps-per-interval stays beneath the threshold for too long, a vibration motor will activate for 
-		a small period of time to give further feedback. If the steps-per-interval is higher than the threshold,
-		we send three quick bursts from the vibration motor. 
-</p><h4>Standards</h4>
-<p> Though we did not find any official standard for the temperature for which extended temperature contact
-               is safe, we found a reasonable metric from a <a href="http://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20100020960_2010020520.pdf">NASA paper</a>. The paper said that an extended period of -18°C(0°F)
-               Celsius should be the cold threshold for unlimited contact. Our cold plate definitely does not reach this
-               temperature. Though the warm side of the Peltier plate should not be touching the user's skin, it is still important
-               to keep it on a temperature that would not harm the user if the user accidentally touches it. 45°C (113°F) is
-               painful to touch for any period of time. We do not believe our Peltier plate hot side should reach these 
-               temperatures.</p>
-<h4>Relevant Patents and Copyrights</h4>
-<p>While working on this project, we found a couple of patents that could be similar to our design. These are <a href="http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&p=1&u=%2Fnetahtml%2FPTO%2Fsearch-bool.html&r=10&f=G&l=50&co1=AND&d=PTXT&s1=%22temperature+feedback%22&s2=accelerometer&OS=%22temperature+feedback%22+AND+accelerometer&RS=%22temperature+feedback%22+AND+accelerometer">Tactile feedback in an electronic device</a>
-and <a href="http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&p=1&u=%2Fnetahtml%2FPTO%2Fsearch-bool.html&r=1&f=G&l=50&co1=AND&d=PTXT&s1=%22temperature+feedback%22&s2=accelerometer&OS=%22temperature+feedback%22+AND+accelerometer&RS=%22temperature+feedback%22+AND+accelerometer">Temperature feedback motion controller</a>.
-The patent, <a href="http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&p=1&u=%2Fnetahtml%2FPTO%2Fsearch-bool.html&r=1&f=G&l=50&co1=AND&d=PTXT&s1=%22temperature+feedback%22&s2=accelerometer&OS=%22temperature+feedback%22+AND+accelerometer&RS=%22temperature+feedback%22+AND+accelerometer">Temperature feedback motion controller</a>.
-is especially similar. However, this patent is used for controllers, especially video games, whereas our project is used for running or walking. The other patent, <a href="http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&p=1&u=%2Fnetahtml%2FPTO%2Fsearch-bool.html&r=10&f=G&l=50&co1=AND&d=PTXT&s1=%22temperature+feedback%22&s2=accelerometer&OS=%22temperature+feedback%22+AND+accelerometer&RS=%22temperature+feedback%22+AND+accelerometer">Tactile feedback in an electronic device</a>
-could be applied to our project, but because it is worded so vaguely, we do not think our project infringes upon any intellectual property.
+  <p>
+where:
+  <ul>
+    <li>K<sub>p</sub> : Proportional term</li>
+    <li>K<sub>i</sub> : Integral term</li>
+    <li>K<sub>d</sub> : Derivative term</li>
+    <li>e : Error term</li>
+    <li>t : Time of measurement</li>
+    <li>&tau; : Integration variable ( 0 -> t)</li>
+  </ul>
 </p>
-<h4>Hardware and Software Tradeoffs</h4>
-<p>The first major hardware and software tradeoff we made in our design was to use 
-an analog accelerometer rather than an SPI protocol driven accelerometer. The advantage of this method
-was that we did not need to worry about following the SPI protocol and adhering to the restrictions it may
-provide. To use the analog accelerometer, we just needed to use the ATmega1284's built in analog to digital 
-converter to get values from the signal received from the accelerometer. The downside to this tradeoff is that
-a SPI protocol controlled accelerometer may have given us more precise and structured results, but the design
-of our device did not require such precision so this tradeoff was acceptable.</p>
-<p> A second tradeoff that we made for the device was to put the noise control of our device in the software
-part of the design. This meant that we put logic in our code to take out noise that may occur from a sudden change 
-in acceleration that might cause the device to count extra steps that were not there. To make the software
-less complicated, we could have attempted to put the signal through a low pass filter of some kind, but we believed 
-that a software solution would be easier to implement. </p>
-        <h4>High Level Block Diagram</h4>
-        <div class="image"> <img src="./ECE 4760 ColdRunner_files/IMG9.jpg" width="672" height="380">
-                <p class="caption">High-level block diagram.</p>
-        </div>
-        
-        
+ 
+ <p> 
+For our final PID values, we selected P = .07, I = .04, and D = .05. All of these values are low as our system changes very slowly and adjustments to the system take a long time to take effect due to the high specific heat of our immersion liquid (water). 
 
+For our voltage-temperature sensor calibration, we utilized the LM35 temperature sensor to measure the temperature of the immersion liquid. The LM35’s datasheet provided us with the below voltage-temperature curve. 
+  </p>
+
+ <div class="image"> <img src="./ECE 4760 ColdRunner_files/provided_vt_curve.png">
+          <p class="caption">Figure 1: Stock LM35 voltage temperature curve</p>
+  </div>
+<p>
+  After some experimentation, we discovered that the given curve did not fit our measured results. To properly calibrate our temperature readings we swept across numerous temperatures and measured the voltage output of the LM35 using the microcontroller’s built in ADC. We then plotted these values and performed linear regression to find a line of best fit that we used as our voltage-temperature equation
+</p>
+ <div class="image"> <img src="./ECE 4760 ColdRunner_files/temperature_adc_fitting.png">
+          <p class="caption">Figure 2: Measured Temperature-ADC Voltage Curve</p>
+  </div>
+
+ <div class="image"> <img src="./ECE 4760 ColdRunner_files/temperature_adc_relation.png">
+  </div>
+
+<h4>Logical Structure</h4>
+<p>
+Our project is composed of three discrete modes of operation: input, heating, and cooking. These stages are further split into smaller states for implementation purposes. These smaller states can be seen in the software finite state machine shown in Figure 10. 
+</p>
+<p>
+  During input mode, the heating element remains off and the system waits for user input. During this mode, the temperature desired and the cooking time should be set using either the three analog knobs or the UART computer interface. Once the temperature and cooking time are set, the system waits for the mode switch to be moved from off to on. Once the switch is moved to the on state, the system stores the desired temperature and cooking time and transitions into heating mode.
+</p>
+<p>
+  During heating mode, the cooker’s heating element heats up the cooking vessel to the desired temperature. During heating mode it is possible to switch between the LED display showing current temperature and desired temperature by toggling the display mode switch. The microcontroller controls the cooker by reading the temperature probe submerged in the cooking liquid and switching the relay inside the power box. When the relay is switched on, the cooker’s heating element is connected to the main power line and current flows through the heating element. This current flow causes the heating element to heat up. Through thermal conduction, both the cooking vessel and the cooking liquid begin to heat up as well. Once the desired temperature has been reached in the cooking liquid, the relay is turned off and a buzzer sounds. This buzzer signals the user that food should be placed into the cooker as the desired temperature has been reached. The cooker then transitions into cooking mode. 
+</p>
+<p>
+In cooking mode, the cooker begins to count down the desired cooking time recorded during input mode. During this mode, the cooking vessel will maintain the desired temperature by turning on and off the relay according to the readings from the immersed temperature probe. The cooker counts down until the timer reaches 0 and then a buzzer goes off to signal the user that the food has finished cooking. The buzzer continues to sound until the mode switch is set to input mode. At this point the cooker moves back into input mode to wait for further instructions. If the desired cooking time is left at 0, the system will beep immediately. 
+</p>
+
+
+<h4>Hardware and Software Tradeoffs</h4>
+<p>
+  In our hardware design, we decided to increase the hardware complexity by adding analog potentiometers for setting the temperature and time and building our own LED display screen. While we could have used an LCD display to display temperature and cooking time information, we decided to build our own LED display as it allowed us to print to a larger font. Despite the LED display being very difficult to build and program, it provides a larger and brighter display compared to the LCD display. We decided to implement analog potentiometers for setting the temperature and cooking time so that the system could be used independently of the UART computer interface. While our cooker can be programmed using the serial UART connection to a PC, it can also operate independently using only the analog potentiometers. 
+</p>
+
+<p> 
+  In our software design, we decided to use the Tiny Real Time (TRT) kernel written by Dan Henriksson and Anton Cervin as it allowed us to easily schedule tasks at set intervals and synchronize variables across multiple tasks. While using the TRT kernel decreased the amount of flexibility we had in writing our software, it ultimately made scheduling software tasks a lot easier.  
+</p>
+        
+  <h4>Relevant existing patents, copyrights, and trademarks</h4>
+ <p>
+      There are no existing patents, copyrights or trademarks that our project infringes on. While numerous patents exist regarding temperature controlled cookers (e.g Patent EP2661944 A2 & Patent WO2012092683 A3), they utilize inductive heating surfaces which we do not use. The patent closest to our design that we found was Patent CA2722383 A1 which describes a temperature controlled heating element. However, this patent still does not apply to our project as it describes controlling the heating element’s temperature using electrical sensors within the heating coil while our system measures the temperature of the food’s immersion liquid.  
+We utilize the Tiny Real Time (TRT) kernel and its supplemental UART libraries, both of which are filed under the “Beer-Ware License" by Joerg Wunsch. We also utilize the generic PID Controller code created by Atmel for the AVR221 application. 
+
+</p>
  
 
 	<h4>User Interface</h4>
