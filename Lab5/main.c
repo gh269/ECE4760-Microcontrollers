@@ -269,82 +269,43 @@ void adjustTemperature(void* args) {
 	uint16_t adc_in;
 	while(TRUE){
 		// Read ADC value
-		
-		//fprintf(stdout, "ADC: %i\n\r", adc_in);
-		fprintf(stdout,"heating\n\r");
-
 		// Control mechanism
 		trtWait(SEM_SHARED);
-		//if(go_switched(ant)){
-			adc_in = read_adc(0);
-			cTemp = (adc_in + 3) / 2.1;
-			if (cTemp < 0) cTemp = 0; 
-			if (cTemp < (dTemp/* * .95*/)) {	// Factor of .95 to account for carryover effect
-				PORTD &= ~RELAY_EN;		// Turn on heating element
-				PORTD &= ~LED_EN;		// Turn off LED
-			}
-			else {
-				PORTD |= RELAY_EN;		// Turn off heating element
-				PORTD |= LED_EN;    	// Turn on LED
-				if (dTemp != 0) {
-					if (count_en == 0) {
-						fprintf(stdout, "Timer enabled.\n\r");
-					}
-					count_en = 1;			// Enable timer count down
+		adc_in = read_adc(0);
+		cTemp = (adc_in + 3) / 2.1;
+		if (cTemp < 0) cTemp = 0; 
+		if (cTemp < (dTemp * .95)) {	// Factor of .95 to account for carryover effect
+			PORTD &= ~RELAY_EN;		// Turn on heating element
+			PORTD &= ~LED_EN;		// Turn off LED
+		}
+		else {
+			PORTD |= RELAY_EN;		// Turn off heating element
+			PORTD |= LED_EN;    	// Turn on LED
+			if (dTemp != 0) {
+				if (count_en == 0) {
+					fprintf(stdout, "Timer enabled.\n\r");
 				}
+				count_en = 1;			// Enable timer count down
 			}
-		//}
-
+		}
 		trtSignal(SEM_SHARED);
-
-		// sleep
 	  	rel = trtCurrentTime() + SECONDS2TICKS(2);
 	  	dead = trtCurrentTime() + SECONDS2TICKS(4);
 	  	trtSleepUntil(rel, dead);	
 	}
 }
 
-// --- define task 4 - read analog inputs ----------
-void readAnalogInputs(void * args) {
-
-	uint32_t rel, dead;
-	while(TRUE){
-		
-		//analog_input_update(ant);
-		//write_buffers_to_screen();
-		//fprintf(stdout, "%d\n\r", displaybuffer_left[0]);
-		//fprintf(stdout, "Current Minutes to Temp : %d\n\r", pot_to_temp(ant->current_minutes));
-	}
-	rel = trtCurrentTime() + SECONDS2TICKS(0.25);
-	dead = trtCurrentTime() + SECONDS2TICKS(0.5);
-	trtSleepUntil(rel, dead);	
-}
-
-void print_state(){
-
-	/*
-	Print Value of Each Dial
-	*/
-	//fprintf(stdout, "State: %d, Temp: %d, Sec: %d, Min: %d\n\r", (PINB & 0x80), ant->current_temp, ant->current_seconds, minutes_changed(ant));
-	//fprintf(stdout, "Button Go: %d, Button Disp: %d\n\r", go_switched(ant), disp_switched(ant));
-	fprintf(stdout, "Temp: %d, Min :%d\n\r", cTemp, dTemp);
-}
 //-----------------------------------------------------------------------------------
-//--------------STATE TRANSITION LOGIC-----------------------------------------------
+//--------------State Transition Logic-----------------------------------------------
 //-----------------------------------------------------------------------------------
 void ledComm(void * args){
 	uint32_t rel, dead;
 	analog_input_init(ant);
 	dTemp = pot_to_temp(ant->current_temp);
 	while(TRUE){
-		//fprintf(stdout, "input tick: %d\n\r", input_tick);
 		write_buffers_to_screen();
-
 		current_state = next_state;
-		//print_state();
 		analog_input_update(ant);
-		//dTemp = pot_to_temp(ant->current_temp);
-		//PORTD |= SOUND_EN;
 		
 		switch ( current_state){
 			
@@ -352,7 +313,6 @@ void ledComm(void * args){
 								     else if( minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
 								     else if( seconds_changed(ant) ) next_state = STATE_SEC_DISPLAY;
 								     else if(  temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
-	   
 								     else next_state = STATE_HAPPY;
 								     break;
 
@@ -361,6 +321,7 @@ void ledComm(void * args){
 									else if(  temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
 									else next_state = STATE_MIN_DISPLAY;
 									break;
+
 			case STATE_SEC_DISPLAY: if( go_switched(ant) ) next_state = STATE_GO;
 									else if( minutes_changed(ant) ) next_state = STATE_MIN_DISPLAY;
 									else if(  temperature_changed(ant) ) next_state = STATE_TEMP_DISPLAY;
@@ -418,7 +379,6 @@ void ledComm(void * args){
 		
 	
 		handle_next_state_logic();
-		//analog_input_update(ant);
 		write_state_message_on_buffer();
 
 	}
@@ -426,7 +386,6 @@ void ledComm(void * args){
 	dead = trtCurrentTime() + SECONDS2TICKS(0.4);
 	trtSleepUntil(rel, dead);	
 }
-// --- define task 5 - update the led screen ------
 
 
 // --- Main Program ----------------------------------
@@ -434,13 +393,9 @@ int main(void) {
   //init the UART -- trt_uart_init() is in trtUart.c
   trt_uart_init();
   initialize();
-
-  //write_happy_to_buffer();
   write_time_to_buffer(483);
-  //
   stdout = stdin = stderr = &uart0;
   fprintf(stdout,"\n\r Welcome to KitchenBot UI \n\r Please input your instructions below\n\r The options are: time, temp, & egg\n\r\n\r");
-  
     // start TRT
   trtInitKernel(80); // 80 bytes for the idle task stack
 
@@ -454,17 +409,12 @@ int main(void) {
 
   // --- create tasks  ----------------
   trtCreateTask(serialComm, 1000, SECONDS2TICKS(0.1), SECONDS2TICKS(0.1), &(args[0]));
-  //trtCreateTask(lcdComm, 1000, SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
   trtCreateTask(ledComm, 1000,  SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
-  //trtCreateTask(adjustTemp, 2000, SECONDS2TICKS(2), SECONDS2TICKS(4), &(args[0]));
+  trtCreateTask(adjustTemp, 2000, SECONDS2TICKS(2), SECONDS2TICKS(4), &(args[0]));
 
-  //trtCreateTask(readAnalogInputs, 1000,  SECONDS2TICKS(0.25), SECONDS2TICKS(0.5), &(args[0]));
 
 	
   // --- Main Idle task --------------------------------------
-  while (1) {
-	//write_buffers_to_screen();
-	
-  	// Do nothing
+  while (1) {	
   }
 } // main
