@@ -1,0 +1,96 @@
+ find a missing element in a contiguous array using binary search. 
+
+  write a program to solve Sudoku. This was surprising and seemed like a question from Google interviews. I had an hour to write and solved most of it using iterative programming but I guess the interviewer was expecting a recursive solution. Made it to the second person anyways. The second interviewer came in with a laptop and asked me to execute a bunch of small and trivial programs and was asking very detailed questions about computer architecture and OS like why arguments are pushed only from right to left on a function call and why program always gets loaded at a specific address instead of 0. These questions were a bit tricky and I think I fumbled a little bit in answering these.
+
+
+Was asked some C questions related to memory management (malloc) and bit setting
+
+
+ttree reconstruction
+
+ rotate a unsigned char s by n bits
+
+Simple question on how to find a missing array in a sorted array with each element of the array greater than the previous element with difference of 1. Questions on how to improve the logic when solution proposed was 0(n). 0(logn) was the suggested mechanism of splitting the data set being worked on. Code was checked for errors and further optimizations   Answer Question
+Do we need to initialize the variables at the time of declaration
+
+"virtual memory" and why is it importan
+
+(a) Find the minimum value of a binary search tree. (b) Given a binary search tree with distinct integer values, find the next consecutive integer in the tree using the structure of the tree and write the code in C++.
+
+
+int get()
+{
+    static i = 1;
+    return i++;
+}
+
+int main(int argc, char *argv[])
+{
+    printf("%d %d %d\n", get(), get(), get());
+    return 0;
+}   View Answer
+
+
+Leftmost node is the one with the min value.
+Was this answer helpful?    Yes | No  Flag Answer
+Fujimaru
+Oct 12, 2012
+node_t *min(node_t *node)
+{
+  if (node == NULL)
+    return NULL;
+  if (node->left == NULL)
+    return node;
+  min(node->left);
+}
+Was this answer helpful?    Yes | No  Flag Answer
+nkarkhan
+Jan 24, 2013
+tree_element_t *tree_get_min (tree_element_t *elem)
+{
+    if (NULL == elem) return elem;
+    if (NULL == elem->left) return elem;
+    return (tree_get_min(elem->left));
+}
+
+
+
+
+find the next in-order value in BST ” 
+
+
+How do you find the next highest element in a binary search tree
+
+
+
+how to do socket programming supporting multiple clients without using multi-threadin
+
+
+
+First, was an on-campus interview. Question: Find the min and the next element of a BST.
+On site: Design a generic stack API. Questions on TCP communication between the client and the server.
+
+
+First round, one hour on site coding test. Removing multiple elements from a linked list. Then questions were asked on networking, data structires.
+
+Second round, 2 one hour interviews. The first hour is very technical, was told up front that there will not ne a second round if things don't go well. Implement a stack API in c, several topics were touched upon. The second round, the interviewer seemed to have preconceived notions of what answers to expect. If the answers deviated even slightly, they were not accepted. Looking for concepts like internals of printf and variable argument functions.
+Interview Question – What happens wihen a function with a variable argument list is called, in terms of the stack
+
+ 
+. How to do error handling in C compared to C++. How to handle memory leak if the stack method failed
+
+
+Implement ADTs in C++
+
+
+
+
+itial screening consisted of C programming questions. Revise your knowledge of binary search trees and linked lists. Practice writing recursive functions. The interviewer helps you move forward, but keeps probing.
+The surprise was that the second interview was also mostly C coding and program design - on the whiteboard, as well as on the laptop.
+Basics of memory management, OS, stacks, but again, the interviewer is looking for deep understanding.
+
+They are looking more for good software engineering skills, less for specific networking knowledge.
+If you've done a lot of C/C++ programming, do apply.
+
+
+
