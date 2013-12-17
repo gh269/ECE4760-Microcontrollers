@@ -57,7 +57,6 @@ int displaybuffer_right[] = { 0,
 					0,
 					0
 				 };
-				 // 0001 0000, 
 int row_order[] = {0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};
 
 int numbers[][8] = {
@@ -96,7 +95,7 @@ int mouth[][8] = {
 };
 
 int done[][8] = {
-	//1   2    3     4    5   6    7   8
+	//1   2    3     4    5   6     7   8
 	{0xf, 0xe, 0xd, 0xd, 0xd, 0xe, 0xf, 0xf}, //Done Left
 	{0xf, 0x7, 0xb, 0xb, 0xb, 0x7, 0xf, 0xf}  //Done Right
 };
@@ -109,7 +108,6 @@ void pulse_out();
 void write_to_buffer(int * left_valueR, int * left_valueL, int * right_valueR, int * right_valueL);
 void write_buffers_to_screen();
 void write_two_values_to_buffer(int * valueR, int * valueL, int screen);
-//void delayMicroseconds(int delay);
 void delay_row_scan(int delay);
 
 void write_happy_to_buffer();

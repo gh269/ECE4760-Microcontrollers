@@ -27,5 +27,4 @@ volatile int adjust_temp_timer;
 
 struct PID_DATA pid_data;
 
-
 #endif 
