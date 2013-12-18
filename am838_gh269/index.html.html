@@ -4,9 +4,9 @@
 
 <meta http-equiv="Content-Language" content="en-us">
 <title>ECE 4760 Precision Cooker: A Temperature Controlled Cooker </title>
-    <link rel="stylesheet" type="text/css" media="all" href="./ECE 4760 ColdRunner_files/cornell_main.css">
-    <link rel="stylesheet" type="text/css" media="all" href="./ECE 4760 ColdRunner_files/cornell_1column.css">
-    <link rel="stylesheet" type="text/css" media="all" href="./ECE 4760 ColdRunner_files/main.css">
+    <link rel="stylesheet" type="text/css" media="all" href="./ECE4760_cooker_files/cornell_main.css">
+    <link rel="stylesheet" type="text/css" media="all" href="./ECE4760_cooker_files/cornell_1column.css">
+    <link rel="stylesheet" type="text/css" media="all" href="./ECE4760_cooker_files/main.css">
 <link rel="shortcut icon" href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/Images/favicon.ico" type="image/x-icon">
 <meta name="author" content="Gary He, Alex Maass">
 <meta name="copyright" content="Copyright (c) 2013 Gary He, Alex Maass">
@@ -19,7 +19,7 @@
   <!-- The following div contains the Cornell University logo and search link -->
   <div id="cu-identity"> 
 		<div id="cu-logo"> 
-			<a href="http://www.ece.cornell.edu/"><img src="./ECE 4760 ColdRunner_files/cu_logo.gif" alt="Cornell University" width="340" height="75" border="0"></a> 
+			<a href="http://www.ece.cornell.edu/"><img src="./ECE4760_cooker_files/cu_logo.gif" alt="Cornell University" width="340" height="75" border="0"></a> 
 		</div> 
   </div>
   <div class="linklist"> <a name="top"></a> </div>
@@ -69,14 +69,14 @@
       </p>
   
       
-      <div class="image"> <a href="./ECE 4760 ColdRunner_files/IMG2.jpg"><img src="./ECE 4760 ColdRunner_files/IMG2.jpg" width="672" height="504"></a>
-        <p class="caption">Our final project.</p>
+      <div class="image"> <a href="./ECE4760_cooker_files/full_cooker.png"><img src="./ECE4760_cooker_files/full_cooker.png"></a>
+        <p class="caption">The Precision Cooker</p>
         </div>
-      <div class="image"> <a href="./ECE 4760 ColdRunner_files/IMG10.jpg"><img src="./ECE 4760 ColdRunner_files/IMG10.jpg" width="350" height="504"></a>
-        <p class="caption">ColdRunner in operation.</p>
+      <div class="image"> <a href="./ECE4760_cooker_files/delicious.jpg"><img src="./ECE4760_cooker_files/delicious.jpg"></a>
+        <p class="caption">Delicious Results</p>
         </div>
       <div class="linklist"> <a name="design"></a>
-        <h2>High Level Design &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/index.html#top">top</a></strong></font></h2>
+        <h2>High Level Design &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="index.html">top</a></strong></font></h2>
         <h3>Overview</h3>
         <p>
         Our aim for this project was to make temperature controlled cooking accessible to those without culinary training and/or professional kitchen appliances. Our project focuses on immersion cooking methods such as poaching, simmering, boiling, or sous vide cooking. We decided to focus on these cooking methods as they require very little technique but rather precise temperature control and cooking time. Recipes often call for specific temperatures and timings, but as most modern-day stovetops provide no temperature or timing feedback, it is difficult to know when these requirements have been met. By being able to set precise timings and temperatures, users simply have to place the food in the cooker when prompted and let the cooker handle the rest in order to create a perfectly cooked dish.</p>
@@ -90,7 +90,7 @@
   For background math, we will be discussing our PID controller and our voltage-temperature sensor calibration and equation derivation. 
     For our temperature control feedback loop, we utilized a proportional-integral-derivative (PID) controller. The PID controller measures the deviation between the desired result and the current measurement and outputs a value that is calibrated to reach the desired value with minimal overshoot or undershoot. Our PID controller is sourced from the AVR221 application. The PID controller is composed of three terms: the proportional term, integral term, and derivative term. These three terms are summed together to calculate the output of the PID controller. The PID equation is defined as: 
   </p>
-  <div class="image"> <img src="./ECE 4760 ColdRunner_files/pid_equation.png">
+  <div class="image"> <img src="./ECE4760_cooker_files/pid_equation.png">
   </div>
 
   <p>
@@ -111,17 +111,17 @@ For our final PID values, we selected P = .07, I = .04, and D = .05. All of thes
 For our voltage-temperature sensor calibration, we utilized the LM35 temperature sensor to measure the temperature of the immersion liquid. The LM35’s datasheet provided us with the below voltage-temperature curve. 
   </p>
 
- <div class="image"> <img src="./ECE 4760 ColdRunner_files/provided_vt_curve.png">
+ <div class="image"> <img src="./ECE4760_cooker_files/provided_vt_curve.png">
           <p class="caption">Figure 1: Stock LM35 voltage temperature curve</p>
   </div>
 <p>
   After some experimentation, we discovered that the given curve did not fit our measured results. To properly calibrate our temperature readings we swept across numerous temperatures and measured the voltage output of the LM35 using the microcontroller’s built in ADC. We then plotted these values and performed linear regression to find a line of best fit that we used as our voltage-temperature equation
 </p>
- <div class="image"> <img src="./ECE 4760 ColdRunner_files/temperature_adc_fitting.png">
+ <div class="image"> <img src="./ECE4760_cooker_files/temperature_adc_fitting.png">
           <p class="caption">Figure 2: Measured Temperature-ADC Voltage Curve</p>
   </div>
 
- <div class="image"> <img src="./ECE 4760 ColdRunner_files/temperature_adc_relation.png">
+ <div class="image"> <img src="./ECE4760_cooker_files/temperature_adc_relation.png">
   </div>
 
 <h4>Logical Structure</h4>
@@ -156,11 +156,11 @@ We utilize the Tiny Real Time (TRT) kernel and its supplemental UART libraries, 
 </p>
  
        <div class="linklist"> <a name="hardware"></a>
-        <h2>Hardware &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/index.html#top">top</a></strong></font></h2>
+        <h2>Hardware &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="index.html">top</a></strong></font></h2>
 <p>
   Our overall hardware design is composed of numerous subsystems. The various subsystems can be seen in the figure below. 
 </p>
- <div class="image"> <img src="./ECE 4760 ColdRunner_files/hardware_subsystem_block_diagram.png">
+ <div class="image"> <img src="./ECE4760_cooker_files/hardware_subsystem_block_diagram.png">
           <p class="caption">Figure 3: Hardware subsystem block diagram.</p>
   </div>
 <p>The following subsystems compose our overall system:</p>
@@ -186,7 +186,7 @@ Our microcontroller, an Atmel Atmega 1284P, is the logic controller of our syste
 <li> Sends messages to display on the LED display.</li>
 </ul>
 
- <div class="image"> <img src="./ECE 4760 ColdRunner_files/microcontroller_pcb_schematic.png" width="500">
+ <div class="image"> <img src="./ECE4760_cooker_files/microcontroller_pcb_schematic.png" width="500">
           <p class="caption">Figure 4: Microcontroller PCB schematic</p>
   </div>
 
@@ -194,7 +194,7 @@ Our microcontroller, an Atmel Atmega 1284P, is the logic controller of our syste
 <p>
 Our piezoelectric buzzer, a CET12A35, is connected to a TI 296-6501-1-ND 555 timer that is wired to oscillate at 1 KHz. The output of the 555 timer is connected to the gate of an nMOS transistor that has its drain connected to VCC and its source connected to the drain of another nMOS transistor. The gate of the second nMOS transistor is connected to the microcontroller and the source is connected to the first terminal of the piezoelectric buzzer. The second terminal of the piezoelectric buzzer is connected to ground. The 555 timer switches the first nMOS transistor at a 1KHz frequency and allows the source to have full VCC-GND voltage swing. This signal is then gated by the signal from the microcontroller. If the microcontroller sets the buzzer control signal high, the second nMOS transistor will turn on and the piezoelectric buzzer will convert the square signal produced by the 555 timer to audible sound. 
 </p>
- <div class="image"> <img src="./ECE 4760 ColdRunner_files/speaker.png" width="500">
+ <div class="image"> <img src="./ECE4760_cooker_files/speaker.png" width="500">
           <p class="caption"> Figure 5: Buzzer sound system hardware schematic.</p>
   </div>
 <h4>Heating Element and Power Supply</h4>
@@ -204,7 +204,7 @@ Our heating element and power supply subsystem is composed of a power box and a 
 <p>
 Our heating element and chassis was sourced from an old Panasonic rice cooker. We stripped the rice cooker of all parts and kept only the metallic shell and the 400W resistive heating element. We had initially planned to replace the 400W heating element with a more powerful 1000W heating element sourced from a hot water heater, but due to thermal conduction issues we settled with the 400W heating element for our final design. 
 </p>
- <div class="image"> <img src="./ECE 4760 ColdRunner_files/gangbox.png" width="500">
+ <div class="image"> <img src="./ECE4760_cooker_files/gangbox.png" width="500">
           <p class="caption">Figure 6: Power box and heating element hardware schematic.</p>
   </div>
 <h4>Temperature Sensor and Analog Inputs</h4>
@@ -214,7 +214,7 @@ Our temperature sensor is a LM35 solid state temperature sensor. It is connected
 <p>
 Three potentiometers and two slide switches provide user input to our cooker. The potentiometers are read using the ADC on PORTA and converted to digital values which are interpreted on software. Two types of potentiometers are used. 500 Ohm potentiometers are used for the minutes and seconds knobs. While these provide relatively coarse grained control, the wipers on these potentiometers are very smooth and give good user feedback. A 10K pot is used for precise control of temperature because fine grained temperature control is critical for our application.
 </p>
- <div class="image"> <img src="./ECE 4760 ColdRunner_files/analog_input.png" width="500">
+ <div class="image"> <img src="./ECE4760_cooker_files/analog_input.png" width="500">
           <p class="caption"> Figure 7: Analog potentiometers and switches hardware schematic.</p>
   </div>
 
@@ -223,14 +223,14 @@ Three potentiometers and two slide switches provide user input to our cooker. Th
   The LED display is made of a pair of E3005 common anode 8 by 8 LED matrices for a total screen width of 16 columns by 8 rows. The display is row scanned with a separate 8 stage 74HC164N SIPO shift register addressing each display. The microcontroller scans each row of the combined display and turns on each row of the 16 column display for the shift register to drive. Before each row is turned on, values are clocked into the shift registers at 1 MHz before we pull a row low and drive the display with the shift register. Rows are scanned at 50 KHz. Figure 5 illustrates the connections from the LED displays to the microcontroller’s PORTD.
  </p> 
  <div class="image">
-  <a href="./ECE 4760 ColdRunner_files/screens_full.png"> 
-          <img src="./ECE 4760 ColdRunner_files/screens_full.png" width="500">
+  <a href="./ECE4760_cooker_files/screens_full.png"> 
+          <img src="./ECE4760_cooker_files/screens_full.png" width="500">
   </a>
           <p class="caption">Figure 8: Wiring schematic for LED Display. Click to Enlarge</p>
   </div>
 </div>
 <div class="linklist"> <a name="software"></a>
-  <h2>Software &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/index.html#top">top</a></strong></font></h2>
+  <h2>Software &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="index.html">top</a></strong></font></h2>
 <h4>Software Design</h4>
 <p>
   We devised a common interface so that each software subsystem could be worked on independently but still be integrated easily with minimal modifications. As a result, a lot of code is encapsulated into structs. Our software design is composed of the following subsystems:
@@ -247,8 +247,8 @@ Each system is implemented in a separate file and tied together with header file
 
 <h4>State Control Finite State Machine <em>(fsm.h)</em> </h4>
  <div class="image">
-  <a href="./ECE 4760 ColdRunner_files/fsm.png"> 
-          <img src="./ECE 4760 ColdRunner_files/fsm.png" width="500">
+  <a href="./ECE4760_cooker_files/fsm.png"> 
+          <img src="./ECE4760_cooker_files/fsm.png" width="500">
   </a>
           <p class="caption">Figure 9: State Control Finite State Machine (FSM). Click to Enlarge</p>
   </div>
@@ -333,7 +333,7 @@ TRT Task dedicated to making fine adjustments to the temperature by turning on a
 </p>
 </div>
 <div class="linklist"> <a name="results"></a>
-    <h2>Results &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/index.html#top">top</a></strong></font></h2>
+    <h2>Results &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="index.html">top</a></strong></font></h2>
 
 <h4>Execution Speed</h4>
 <p>
@@ -342,11 +342,14 @@ The speed of our program execution varies from task to task. Our slowest task, t
 <p>
   While our slowest task may have a deadline of 4 seconds, we also have numerous tasks that are never set to sleep and are continuously running. These include the serial communication task which prints to and reads from the UART and the LED display update task. As the image on the LED display is generated by quickly cycling through the columns of LEDs, our LED display task runs very quickly to produce a recognizable image. Based on our code, we cycle through a column of LEDs on the LED display every 24 milliseconds. 
 </p>
-
+      <div class="image"> <a href="./ECE4760_cooker_files/satisfied_customer.jpg"><img src="./ECE4760_cooker_files/satisfied_customer.jpg" width="350" height="504"></a>
+        <p class="caption">A satisfied customer.</p>
+        </div>
 <h4>Accuracy</h4>
 <p>
   Our cooker is surprisingly accurate in the temperature that it is able to maintain. For starters, our calibration function for converting the raw ADC input to degrees Celsius is accurate within 2 degrees when the temperature probe is immersed in water above 45 degrees Celsius. Since all of the cooking will be done at temperatures above 45 degrees Celsius, we calibrated our temperature probe to be especially accurate between 45 and 100 degrees Celsius.
 </p>
+
 <p>
 In addition to our calibration function being accurate, our temperature feedback loop is also quite effective. Because our temperature readings are very accurate due to the aforementioned calibration function, we are able to turn off our heat source as soon as the temperature of the immersion liquid reaches our desired temperature. In addition, due to the carry over cooking effect that is present due to the large heating element, we actually shut off our heating element once the temperature of the immersion liquid reaches 95% of our desired temperature. From that point, we let the carry over effect continue to heat up the immersion liquid. By doing this, we prevent thermal overshoot, which is particularly difficult to deal with as our cooking vessel retains heat very well.   
 </p>
@@ -370,7 +373,7 @@ In addition to our calibration function being accurate, our temperature feedback
 
 
 <div class="linklist"> <a name="conclusions"></a>
-  <h2>Conclusions &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/index.html#top">top</a></strong></font></h2>
+  <h2>Conclusions &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="index.html">top</a></strong></font></h2>
 <h4>Results vs Expectations</h4>
 <p>
   We were pleasantly surprised that the results of our project exceeded our expectations. Our initial design was to produce a simple temperature controlled cooker that would only be usable through the UART interface and would utilize a stock LCD screen for temperature and time remaining statistics. However, we managed to include additional hardware dials and switches to allow for programming of the device without a UART connection to a PC. In addition, we implemented a larger and brighter LED display that would display the temperature or time remaining depending on the switch settings. We feel that both of these inclusions makes our project more appealing to a variety of users and allows for operation in environments without a PC or technically skilled personnel. 
@@ -404,16 +407,20 @@ We maintain no responsibility for any unexpected consequences from building, usi
 
       
       <div class="linklist"> <a name="appendices"></a>
-        <h2>Appendices &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/index.html#top">top</a></strong></font></h2>
-        <h3>A. Source Code</h3>
-		<ul>
-		<li><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/Code/ColdRunner.c">ColdRunner.c</a> (6 KB)</li>
-		<li><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/Code/trtkernel_1284.c">trtkernel_1284.c</a> (5 KB)</li>
-		<li><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/Code/trtSettings.h">trtSettings</a> (1 KB)</li>		
-		</ul>
-      
-        <h3>C. Cost</h3>
-        <p>Our total cost for this project came out to be $56.84. The majority of this cost came from our Peltier plate, accelerometer, and arm band. Our cost breakdown is listed below.</p>
+        <h2>Appendices &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="index.html">top</a></strong></font></h2>
+        <h3>Source Code</h3>
+<ul>
+<li><a href="./code/"analog_input.c>analog_input.c</a> </li>
+<li><a href="./code/"analog_input.h>analog_input.h</a> </li>
+<li><a href="./code/"fsm.h>         fsm.h</a> </li>
+<li><a href="./code/"main.c>        main.c</a> </li>    
+<li><a href="./code/"pid.c>         pid.c</a> </li>
+<li><a href="./code/"pid.h>         pid.h</a> </li>
+<li><a href="./code/"regulate.h>    regulate.h</a> </li>
+<li><a href="./code/"screen.c>      screen.c</a> </li>
+<li><a href="./code/"screen.h>      screen.h</a> </li>    
+</ul>
+        <h3>Cost</h3>
 	<style type="text/css">
 	table.tableizer-table {
 	border: 1px solid #CCC; font-family: Arial, Helvetica, sans-serif
@@ -430,31 +437,39 @@ We maintain no responsibility for any unexpected consequences from building, usi
 	font-weight: bold;
 }
 </style><table class="tableizer-table">
-<tbody><tr class="tableizer-firstrow"><th>Part</th><th>Source</th><th> Unit Price </th><th>Quantity</th><th>Total Price</th></tr>
- <tr><td>Vibration Motor</td><td>Adafruit</td><td> $1.95 </td><td>1</td><td> $1.95 </td></tr>
- <tr><td>Thermal Paste</td><td>Amazon</td><td> $8.00 </td><td>1</td><td> $8.00 </td></tr>
- <tr><td>9V Battery </td><td>Anywhere</td><td> $2.00 </td><td>1</td><td> $2.00 </td></tr>
- <tr><td>AA Battery</td><td>Anywhere</td><td> $0.00   </td><td>3</td><td> $0.00   </td></tr>
- <tr><td>Peltier Plate</td><td>Digikey</td><td> $14.84 </td><td>1</td><td> $14.84 </td></tr>
- <tr><td>Mega1284</td><td>ECE 4760 Lab</td><td> $5.00 </td><td>1</td><td> $5.00 </td></tr>
- <tr><td>AA Battery Holder</td><td>ECE 4760 Lab</td><td> $0.00   </td><td>1</td><td> $0.00   </td></tr>
- <tr><td>Voltage Regulator</td><td>ECE 4760 Lab</td><td> $0.00   </td><td>1</td><td> $0.00   </td></tr>
- <tr><td>NPN Transistor</td><td>ECE 4760 Lab</td><td> $0.00   </td><td>1</td><td> $0.00   </td></tr>
- <tr><td>Resistors</td><td>ECE 4760 Lab</td><td> $0.00   </td><td>13</td><td> $0.00   </td></tr>
- <tr><td>Capacitors</td><td>ECE 4760 Lab</td><td> $0.00   </td><td>1</td><td> $0.00   </td></tr>
- <tr><td>MOSFET</td><td>ECE 4760 Lab</td><td> $0.00   </td><td>1</td><td> $0.00   </td></tr>
- <tr><td>SPDT Switch</td><td>ECE 4760 Lab</td><td> $0.00   </td><td>1</td><td> $0.00   </td></tr>
- <tr><td>LED</td><td>ECE 4760 Lab</td><td> $0.00   </td><td>2</td><td> $0.00   </td></tr>
- <tr><td>Optoisolator</td><td>ECE 4760 Lab</td><td> $0.00   </td><td>1</td><td> $0.00   </td></tr>
- <tr><td>Header Pin</td><td>ECE 4760 Lab</td><td> $0.05 </td><td>23</td><td> $1.15 </td></tr>
- <tr><td>Accelerometer</td><td>Modern Devices</td><td> $10.95 </td><td>1</td><td> $10.95 </td></tr>
- <tr><td>Heatsink</td><td>Previously Owned</td><td>$0.00</td><td>2</td><td> $0.00   </td></tr>
- <tr><td>Elbow Pad</td><td>Target</td><td> $12.95 </td><td>1</td><td> $12.95 </td></tr>
- <tr class="tableizer-firstrow"><th>Total</th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th><th>$56.84</th></tr>
+<tbody><tr class="tableizer-firstrow"><th>Part</th><th>Source</th>        <th> Unit Price </th>   <th>Quantity</th><th>Total Price</th></tr>
+ <tr><td>Perf Board                     </td><td>Allelectronics</td>      <td> $1.50 </td>        <td>2</td>    <td> $3.00 </td></tr>
+ <tr><td>500 Ohm Pot                    </td><td>Allelectronics</td>      <td> $0.50 </td>        <td>2</td>    <td> $1.00 </td></tr>
+ <tr><td>10k ohm pot                    </td><td>Allelectronics</td>      <td> $2.00 </td>        <td>2</td>    <td> $4.00 </td></tr>
+ <tr><td>74HC164N Shift Register        </td><td>Digikey</td>             <td> $0.43   </td>      <td>5</td>    <td> $2.15   </td></tr>
+ <tr><td>LED Display                    </td><td>eBay</td>                <td> $1.80 </td>        <td>2</td>    <td> $3.60 </td></tr>
+ <tr><td>Rice Cooker                    </td><td>Fry's Electronics</td>   <td> $34.99   </td>     <td>1</td>    <td> $34.99   </td></tr>
+ <tr><td>Temperature sensor             </td><td>Digikey</td>             <td> $1.57   </td>      <td>1</td>    <td> $1.57   </td></tr>
+ <tr><td>Gang Box                       </td><td>Lowes</td>               <td> $0.94   </td>      <td>1</td>    <td> $0.94   </td></tr>
+ <tr><td>Combination Wall Plate         </td><td>Lowes</td>               <td> $0.88   </td>      <td>13</td    ><td> $0.88   </td></tr>
+ <tr><td>Electrical Outlet              </td><td>Lowes</td>               <td> $0.59   </td>      <td>1</td>    <td> $0.59   </td></tr>
+ <tr><td>Electrical Switch              </td><td>Lowes</td>               <td> $0.69   </td>      <td>1</td>    <td> $0.69   </td></tr>
+ <tr><td>Sainsmart Relay module         </td><td>Amazon</td>              <td> $10.00   </td>     <td>1</td>    <td> $10.00   </td></tr>
+ <tr><td>Microcontroller Atmage 1284P   </td><td>ECE 4760 Lab</td>        <td> $5.00   </td>       <td>1</td>    <td> $5.00   </td></tr>
+ <tr><td>Piezoelectric Buzzer           </td><td>Chinasound</td>          <td> $1.62   </td>      <td>1</td>    <td> $1.62   </td></tr>
+ <tr><td>Protoboard                     </td><td>ECE 4760 Lab</td>        <td> $6.00  </td>       <td>1</td>    <td> $6.00   </td></tr>
+ <tr><td>Microcontroller PC Board       </td><td>ECE 4760 Lab</td>        <td> $7.00 </td>        <td>1</td    ><td> $7.00 </td></tr>
+ <tr><td>Serial Connector               </td><td>ECE 4760 Lab</td>        <td> $1.00 </td>        <td>1</td>    <td> $1.00 </td></tr>
+ <tr><td>Header Pins                    </td><td>ECE 4760 Lab</td>        <td> $0.05 </td>        <td>56</td>    <td> $2.80   </td></tr>
+ <tr><td>DIP Switches                   </td><td>ECE 4760 Lab</td>        <td> $0.31 </td>       <td>2</td>    <td> $0.62 </td></tr>
+ <tr><td>555 Timer                      </td><td>ECE 4760 Lab</td>        <td> $0.10 </td>       <td>1</td>    <td> $0.10 </td></tr>
+ <tr><td>n-channel MOSFETs              </td><td>ECE 4760 Lab</td>        <td> $0.02 </td>       <td>2</td>    <td> $0.04 </td></tr>
+ <tr><td>Plastic tubing                 </td><td>Scrap lying in Lab</td>  <td> $0.00 </td>       <td>6 in</td>    <td> $0.00 </td></tr>
+ <tr><td>Wiring                         </td><td>ECE 4760 Lab</td>        <td> $0.00 </td>       <td>10 ft</td>    <td> $0.00 </td></tr>
+
+
+ <tr class="tableizer-firstrow"><th>Total</th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th><th>$87.59</th></tr>
 </tbody></table>
+
+
         
 
-	<h3>D. Division of Labor</h3>
+	<h3>Division of Labor</h3>
          <table width="100%" border="1">
           <thead>
             <tr>
@@ -503,64 +518,29 @@ We maintain no responsibility for any unexpected consequences from building, usi
         
         
          <div class="linklist"> <a name="references"></a>
-        <h2>References &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/index.html#top">top</a></strong></font></h2>
+        <h2>References &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="index.html">top</a></strong></font></h2>
         <p style="margin: 0 0 0.5em">This section provides links to external reference documents, code, and websites used throughout the project.</p>
-        <div class="group1">
-          <h3>Datasheets</h3>
-          <ul>
-            <li><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/Datasheets/pelt.pdf">Peltier Plate CP30138</a></li>
-            <li><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/Datasheets/mega1284full.pdf">ATmega1284 Microcontroller</a></li>
-            <li><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/Datasheets/MMA7361L.pdf">Accerlerometer MMA7361L</a></li>
-            <li><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/Datasheets/voltreg.pdf">Voltage Regulator PQ30RV31</a></li>
-            <li><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/Datasheets/bjt.pdf">TIP31 BJT</a></li>
-            <li><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/Datasheets/4n35.pdf">Optoisolator 4N35</a></li>
-          </ul>
-          <h3>References</h3>
-          <ul>
-		  <li><a href="http://people.ece.cornell.edu/land/courses/ece4760/analogDigital/index_644_GCC.html">Analog to Digital</a></li>
-		  <li><a href="http://people.ece.cornell.edu/land/courses/ece4760/TinyRealTime/index.html">Tiny Real Time</a></li>
-          <li><a href="http://learningaboutelectronics.com/Articles/Vibration-motor-circuit.php">Vibration Motor Circuit</a></li>
-		  <li><a href="http://expresspcb.com/">Express PCB</a></li>
-          </ul>
-        </div>
-        <div class="group2">
-          <h3>Vendors</h3>
-          <ul>
-            <li><a href="http://www.digikey.com/">DigiKey</a></li>
-            <li><a href="http://www.amazon.com/">Amazon</a></li>
-            <li><a href="http://moderndevice.com/">Modern Device</a></li>
-            <li><a href="http://www.adafruit.com/">adafruit Industries</a></li>
-            <li><a href="http://www.target.com/">Target</a></li>
-          </ul>
-          <h3>Background Info</h3>
-          <ul>
-
-	    <li><a href="http://runnersfeed.com/running-cadence-180-strides-per-minute-is-key/">Running - steps/min</a></li>
-		<li><a href="http://www.ontherunevents.com/ns0060.htm">Ideal running/walking pace</a></li>
-		<li><a href="http://en.wikipedia.org/wiki/Thermoelectric_effect#Peltier_effect">Peltier effect</a></li>
-          </ul>
-        </div>
+<h4>References</h4>
+<ul>
+<li><a href="http://www.atmel.com/Images/8059s.pdf">Atmega 1284P Datasheet</a></li>
+<li><a href="http://people.ece.cornell.edu/land/courses/ece4760/TinyRealTime/">TRT Kernel</a></li>
+<li><a href="http://www.ieee.org/about/corporate/governance/p7-8.html">IEEE Code of Ethics</a></li>
+<li><a href="http://www.thesunrain.com/Amazon/2%20relay%20board/2-ch%20relay%20module.pdf">Sainsmart Relay Schematic</a></li>
+<li><a href="http://www.ehow.com/how_7805517_wire-two-gang-box.html">Gangbox Wiring Tutorial</a></li>
+<li><a href="http://www.atmel.com/images/doc2558.pdf">PID Controller Information</a></li>
+</ul>
       </div>
 
         
         </div>
-           
-        <div class="linklist"> <a name="ack"></a>
-
-        <h2>Acknowledgements &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/index.html#top">top</a></strong></font></h2>
-
-        <p>We would like to thank Professor Bruce Land for providing help and guidance whenever we needed it. We would also like to thank all the lab TA's who helped to solve some of our most challenging and basic problems.</p>
-		
-	<p>Finally, we would like to thank Paul Swirhun and Shao-Yu Liang of Spring 2011's Pace Clock Project for the use of their webpage as a template. Without it, our webpage would be very unpolished.</p>
-
-      </div>
+        
 
         
            </div>
     <!-- end maincontent -->
   </div>
   <!-- end content -->
-  <script type="text/javascript" async="" src="./ECE 4760 ColdRunner_files/ga.js"></script><script type="text/javascript">
+  <script type="text/javascript" async="" src="./ECE4760_cooker_files/ga.js"></script><script type="text/javascript">
 
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-22818013-1']);
@@ -579,8 +559,8 @@ We maintain no responsibility for any unexpected consequences from building, usi
   <div id="footerwrap">
     <div id="footer">
       <div id="copyright">
-        <div class="copyright">©2013 Casey Mak &amp; Ian Purnell</div>
-        <div class="copyright">Style adapted with permission from Paul Swirhun and Shao-Yu Liang</div>
+        <div class="copyright">©2013 Gary He &amp; Alex Maass</div>
+        <div class="copyright">Style adapted with permission from Ian Purnell and Casey Mak</div>
         <div class="copyright">Layout ©2010 Cornell University</div>
       </div>
     </div>
