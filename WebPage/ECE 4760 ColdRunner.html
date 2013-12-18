@@ -148,279 +148,259 @@ In cooking mode, the cooker begins to count down the desired cooking time record
   In our software design, we decided to use the Tiny Real Time (TRT) kernel written by Dan Henriksson and Anton Cervin as it allowed us to easily schedule tasks at set intervals and synchronize variables across multiple tasks. While using the TRT kernel decreased the amount of flexibility we had in writing our software, it ultimately made scheduling software tasks a lot easier.  
 </p>
         
-  <h4>Relevant existing patents, copyrights, and trademarks</h4>
+<h4>Relevant existing patents, copyrights, and trademarks</h4>
  <p>
       There are no existing patents, copyrights or trademarks that our project infringes on. While numerous patents exist regarding temperature controlled cookers (e.g Patent EP2661944 A2 & Patent WO2012092683 A3), they utilize inductive heating surfaces which we do not use. The patent closest to our design that we found was Patent CA2722383 A1 which describes a temperature controlled heating element. However, this patent still does not apply to our project as it describes controlling the heating element’s temperature using electrical sensors within the heating coil while our system measures the temperature of the food’s immersion liquid.  
 We utilize the Tiny Real Time (TRT) kernel and its supplemental UART libraries, both of which are filed under the “Beer-Ware License" by Joerg Wunsch. We also utilize the generic PID Controller code created by Atmel for the AVR221 application. 
 
 </p>
  
-
-	<h4>User Interface</h4>
-
-    <p> The most simplistic human control feature was the on/off switch. It simply controls whether to turn the system on or off.  </p>
-	<p> A second human interface feature was a SPDT switch on the device that allows the user to set the steps-per-interval threshold to
-	be a lower value for the walk mode or a higher value for the run mode. This allows the user to decide between two different options for 
-	a workout.</p>
-	<p> The third and most major human interface with the device is the accelerometer and haptic feedback system. The accelerometer reads the 
-	rate of movement from the human user and adjusts the vibration motor's rate of vibration and the Peltier plate's temperature to give feedback
-	to the user to inform him that he is not running or walking fast enough.
-
-
-        </p><h4>The Accelerometer</h4>
-
-		<p> The steps-per-interval value that we use to determine the rate of motion of the user is found through the acceleromter. The accelerometer
-		gives three analog signals, one for each of the three accelerations in the x,y and z direction. However, we found that we only needed two of 
-		these directions to draw accurate results, so we chose the two directions that are easiest to read from when we mount the accelerometer on the
-		user's arm (x and y).</p>
- 
-
-        <h4>The Peltier Plate</h4>
-
-            <p> The Peltier plate is a plate that gets hot on one side and cold on the other depending on the direction and amount of current that we put 
-			into it. We had to make sure that the plate got cold enough such that the user can feel the cool side easily. However, when going to temperatures
-			that low on one side, the other side gets equally hot, so we had to ensure that the heat from the hot side did not conduct to the cold side. To
-			do this, we had to put a heat sink on the Peltier plate. This heat sink had to be attached with thermal adhesive that would not become loose when 
-			temperatures change.</p>
-			 <div class="image"> <a href="./ECE 4760 ColdRunner_files/IMG8.jpg"><img src="./ECE 4760 ColdRunner_files/IMG8.jpg" width="400" height="320"></a>
-        <p class="caption">Our Peltier plate</p>
-        </div>
-			<p> The Peltier plate gets its cooling/heating function through a phenomenon named the Peltier effect, a type of thermoelectric effect. A thermoelectric
-			effect is one that converts voltage provided into a difference of temperature. This effect was perfect for the device we wanted to create
-			since it does not require any outside substance for a cooling effect other than the Peltier plate, which can be easily hooked up into our circuit. The polarity of the voltage 
-			or the flow of current is what decides which side of the Peltier plate gets hot and which side gets cold.
-			A Peltier plate is constructed out of two conductors connected by a junction that removes or adds heat to one of the conductors and does the opposite
-			to the other.</p>
-			<p> Furthermore, to control the temperature of the Peltier plate, we needed a PWM controlled current source. To do this, we used an optoisolator to 
-			keep the Peltier plate circuit separated from the microcontroller unit so that we would not damage the mcu if something went wrong with the Peltier 
-			plate. We also used a BJT to control the current going into the Peltier plate based upon the PWM. </p>
-			
-			<p> Because this device is supposed to attach to your arm and the Peltier plate draws a lot of current, we needed to use a separate battery pack to
-			power this part of the system that does not power the microcontroller. We used three AAA batteries and used a voltage regulator to get the desired voltage
-			needed for the system.</p>
- 
-			<p> The Peltier plate was given a max of about 0.7 Amps in our circuit. With a resistance of about 1 Ohm (given im the data sheet), we expect about 0.7 V
-			to be across the Peltier plate during use. Because of the circuit it was connected to, we observed the Volts across the Peltier plate to be more around
-			0.5-0.6 Volts using a multimeter. This corresponds to about a 30 degree Celsius temperature differential. From what we observed, this was roughly the case
-			with the colder side being around 10 degree Celsius and the warm side being around 40 degree Celsius. This adheres to the safety standard since the cold side
-			is definitely not in the danger zone and the warm side is heat sinked so prolonged contact should not hurt since we want it to be below 45 degrees Celsius,
-			which it is.
-             </p></div>
-     
        <div class="linklist"> <a name="hardware"></a>
         <h2>Hardware &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/index.html#top">top</a></strong></font></h2>
-   <h3>Hardware Overview</h3>
-       
-        <p>This project requires hardware to be built to control the external components such as the Peltier plate, vibration motor, etc.
-        The Peltier plate control circuit is composed of a BJT, optoisolator and the Peltier plate. Furthermore, a voltage regulator is important
-        to ensure the rail voltage for the Peltier plate is properly set. The vibration motor control circuit is important to allow a PWM
-        to control it. The LED and switch component is also necessary to allow for the switching of modes. Finally, the accelerometer itself is attached
-        to resistors to connect to the microcontroller ports.</p>
-        
-        <h4>Peltier Plate Control Component</h4>
-       
-        <p> The Peltier plate control component is run by a PWM. In our device, we send the controlling PWM from port B4 for the Peltier control. This PWM
-        is sent to a 4N35 optoisolator, connected to a 330 ohm resistor. An optoisolator was chosen to protect the MCU from anything that the Peltier plate
-        may do to damage it. The output of the optoisolator will then go into a TIP31 BJT. This TIP31 BJT acts as the voltage controlled current source that provides the
-        necessary current to turn on the Peltier plate. A TIP31 was chosen because it was better rated to allow for this type of current control. To ensure that the TIP31
-        does not get too hot because it might be dangerous to place on somebody, we lowered the input resistance to the TIP31's base to be roughly 100 ohm. We also used a
-        1 ohm 2W rated resistor to connect the TIP31's emitter to ground to allow the collector current to be as high as necessary to run the Peltier plate. We determined
-        that a current of roughly 0.68 A was good enough to allow the Peltier to be noticeably cold. A schematic can be seen in Appendix B.</p>
-       
-        <p> The voltage rail for the voltage controlled current source needed to be 2.5 V. However, using just AA batteries, we could not get this voltage. To address
-        this, we used a voltage regulator. For this purpose, we used a PQ30RV31 voltage regulator. This regulator takes in a voltage of 4.5 volts (3 AA batteries) and
-        outputs a voltage of 2.58 V. A schematic can be seen in Appendix B.</p>
-       
-        <h4> Vibration Motor Control Component</h4>
-        <p> The circuit for the vibration motor control component has two main parts, the BJT and the motor. We referenced a circuit that allowed us to use a PWM to control
-        the vibration motor. This circuit is shown in Appendix B. The base resistor to the BJT was chosen to be 1 kOhm.  To protect against possible voltage spikes that
-        might occur from the motor, there is a 1N4001 diode placed across the motor as well as a small resistor in series with the motor.</p>
-		<p>The vibration motor and Peltier plate were both mounted on the inside of the armband. This can be seen below.</p>
-       <div class="image"> <a href="./ECE 4760 ColdRunner_files/IMG3.jpg"><img src="./ECE 4760 ColdRunner_files/IMG3.jpg" width="500" height="350"></a>
-        <p class="caption">Peltier Plate and Vibration Motor</p>
-       </div>
-        <h4> Threshold Switch and LED Component </h4>
-        <p> We wanted to allow the user to choose between a walking mode and a running mode. To do this, we used a SPDT switch. Since we have our microcontroller looking for
-        an active low, we hooked the middle pin of the switch to ground and the two side pins of the switch to micrcontrollers pin D3 and D4. We then poll these pins frequently
-        to determine which mode the users want to be in. To allow the user to see which mode he is in, we also have two LEDs (one green and one red) connected to ports C0 and C1,
-        each through a 330 ohm resistor to control the amount of current flowing through. If the red LED lights up, the user is in run mode. When the green LED lights up, the user
-        is in walk mode. A schematic can be seen in Appendix B.</p>
+<p>
+  Our overall hardware design is composed of numerous subsystems. The various subsystems can be seen in the figure below. 
+</p>
+ <div class="image"> <img src="./ECE 4760 ColdRunner_files/hardware_subsystem_block_diagram.png">
+          <p class="caption">Figure 3: Hardware subsystem block diagram.</p>
+  </div>
+<p>The following subsystems compose our overall system:</p>
+<ul>
+<li> Atmel Atmega 1284P Microcontroller </li>
+<li> Analog Inputs</li>
+<li> Buzzer Sound Subsystem</li>
+<li> LED Display</li>
+<li> Temperature Sensor</li>
+<li> Power Supply and Heating Element</li>
+</ul>
 
-<h3> Hardware Difficulties </h3>
-        <p> One difficulty that we ran into when we were building the circuit was that the amount of current needed to be drawn for the Peltier plate would make the power dissipated
-        across some of the components too much, and the components would become dangerously hot. For example, the reason we chose the TIP31 BJT was because some of the other
-        transistors we used could not output enough current without requiring a much higher rail voltage. The TIP31 was able to give us a good ratio, but not without also getting
-        quite hot. To fix this, we had to adjust the resistor values that we used. We found that the 1 ohm resistor at the TIP31 emitter and the 100 ohm resistor at the base
-        worked well enough for us to run the Peltier plate well. The 1 ohm resistor also had to be a higher wattage resistor (we used a 2 W resistor) to make sure that it would
-        not overheat as well, which we found would occasionally occur with other resistors that we tried to use.</p>
-        <p> In a related problem, the PQ30RV31 voltage regulator would also become very hot. After fixing the problem of the TIP31 getting hot, the voltage regulator would also
-        become hot enough to be very uncomfortable to touch if drawing a large amount of current over more than twenty seconds. To help alleviate this issue, we attached a heat
-        sink to the voltage regulator. This heat sink was useful in keeping the voltage regulator a good enough temperature to be safely mounted on somebody.</p>
-        <p> Another alternate design that we had was for the switch method for user control. Instead of using a switch, we considered using interrupt driven push buttons. The
-        buttons would allow the user to increase the threshold manually. This created two problems. The first was that it would be difficult to transparently inform the user
-        on what his current setting was without using another component such as a LCD display or multiple seven segment displays, which would add to the bulkiness of our physical
-        design. The second problem was that to debounce the interrupt driven buttons, we needed to perhaps use an active high design in conjunction with low pass filters. It was
-        much more intuitive for the user and for us to use the SPDT switch.</p>
-        <p> Another problem that we had to overcome was that the Peltier's hot side would start to affect the cold side if the temperature differential were too different. The heat
-        would start to dissipate through the middle material separating the two plates. To fix this, we had to also attach a heat sink on the hot side. That way, the plate would be
-        able to cool down without heat bleeding through from the other side. Otherwise, the user may not be able to feel the temperature feedback that the device is trying to give
-        him.</p>
-        <p> The accelerometer was sensitive but mostly only in the specific directions that it is designed to measure accelerations in. Therefore, we had to be careful in mounting
-        the accelerometer and making sure that it is always pointed in the correct direction. This is important in deciding the information the device receives.</p>
-        <p> One of the difficulties arises when it comes to the actual design of the full circuit mounted on the arm bands that we use to hold the device onto a person. The
-        circuit itself cannot be too large, so we had to solder the components close together. Furthermore, we needed two separate battery sources to be mounted alongside
-        the circuit, one to power the microcontroller and one to power the Peltier plate control circuit. </p>
-		
-        </div>
-      <div class="linklist"> <a name="software"></a>
-        <h2>Software &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/index.html#top">top</a></strong></font></h2>
-		<h3>Code</h3>
-        <h4>ColdRunner.c</h4>
-        <p>This file acts as the <strong>main</strong> of our program. It runs off of the <a href="http://people.ece.cornell.edu/land/courses/ece4760/TinyRealTime/index.html">Tiny Real Time</a> (TRT) kernel, hosting multiple tasks necessary for our system. There are four main tasks: <code>modeSelect</code>, <code>Accelerometer Read</code>, <code>PeltierSignal</code>, and <code>Vibe</code>. These tasks will be discussed below. At startup, our code intializes the TRT kernel with a call to <code>uart_init()</code>. This function sets up the TRT kernel, initializes various tasks, semaphores, timers, and ports, and enables interrupts and puts the microcontroller to sleep. After this the TRT tasks begin to execute.</p>
-		<p><code>modeSelect</code></p>
-		<p>This task has the relatively simple job of determining what mode the system is in. It polls <code>PIND</code> to determine if the switch is set to a run or walk mode. After determining this, it sets a threshold (<code>stepthresh</code>) used later on for measuring steps, and turns on an LED. There are two LEDs which correspond to either a walk/run mode. The green LED represents the walking mode, and the red LED represents the run mode. This task has very short release and deadline times, so that any change in the switch can be seen quickly.</p>
-		<p><code>AccelerometerRead</code></p>
-		<p>This task was created to read in accelerometer values and measure if a step has been taken. The accelerometer that we used has an analog 
-		output, which we capture with the microcontrollers onboard analog to digital converter (ADC). These values are captured from the 
-		inputs <code>PINA0</code> and <code>PINA1</code>. In order to capture these ADC inputs, we had to set up the ADC. This was done in 
-		the <code>uart_init()</code> function. This task reads in the values by first ensuring that the ADC Start Conversion (ADSC) bit 
-		and the ADC Control and Status Register A (ADSCRA) are equal. This is done to ensure that the ADC operation has finished. After doing this, 
-		we store the ADC value in an integer (either <code>Acx</code> or <code>Acy</code>). This is done by writing the integer 
-		with the value located in ADC Data Register(ADCH). After doing this, a new bit is written to the ADC Mux (ADMUX). This is done so that we can collect data on another channel of the ADC. 
-		After setting the ADMUX bit, we write a 1 to the ADSC bit. This starts another conversion. We do this process twice in our task so that the 
-		task will collect both the X and Y values. After collecting the X and Y acceleration values, two different operations occur. In the "run" mode
-		the values are added together and stored in a variable, <code>avg</code>. Then <code>avg</code> is compared to a past value of <code>avg</code>, <code>prevavg</code>.
-		We compare the |<code>avg</code>-<code>prevavg</code>| to a value to determine if a valid step occurred.
-		If the value of |<code>avg</code>-<code>prevavg</code>| is within the range, we update a variable <code>stepcount</code>. This absolute value operation is done to measure acceleration changes
-		relative to either forward or backward movement. After doing this, we 
-		impose a 100ms delay, so that we do not read in false steps. A similar operation occurs during the walk mode, but instead of combining the 
-		<code>Acx</code> and <code>Acy</code> value to form <code>avg</code>, we only set <code>avg = Acx</code>. This was done during testing our system, because we noticed 
-		higher amounts of false steps occurring when <code>avg</code> is a sum of <code>Acx</code> and <code>Acy</code>. Apart from this change, the rest of the stepcount operations
-		are the same as the run mode. The task is updated every 5 ms, so that we are able to measure when acceleration changes occur. This was done because it produced the most accurate stepcount during testing.</p>
-		<p><code>PeltierSignal</code></p>
-		<p>This task sends a PWM signal to the Peltier plate. In order to do this, the task starts off by having an initial delay of 15 seconds. 
-This initial delay is created so that the user can get up to their desired speed after turning the system on. The delay is also used to set the user's individual threshold. This is done so that the thresholds for the user
-is tailored to their individual running paces. This is done by averaging accelerometer reads after the delay period is over. After the delay, the task will compare
-a step count, <code>stepcount</code> to a threshold, <code>stepthresh</code>. <code>stepcount</code> is determined every 5 seconds. It is updated during this time from the task <code>AccelerometerRead</code>. <code>stepthresh</code> is set from the task <code>modeControl</code>.
-If <code>stepcount</code> is above the <code>stepthresh</code>, then the output <code>OCR0B</code> is set to 255. This will not trigger the PWM. However, 
-if <code>stepcount</code> is less than <code>stepthresh</code>, a new variable is set to 1 (<code>peltthresh</code>). If <code>peltthresh</code> is 1, a PWM will be outputted.
-<code>OCR0B</code> is set to 0, so that the PWM will turn on the Peltier plate. After this occurs, a variable <code>peltcount</code> is added to. This variable
-was initialized to 0. However, if <code>peltcount</code> goes above 3, the <code>OCR0B</code> is set back to 255. This is done to prevent heat flowing back onto the Peltier plate.
-However, because the Peltier plate is turned off, the system still needs a way to alert the user that they have been running too slow. This is done by triggering the task <code>Vibe</code>.</p>
-		<p><code>Vibe</code></p>
-		<p>This is the last task in the <code>ColdRunner.c</code> file. This task checks to see if a variable <code>vibe</code> has been set. If it has been set when the operator is below their low threshold, it sends
-		a PWM to <code>OCR0A</code> at a value of 0. This task turns on the vibration motor for .7 seconds, so that user has enough time to feel the vibration, without it being too annoying. If the variable vibe has been set
-		when the operator is above their high threshold, a 0 PWM signal is sent to <code>OCR0A</code>. This is sent in 3 short bursts, so that the user has time to differentiate between a high and low threshold. </p>
-        <h4>trtkernel_1284.c</h4>
-		<p>This is used to run the TRT kernel. This sets up the kernel and contains functions for all the trt* methods.</p>
-		<h4>trtSettings.h</h4>
-		<p>This is a header file used to define various things in TRT, such as max number of tasks or semaphores. It is also used to specify the MCU's clock and UART baud rate. </p>      
-       <h3>Software Difficulties</h3>
-	  <p>Throughout this project we had some difficulties on the software side. These difficulties usually revolved around timing and reading in variables.</p>
-	  <p>One of our major challenges was with the timing for the tasks. These were difficult to determine at first, because we were unsure how much 
-	  data we needed before we could conclude that we had an accurate measurement from the accelerometer. This involved trying different times for release time in the 
-	  <code>AccelerometerRead</code> task. We had started with .1 seconds, but eventually realised that the threshold needed to be lowered to about 5 ms. This was due in part
-	  to the fact that we would often miss the acceleration changes with a time of .1 seconds. After lowering the acceleration timing down to 5ms, we also ran into the issue that
-	  we would get too many acceleration values, which led to our 100ms delay after a high read.</p>
-	  <p>Another timing related issue occurred with our <code>PeltierSignal</code> task. This was originally set to a very high release time value, so that we could compare
-	  the number of steps taken with a threshold. We believed that setting this to a large time would allow us to accurately see steps/min. However, this led to long delays in sending
-	  the PWM to the Peltier, and we wanted more control to do this. This led to us lowering the release time of this task to 5 seconds. This allowed us to achieve the control of the
-	  Peltier plate that we desired, along with fairly accurate step/min counts.</p>
-	  <div class="linklist"> <a name="results"></a>
-        <h2>Results &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/index.html#top">top</a></strong></font></h2>
-      <p>The device can readily be used to monitor a user's approximate running pattern and  run under two different modes and provide feedback to the user
-      in a quick manner. The user can switch between the two modes quickly and
-      seamlessly. The device is easy to attach and needs to run off 3 AAA batteries and one 9-V battery. To provide feedback, the device uses two noticeable
-      haptic feedback components. The first feedback component is the Peltier plate, which is in contact with he skin of the user. The Peltier plate can quickly
-      cool down to temperatures easily felt by the user within three seconds. It updates itself frequently as well to allow for accurate feedback. The second
-      feedback component is a vibration motor. It vibrates periodically if the user is not meeting the required rate of motion that the setting the device is set
-      to demands. Under testing, the device ran well and gave the expected responses to correspond to the input that the user gave it.</p>
-     
-      <h4> Speed of Execution </h4>
-      <p>The device runs off of multiple tasks using the TRT kernel that we used during our ECE 4760 coursework. We scheduled our tasks as follows. The
-        accelerometer is read every 0.005 seconds. We found that this gives us a reasonable rate of information. However, we have to account for some double counting,
-        which we do by using a built in hesitate to ensure that only one step is read when one step is expected. We update the Peltier plate based upon our accelerometer
-        readings every 5 seconds. The vibration motor is activated every 20 seconds for a short half second burst if the Peltier plate has been on the for the
-        previous 20 seconds. This is used for an extra reminder to the user.</p>
-       
-      <h4> Safety </h4>
-     
-      <h5>Hardware Safety</h5>
-     
-      <p> Because our device promotes movement and is connected directly to the arm of the user, we wanted to make sure that the chances of injury ia small.
-        We use an elastic band to attach the device to the user. The elastic band should be tight enough such that the device will not fall off easily and the band
-        is still comfortable enough such that the user has unrestricted motion. We kept the wirings short so the chance of tangling them up and damaging the circuit
-        or hurting the user is decreased. Another point of emphasis to ensure safety for the user was the use of a heat sink to keep the Peltier plate from becoming
-        uncomfortably or dangerously hot. The heat sink keeps the Peltier plate at a good temperature. We also made sure to not allow more than 0.7 amps to flow
-        into the Peltier plate so that it would not become too hot. Another important component that we heat sunk for safety was the PQ30RV31 voltage regulator
-        which would become very hot whenever we ran the Peltier plate at our self-imposed 0.7A maximum current. The heat sink definitely helped keep that component from
-        becoming too hot to place in our circuit.</p>
-       
-        <h5>Software Safety</h5>
-       
-        <p>To ensure that none of the components received improper values, we had to ensure that the variables were set correctly at all times. Since we used
-        tiny real time for our device and ran multiple tasks that ran at vastly different speeds, it was very important to protect the global variables that are
-        accessed across different tasks. To do this, we used a semaphore. We used a semaphore <code>SEM_SHARED </code> that would protect variables that needed to be
-        read and written across different concurrent tasks, such as the threshold for number of steps, the number of steps we counted, and the Peltier plate and vibration
-        motor settings.</p>
-       
-        <h4> Usability Across Multiple Users </h4>
-        <p> Our device is meant to be used by people who wish to either walk or run. Since we use an elastic arm band, we expect that it can easily fit on the arms of
-        people of varying sizes. The only problem we foresee in fitting this on someone's arm is if they have arms/biceps that are very wide in girth (obese or bodybuilders)
-        or arms that are too thin such that the band has trouble grasping the arm tightly (very young children). The feedback modules are positioned such that if the band
-        fits, then the person should be in contact with the feedback components. Since our device is attached to the arm, we believe that it could be used to sense motion
-        for the handicapped who cannot run but may still want to use it to monitor arm movement. This would require changes in the threshold values but should be doable.
-        For those who need to attach this device to the leg, the device should work as well but needs to be adjusted for more consistency to correspond with being on the leg
-        but that should be a viable use for our device.</p>
-      
-      <div class="linklist"> <a name="conclusions"></a>
-        <h2>Conclusions &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/index.html#top">top</a></strong></font></h2>
-        
-        <h3>Summary</h3>
-		<p>The purpose of the project was to create a temperature feedback device that aids a
-runner in determining whether he or she is moving at a reasonable rate. This project was able to accomplish this goal through the use of a 
- Peltier plate, accelerometer, microcontroller, and vibration motor. This project was very similar in what we set out to do, along with the inclusion
- of the vibration motor, which we felt added to the project. Overall, we felt that we accomplished something very in line with our proposal.</p>
-<p>However, some things about our final design were different than we envisioned. We did not make use of the digital potentiometer, and did not
-control the Peltier plate over a range of values. Our power control circuit was difficult to implement, and it would have been much harder to develop 
-another system that could give us the control that we truly wanted. We were able to achieve slight control by altering the PWM signal sent to the Peltier circuit, but
-we decided not to include this in our final design. This exclusion was due to the fact that the variable PWM did not produce a cold enough temperature on the plate. In addition to this, we
-felt that the full device itself was slightly more "clunky" than we hoped it to be. We did not think that the batteries would take up so much room, and expected the device to be somewhat sleeker. Despite this, 
-we were able to achieve our desired results.</p>
-<p> The last thing that we felt could have been different was our placement of the running band. Originally, we wanted to put it on our arm, and we ended up
-doing this. However, after working on our project we wanted to put the running band on a user's legs. During testing, this gave much better accelerometer readings and step counts.
-We were not able to do this though, because when placed on a user's leg, the running band slides down very easily. This sliding heavily degrades performance with respect to the 
-Peltier plate and the vibration motor. So, in the end, we resulted back to our original idea of placing the band on the arm.</p>
- <h3>Intellectual Property Considerations</h3>
-		<p>There are a couple of intellectual property considerations for our project. First, we reused the TRT kernel and settings code from labs 3 and 4. This code was made freely
-		available to us and was written by Dan Henriksson and Anton Cervin with modifications done by Bruce Land. Additionally, we used the <code>trtUart.c</code> and 
-		<code>trtUart.h</code> files extensively during testing. These files were written by Joerg Wunsch and licensed via "The Beer-Ware License". These files were also modified
-		by Bruce Land and Jeff Melville. Another area to consider for intellectual property was our vibration motor control design. We based our circuit heavily off 
-		of a circuit provided on <a href="http://learningaboutelectronics.com/Articles/Vibration-motor-circuit.php">this website</a>. This was in the public domain, so we do not think
-that this imposes on any IP considerations.</p>
-        <h3>Ethical Considerations</h3>
-	<p>Our design is meant to be attached to a user during use so we had to be careful in its design
-	so that it would not injure a user. This required following safe conduct during our design period, 
-	our building period, and our testing period. We looked at the <a href="http://www.ieee.org/about/corporate/governance/p7-8.html">IEEE Code of Ethics</a> 
-	to ensure our conduct was to the highest standard. We did not have
-	any conflict of interests in designing and working on this project. Each member held 
-	the other to a good standard of conduct. We referenced all the sources of codes or designs that we used. All 
-	information on this web page is written to be accurate to the best of our knowledge. Because
-	we use a Peltier plate to cool a person down, we need to make sure that the hot side of the Peltier plate both does
-	not get too hot or come into contact with the user when too hot. Furthermore, we need to ensure the components
-	are not dangerous to handle. We believe we exercised all the necessary ethical precautions that this
-	project requires.</p>
+<h4>Microcontroller</h4>
+<p>
+Our microcontroller, an Atmel Atmega 1284P, is the logic controller of our system. Our microcontroller is mounted on a custom PCB produced by Professor Bruce Land of Cornell University. In adition the microcontroller, the PCB includes an external oscillator, voltage regulators, and a FTDI serial module. The majority of the microcontroller’s functionality will be covered under the software design section. The microcontroller performs the following functions:
+</p>
 
-<h3>Safety and Usability</h3>
-       <p>There are some safety considerations with having a device(Peltier plate) that can rapidly change temperature pressed against a user's skin.
-	   In our case, we built our power circuits and software for the Peltier plate to limit any potential harm to the user. In software, the Peltier plate 
-	   is limited to being on for only 20 seconds at a time. Additionally, the power control circuit for the Peltier plate limits the amount of voltage and current that the 
-Peltier plate can receive, so that maximum temperature the device can reach is relatively low. Lastly, the Peltier plate's cold side is the only side applied to 
-human skin, so that no one can receive a burn from high temperatures.  </p>
-<p>This device is not intended to be used by people with physical or mental disabilities. The user interface of the system is very easy to use, and only requires toggling a switch.</p>
+<ul>
+<li> Controls the power supply relay to turn on and off the heating element.</li>
+<li> Reads the temperature probe and calculates the current temperature. </li>
+<li> Reads the analog inputs to correctly set the desired temperature and cooking time. </li>
+<li> Turns on and off the piezoelectric buzzer.</li>
+<li> Sends messages to display on the LED display.</li>
+</ul>
 
-      <h3>Legal Considerations</h3>
-	  <p>As far as we know, there are no legal considerations for this project.</p>
+ <div class="image"> <img src="./ECE 4760 ColdRunner_files/microcontroller_pcb_schematic.png" width="500">
+          <p class="caption">Figure 4: Microcontroller PCB schematic</p>
+  </div>
+
+<h4>Buzzer Sound System</h4>
+<p>
+Our piezoelectric buzzer, a CET12A35, is connected to a TI 296-6501-1-ND 555 timer that is wired to oscillate at 1 KHz. The output of the 555 timer is connected to the gate of an nMOS transistor that has its drain connected to VCC and its source connected to the drain of another nMOS transistor. The gate of the second nMOS transistor is connected to the microcontroller and the source is connected to the first terminal of the piezoelectric buzzer. The second terminal of the piezoelectric buzzer is connected to ground. The 555 timer switches the first nMOS transistor at a 1KHz frequency and allows the source to have full VCC-GND voltage swing. This signal is then gated by the signal from the microcontroller. If the microcontroller sets the buzzer control signal high, the second nMOS transistor will turn on and the piezoelectric buzzer will convert the square signal produced by the 555 timer to audible sound. 
+</p>
+ <div class="image"> <img src="./ECE 4760 ColdRunner_files/speaker.png" width="500">
+          <p class="caption"> Figure 5: Buzzer sound system hardware schematic.</p>
+  </div>
+<h4>Heating Element and Power Supply</h4>
+<p>
+Our heating element and power supply subsystem is composed of a power box and a resistive heating element. The power box controls the current and voltage received by the heating element. The power box consists of a 2 way gang box with a duplex electrical outlet, a single pole electrical switch, and a high current relay module. For there to be an electrical connection between the electrical outlets built into the gang box and the main power lines, both the relay and the single pole electrical switch must be turned on. The electrical switch is the first line of protection that the user must physically switch on. Once the electrical switch is switched on, the relay controls the connection between the electrical outlets and the mains. The relay is controlled by three wires: VCC, GND, and EN. The VCC and GND pins are connected to the USB VCC and GND pins of the microcontroller. We initially connected VCC to the VCC port on the microcontroller, but we found that the large current spike of the relay during switching would lower the voltage of the VCC rail and result in improper operation of other devices connected to the microcontroller’s VCC rail, such as the temperature sensor. The relay is an active low device and will remain off unless its EN signal is pulled low by the microcontroller. By default, the microcontroller sets the EN signal to high. If the EN signal is set to floating, the relay will still not turn on. With both the relay and single pole switch turned on, a connection is made between the heating element and the main power rail. With this connection enabled, the heating element begin heating up. This generated heat is transferred to the cooking vessel by thermal conduction which in turn is transferred to the immersion liquid. 
+</p>
+<p>
+Our heating element and chassis was sourced from an old Panasonic rice cooker. We stripped the rice cooker of all parts and kept only the metallic shell and the 400W resistive heating element. We had initially planned to replace the 400W heating element with a more powerful 1000W heating element sourced from a hot water heater, but due to thermal conduction issues we settled with the 400W heating element for our final design. 
+</p>
+ <div class="image"> <img src="./ECE 4760 ColdRunner_files/gangbox.png" width="500">
+          <p class="caption">Figure 6: Power box and heating element hardware schematic.</p>
+  </div>
+<h4>Temperature Sensor and Analog Inputs</h4>
+<p>
+Our temperature sensor is a LM35 solid state temperature sensor. It is connected to the microcontroller by three pins: VCC, GND, and OUT. The VCC and GND pins are connected to the VCC and GND pins of the microcontroller. The OUT signal is connected to port A0 and is read by the internal ADC of the microcontroller. Since the OUT signal changes according to the temperature that the LM35 detects, the ADC is continuously polled every 4 seconds. 
+</p>
+<p>
+Three potentiometers and two slide switches provide user input to our cooker. The potentiometers are read using the ADC on PORTA and converted to digital values which are interpreted on software. Two types of potentiometers are used. 500 Ohm potentiometers are used for the minutes and seconds knobs. While these provide relatively coarse grained control, the wipers on these potentiometers are very smooth and give good user feedback. A 10K pot is used for precise control of temperature because fine grained temperature control is critical for our application.
+</p>
+ <div class="image"> <img src="./ECE 4760 ColdRunner_files/analog_input.png" width="500">
+          <p class="caption"> Figure 7: Analog potentiometers and switches hardware schematic.</p>
+  </div>
+
+ <h4>LED Display</h4>
+ <p>
+  The LED display is made of a pair of E3005 common anode 8 by 8 LED matrices for a total screen width of 16 columns by 8 rows. The display is row scanned with a separate 8 stage 74HC164N SIPO shift register addressing each display. The microcontroller scans each row of the combined display and turns on each row of the 16 column display for the shift register to drive. Before each row is turned on, values are clocked into the shift registers at 1 MHz before we pull a row low and drive the display with the shift register. Rows are scanned at 50 KHz. Figure 5 illustrates the connections from the LED displays to the microcontroller’s PORTD.
+ </p> 
+ <div class="image">
+  <a href="./ECE 4760 ColdRunner_files/screens_full.png"> 
+          <img src="./ECE 4760 ColdRunner_files/screens_full.png" width="500">
+  </a>
+          <p class="caption">Figure 8: Wiring schematic for LED Display. Click to Enlarge</p>
+  </div>
+</div>
+<div class="linklist"> <a name="software"></a>
+  <h2>Software &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/index.html#top">top</a></strong></font></h2>
+<h4>Software Design</h4>
+<p>
+  We devised a common interface so that each software subsystem could be worked on independently but still be integrated easily with minimal modifications. As a result, a lot of code is encapsulated into structs. Our software design is composed of the following subsystems:
+</p>
+<ul>
+<li>State Control FSM</li>
+<li>Writing to the LED Display</li>
+<li>Temperature Measurement and PID Adjustment</li>
+<li>Input Reading</li>
+</ul>
+<p>
+Each system is implemented in a separate file and tied together with header files and common interface methods. Below is a high level description of each subsystem and main function listing.
+</p>
+
+<h4>State Control Finite State Machine <em>(fsm.h)</em> </h4>
+ <div class="image">
+  <a href="./ECE 4760 ColdRunner_files/fsm.png"> 
+          <img src="./ECE 4760 ColdRunner_files/fsm.png" width="500">
+  </a>
+          <p class="caption">Figure 9: State Control Finite State Machine (FSM). Click to Enlarge</p>
+  </div>
+<p>
+Our cooker is controlled by the FSM described above. The FSM takes into account user input and the current state of the cooker. The following composes our FSM implementation. 
+</p>
+<h5><em>write_state_message_on_buffer()</em></h5>
+<p>
+Sets up the LED display for a different display mode depending on the current state of the FSM. The LED can display the temperature, time, cooking status or display a neutral smile.
+</p> 
+<h5><em>handle_next_state_logic()</em></h5>
+<p>
+Stores input values such as desired temperature or desired cooking time into operational variables. This includes turning on/off the buzzer when the cooker has reached the desired temperature and cooking time, saving the desired temperature or saving the cooking time. 
+</p> 
+<h5><em>state_transition_logic()</em></h5>
+<p>
+The control table that implements the state transitions for our Moore machine. Data from all the available input methods impact which state transition to take. The control table can be found in our source code.
+</p>
+
+<h4>Writing to the LED Display  <em>(screen.c, screen.h)</em> </h4>
+<p>
+Writing to a 16 by 8 LED matrix was non-trivial considering how few pins we had available on our microcontroller. This was accomplished by shifting bits serially to a SIPO shift register which would drive the LED display through row scanning.  
+</p>
+
+<h5><em>write_to_buffer(int * left_valueR, int * left_valueL, int * right_valueR, int * right_valueL)</em></h5>
+<p>
+Stores screen data in a temporary buffer in preparation for writing to the screen. This buffer is a complete copy of what is displayed on the LED display. 
+</p>
+
+<h5><em>write_buffers_to_screen()</em></h5>
+<p>
+Writes the values stored in the buffer by serially sending bits to the shift registers that control the shift registers. When writing to the shift registers, our data clocks shifts at 1 MHz. To save power, when we are not shifting, the shift register clock is turned off. The LED screens are row scanned at around 50 KHz.
+</p>
+
+<h5><em>write_happy_to_buffer();</em></h5>
+<h5><em>write_empty_to_buffer();</em></h5>
+<h5><em>write_temp_to_buffer(int temp_celsius);</em></h5>
+<h5><em>write_min_to_buffer(int min);</em></h5>
+<h5><em>write_time_to_buffer(int total_seconds);</em></h5>
+<p>
+These functions are a sampling of the various display modes that our LED display supports. Each function extends write_to_buffer by including functionality to convert human readable values into the bit arrays that populate the screen.
+</p>
+
+
+<h4>Input Reading and Debouncing <em>(analog_input.c, analog_input.h, input_db.h)</em></h4>
+<p>
+These files contain the ANALOG INPUT struct and associated utilities to read and update the struct. ANALOG INPUT centralizes the reading and updating of all the potentiometers we use as dials in the user interface. Centralizing the analog input was a key factor in making our code modular and streamlining our development process. Prototyping was done with the UART serial input but our final design included all 3 analog dials. Centralizing the inputs made integration easier and cut development time because the subsystems could be tested independently and integrated as long as a common interface was followed. This common interface is embodied in struct members and methods. Analog input is read in from the ADC and linearly scaled from the 0-1023 range that the potentiometers provide to human readable ranges such as 0-99 for minutes, 0-59 for seconds, or 0-100 degrees Celsius for temperature. 
+<p>
+
+<h5><em>analog_input_init(struct ANALOG_INPUT * t)</em></h5>
+<h5><em>analog_input_update(struct ANALOG_INPUT * t)</em></h5>
+<p>
+Functions that create and update analog input values through the ADC. 
+</p>
+<h5><em>pot_to_temp(int value)</em></h5>
+<h5><em>pot_to_minutes(int value)</em></h5>
+<h5><em>pot_to_seconds(int value)</em></h5>
+<p>
+The utility functions that convert potentiometer values into human readable values. Each function performs a simple linear scaling from the potentiometer’s input range to the desired output range. 
+</p>
+
+<h5><em>seconds_changed(struct ANALOG_INPUT * t)</em></h5>
+<h5><em>minutes_changed(struct ANALOG_INPUT * t)</em></h5>
+<h5><em>temperature_changed(struct ANALOG_INPUT * t)</em></h5>
+<p>
+Functions that use hysteresis to detect when the potentiometers change value. This is necessary because there is a jitter in ADC readings which gives a lot of false positives when moving the dials. These functions take care of identifying true changes in the potentiometer values.
+</p>
+
+<h4>Temperature Measurement and PID Adjustment <em>(main.c, pid.c, pid.h)</em></h4>
+<p>
+Much like the ANALOG INPUT struct is used in reading analog input values, the PID DATA struct is used to read and adjust the PID controller. Again, this allowed us to work concurrently and integrate our parts at a later time. Centralizing PID into its own struct allowed us to separate the control logic from the pertinent details of the PID algorithm. 
+</p>
+
+<h5><em>pid_Init(double p, double i, double d, struct PID_DATA *p)</em></h5>
+<h5><em>double pid_Controller(int target, int current_value, struct PID_DATA *p)</em></h5>
+<p>
+Instantiate the PID control algorithm in a self-contained struct. The main file gets control values from the PID struct to decide whether or not to enable the relay. 
+</p>
+<h5><em>adjustTemp(void* args)</em></h5>
+<p>
+TRT Task dedicated to making fine adjustments to the temperature by turning on and off the relay. 
+</p>
+</div>
+<div class="linklist"> <a name="results"></a>
+    <h2>Results &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/index.html#top">top</a></strong></font></h2>
+
+<h4>Execution Speed</h4>
+<p>
+The speed of our program execution varies from task to task. Our slowest task, the temperature measurement reading, has a deadline of 4 seconds. This time was chosen as the specific heat of water is high and our immersion liquid is able to absorb a significant amount of heat before rising in temperature. By only polling the temperature sensor every 4 seconds, we reduce the amount of relay switching. Since the relay we chose for our project is a physical relay, it produces a loud switching noise when turning on or off. In the case where the current temperature is oscillating around the desired temperature, if the temperature sensor would be read and adjusted quickly, the relay could switch on and off at a very high rate and become a nuisance. 
+</p>
+<p>
+  While our slowest task may have a deadline of 4 seconds, we also have numerous tasks that are never set to sleep and are continuously running. These include the serial communication task which prints to and reads from the UART and the LED display update task. As the image on the LED display is generated by quickly cycling through the columns of LEDs, our LED display task runs very quickly to produce a recognizable image. Based on our code, we cycle through a column of LEDs on the LED display every 24 milliseconds. 
+</p>
+
+<h4>Accuracy</h4>
+<p>
+  Our cooker is surprisingly accurate in the temperature that it is able to maintain. For starters, our calibration function for converting the raw ADC input to degrees Celsius is accurate within 2 degrees when the temperature probe is immersed in water above 45 degrees Celsius. Since all of the cooking will be done at temperatures above 45 degrees Celsius, we calibrated our temperature probe to be especially accurate between 45 and 100 degrees Celsius.
+</p>
+<p>
+In addition to our calibration function being accurate, our temperature feedback loop is also quite effective. Because our temperature readings are very accurate due to the aforementioned calibration function, we are able to turn off our heat source as soon as the temperature of the immersion liquid reaches our desired temperature. In addition, due to the carry over cooking effect that is present due to the large heating element, we actually shut off our heating element once the temperature of the immersion liquid reaches 95% of our desired temperature. From that point, we let the carry over effect continue to heat up the immersion liquid. By doing this, we prevent thermal overshoot, which is particularly difficult to deal with as our cooking vessel retains heat very well.   
+</p>
+
+<h4>Safety</h4>
+<p>
+  Since our project utilized main power lines as a power source, we were extremely aware of safety considerations. The power box that we built to supply power to our heating element contains both a relay and a discrete physical switch to prevent accidental turn on. For the first layer of protection, a discrete physical switch disconnects the output of the power box from the input mains. Only when the switch is turned on, does the second layer of protection become applicable. For our second layer of protection, we utilize an active low relay. By default, whether during microcontroller startup or if the control wire is left floating, the relay disconnects the main lines coming from the output of the switch to the output of the power box. Only when the control signal of the relay is actively pulled low does the relay turn on and allow a connection between the main power line and the output. During startup the microcontroller sets the control signal of the relay to high, thereby initializing the relay to be disconnected. By implementing both the physical switch and the relay as intermediaries between the output of the power box and the main power lines, we prevent as much accidental turn on as possible.  
+</p>
+<h4>Interference</h4>
+<p>
+  Our project does not interfere with other people’s designs. Since our system is a closed system, for the most part we do not need to take into account other people’s designs. 
+</p>
+
+<h4>Usability</h4>
+<p>
+  Our project is usable to both the technically adept and the technically challenged. For those that are technically challenged, we provide three clearly labeled analog dials that adjust the temperature, the minute timer, and the second timer. For the technically adept, we provide a UART computer interface to digitally program the desired temperature and time to cook. In addition, for those that are technically adept, we provide the source code to allow users to program in quickset cooking options for commonly cooked foods, such as eggs or noodles. While our final project may look complicated, the majority of user inputs are clearly labeled to allow all users a good experience in cooking their food. 
+</p>
+
+ </div>
+    
+
+
+<div class="linklist"> <a name="conclusions"></a>
+  <h2>Conclusions &nbsp;&nbsp;&nbsp;<font size="-1"><strong><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/index.html#top">top</a></strong></font></h2>
+<h4>Results vs Expectations</h4>
+<p>
+  We were pleasantly surprised that the results of our project exceeded our expectations. Our initial design was to produce a simple temperature controlled cooker that would only be usable through the UART interface and would utilize a stock LCD screen for temperature and time remaining statistics. However, we managed to include additional hardware dials and switches to allow for programming of the device without a UART connection to a PC. In addition, we implemented a larger and brighter LED display that would display the temperature or time remaining depending on the switch settings. We feel that both of these inclusions makes our project more appealing to a variety of users and allows for operation in environments without a PC or technically skilled personnel. 
+  In hindsight, there are a few changes that we would make regarding our design. For starters, we would have been more discerning in selecting a high powered heating element for our cooker. Our initial intention was to build a deep fat fryer that could achieve temperatures of up to 180 degrees Celsius, but due to a poorly selected heating element, we were forced to utilize the lower powered heating element that originally came with our rice cooker. In addition, we would have also been more discerning in the shift register that we selected to power our LED display. Due to poor shift register selection, we had to perform some high speed signal shifting on our microprocessor to correctly render images on the LED display. 
+  To further iterate on this project, we anticipate including an automatic lift to place food into the cooker when the desired temperature has been reached and to remove the food once cooking has completed. This would improve our timing accuracy as the time required to place food into and remove food from the cooker would be constant across multiple uses and foods.
+</p>
+<h4>Applicable Standards</h4>
+<p>
+  As our temperature controlled cooker is derived from a rice cooker, it adheres to the standards set by the Electric Rice Cooker Criteria Standard Subcommittee, which is a subdivision of the Energy Efficiency Standards Subcommittee of the Advisory Committee on Energy and Natural Resources. The specifications can be found here:
+http://www.eccj.or.jp/top_runner/pdf/tr_electric_rice_cooker.pdf
+</p>
+<h4>Intellectual Property Considerations</h4>
+<p>
+  To build our project we relied on both the hardware and software designs of others. For part selection, we based our temperature sensor and relay selection on the Sous-vide cooker project by Harrison Wong and David Diner. In our software, we employ heavy usage of the TRT kernel and its UART library which are licensable under the Beer-ware license by Joerg Wunsch. We also utilize the AVR221 Discrete PID Controller provided by Atmel.  
+  For this project we did not attempt to reverse-engineer a design. Rather we took a commonly known design (temperature controlled induction cooktops) and applied the idea to standard conduction cooktops. We did not request sample parts for our project and therefore we were not required to sign a non-disclosure act. As the system design that we employed is relatively well known, it is highly unlikely that we would be able to patent or publish our design.  
+</p>
+<h4>Ethical Considerations</h4>
+<p>
+  Our product design and design process adheres to the IEEE Code of Ethics. Throughout the design of our project, we heavily considered safety when making design choices. We were adamant in ensuring that our power box would have multiple layers of electrical protection to prevent unwanted turn on of our heating element. We also insulated all high voltage electrical components with electrical tape to prevent any risk of a short circuit. In addition, we clearly labeled all plugs and have clear documentation regarding all high voltage wiring. Outside of successfully completing this project, we do not foresee any conflicts of interest, patent considerations or other intellectual property considerations.
+</p>
+<p>
+  To the best of our ability we have documented our project and given credit to others where credit is due. We welcome any discussion to the contrary in the hopes that all disputes can be resolved and that the correct people receive due credit. 
+  In addition to maintaining the IEEE Code of Ethics, we also factored in the Chef’s Code of Ethics set by the American Culinary Federation (http://www.acfchefs.org/download/documents/certify/certification/code_ethics.pdf). All results outputted by our project is done in good faith that our procedures and design choices are correct. We make no attempt to misrepresent our data. 
+</p>
+<h4>Legal Considerations</h4>
+<p>
+We maintain no responsibility for any unexpected consequences from building, using, or storing our project. We maintain no responsibility for any health effects caused by under or overcooked food using our device. We recommend that all food cooked in our cooker be not consumed and immediately discarded due to unknown possible side effects from ingestion.
+</p>
+
+</div>
 
       
       <div class="linklist"> <a name="appendices"></a>
@@ -431,20 +411,7 @@ human skin, so that no one can receive a burn from high temperatures.  </p>
 		<li><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/Code/trtkernel_1284.c">trtkernel_1284.c</a> (5 KB)</li>
 		<li><a href="http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/f2013/cm522_iap9/cm522_iap9/cm522_iap9/Code/trtSettings.h">trtSettings</a> (1 KB)</li>		
 		</ul>
-        <h3>B. Schematics</h3>
-        <p>Our schematics are listed below.</p>
-		<div class="image"> <a href="./ECE 4760 ColdRunner_files/IMG4.jpg"><img src="./ECE 4760 ColdRunner_files/IMG4.jpg" width="672" height="504"></a>
-        <p class="caption">Peltier Control Circuit</p>
-        </div>
-		<div class="image"> <a href="./ECE 4760 ColdRunner_files/IMG5.jpg"><img src="./ECE 4760 ColdRunner_files/IMG5.jpg" width="672" height="504"></a>
-        <p class="caption">Voltage Regulator</p>
-        </div>
-		<div class="image"> <a href="./ECE 4760 ColdRunner_files/IMG6.jpg"><img src="./ECE 4760 ColdRunner_files/IMG6.jpg" width="500" height="350"></a>
-        <p class="caption">Vibration Motor Control Circuit</p>
-        </div>
-		<div class="image"> <a href="./ECE 4760 ColdRunner_files/IMG7.jpg"><img src="./ECE 4760 ColdRunner_files/IMG7.jpg" width="500" height="400"></a>
-        <p class="caption">Switches and LEDs</p>
-        </div>
+      
         <h3>C. Cost</h3>
         <p>Our total cost for this project came out to be $56.84. The majority of this cost came from our Peltier plate, accelerometer, and arm band. Our cost breakdown is listed below.</p>
 	<style type="text/css">
@@ -491,34 +458,45 @@ human skin, so that no one can receive a burn from high temperatures.  </p>
          <table width="100%" border="1">
           <thead>
             <tr>
-              <th><strong>Casey Mak</strong></th>
-              <th><strong>Both</strong></th>
-              <th><strong>Ian Purnell</strong></th>
+              <th><strong>Gary He</strong></th>
+              <th><strong>Alex Maass</strong></th>
             </tr>
           </thead>
           <tbody>
             <tr class="row1">
-              <td>Peltier Plate control circuit</td>
-              <td>General software debugging</td>
-              <td>Interfacing with accerleromter and vibration motor</td>
+              <td>Temperature probe design and assembly</td>
+              <td>Cooker assembly</td>
             </tr>
+
             <tr class="row2">
-             <td>Developing power compliant circuits</td>
-             <td>General soldering</td>
-             <td>Software design for accelerometer/vibe/mode</td>
+             <td>Programming of temperature feedback loop</td>
+             <td>Design and construction of LED display</td>
             </tr>
+
+
             <tr class="row1">
-             <td>Peltier control code</td>
-             <td>Website Content</td>
-             <td>Website Formatting</td>
+             <td>Integration of TRT &amp; UART program interfaces</td>
+             <td>Software driver programming of LED display</td>
             </tr>
+
             <tr class="row2">
-            <td></td>
-             <td>Assembling finished product</td>
-             <td></td>
+             <td>Software integration of temperature probe</td>
+             <td>Design and construction of analog switches and dials</td>
             </tr>
-            </tbody>
-            </table>
+
+            <tr class="row1">
+              <td>Calibration of temperature probe and heating element</td>
+             <td>Software integration of analog switches and dials</td>
+
+            </tr>
+
+            <tr class="row2">
+             <td>Final system testing</td>
+              <td>Final system testing</td>
+            </tr>
+
+          </tbody>
+        </table>
             <p></p>
             <p></p>
             <p></p>
