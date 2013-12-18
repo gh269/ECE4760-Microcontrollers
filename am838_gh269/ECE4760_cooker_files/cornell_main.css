@@ -250,7 +250,11 @@ blockquote {
 #maincontent .newslist li {
 	margin: 15px 0;
 	}
-		
+	
+#untext{
+	text-decoration: none;
+	border-bottom: 1px solid #e5cfcf;
+}	
 a, a:link {
 	color: #b31b1b;
 	
