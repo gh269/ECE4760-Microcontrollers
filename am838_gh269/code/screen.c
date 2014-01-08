@@ -99,7 +99,7 @@ if time < 10:00 M:SS
 */
 void write_time_to_buffer(int total_seconds){
 	
-	if(total_seconds > 600){
+	if(total_seconds >= 600){
 		int min = total_seconds / 60;
 		write_min_to_buffer(min);
 	}
